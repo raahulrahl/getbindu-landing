@@ -10,14 +10,18 @@ export const shipHome = { x: 70, y: 500, ship: true, k: 1, dock: 0, pres: 1, brk
    stagger of 0 to 0.25s), the dots fly in curves into the dot of the i. The zoom through the wordmark that follows is scroll-driven. */
 export const FIN = { fly: 1.2, stag: 0.25, formed: 1.45, rests: [0, 1.45] };
 /* r32-1: the ship to dot hand-off plays inside the finale's pin, in viewport heights from the pin start: a short hold (ship docked on the right), then fin.t runs 0 to FIN.formed
-   over FINP.span (scrubbed, 0.8), then the zoom begins at FINP.zoom. The Guide holds the ship at its dock until the zoom starts. */
-export const FINP = { hold: 0.2, span: 1.2, zoom: 1.4, zoomLen: 1.5 };
+   over FINP.span (scrubbed, SCRUB_SOFT 0.6), then the zoom begins at FINP.zoom. The Guide holds the ship at its dock until the zoom starts. */
+export const FINP = { hold: 0.2, span: 1.2, zoom: 1.4, zoomLen: 1.3 };
+/* r42: the zoom ends where the footer starts to rise (spacer minus one viewport: 295vh, 185vh on phones), so zoom + zoomLen = that point. */
 /* r35: on phones the finale pins for about 285svh instead of 395 (a 10vh hold, 80vh of hand-off, the zoom from 90vh for 90vh; the CSS spacer matches). Updated when the window crosses 767px. */
-const syncFinp = () => { const p = isPhone(); FINP.hold = p ? 0.1 : 0.2; FINP.span = p ? 0.8 : 1.2; FINP.zoom = p ? 0.9 : 1.4; FINP.zoomLen = p ? 0.9 : 1.5; };
+const syncFinp = () => { const p = isPhone(); FINP.hold = p ? 0.1 : 0.2; FINP.span = p ? 0.8 : 1.2; FINP.zoom = p ? 0.9 : 1.4; FINP.zoomLen = p ? 0.75 : 1.3; };
 syncFinp();
 if (typeof window !== "undefined") onPhoneChange(syncFinp);
 /* t: the master time; z: the zoom's progress 0 to 1 (r28-3) */
-export const fin = { t: 0, z: 0 };
+/* r62-1: b is the guide ship's break at the end of its lane, 0 to 1 (smoothed in the Guide from the scroll position); nothing travels from it into the finale */
+export const fin = { t: 0, z: 0, b: 0 };
+/* r62-1: the break starts when the ship reaches the lane end (the ship sits 0.55 viewport heights down the screen there) and takes this many viewport heights of scroll */
+export const BREAK_SPAN = 0.4;
 
 const c01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 export const sm01 = (x: number) => { const t = c01(x); return t * t * (3 - 2 * t); };

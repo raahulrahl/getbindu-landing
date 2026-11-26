@@ -7,57 +7,78 @@
 .bindu-home img, .bindu-home svg, .bindu-home canvas { display: block; max-width: 100%; }
 .bindu-home a { color: inherit; }
 .bindu-home button, .bindu-home input, .bindu-home select, .bindu-home textarea { font: inherit; }
-.bindu-home .skip { position: absolute; left: 12px; top: -60px; z-index: 200; padding: 10px 14px; border-radius: var(--r-pill); background: var(--on-dark); color: var(--ink); }
+.bindu-home .skip { position: absolute; left: 12px; top: -60px; z-index: 200; padding: 10px 14px; border-radius: var(--r-control); background: var(--on-dark); color: var(--ink); }
 .bindu-home .skip:focus { top: 12px; }
 .bindu-home .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.bindu-home :focus-visible { outline: var(--focus-dark); outline-offset: 3px; }
-.bindu-home .band-light :focus-visible, .bindu-home .band-soft :focus-visible { outline: var(--focus-light); }
+.bindu-home :focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
+.bindu-home .band-light :focus-visible, .bindu-home .band-soft :focus-visible { outline: var(--focus-ring-light); }
 .bindu-home section { position: relative; }
+/* r55 (DESIGN.md v4): every section is a centred column with the file's 88px / 64px / 48px rhythm; plain space is the only divider */
 .bindu-home .sec { padding: var(--section-y) 0; }
-.bindu-home .sec-head { display: grid; gap: var(--s-4); max-width: 736px; margin-bottom: var(--s-8); }
+.bindu-home .sec > .container { width: 100%; }
+.bindu-home .sec-head { display: grid; justify-items: center; gap: 24px; max-width: 768px; margin: 0 auto var(--lead-gap); text-align: center; }
+.bindu-home .sec-head h2 { margin: 0; text-wrap: balance; }
+.bindu-home .sec-head p { margin: 0; max-width: 52ch; text-wrap: balance; }
 
 /* ---------- nav ---------- */
-.bindu-home .nav { position: fixed; inset: 0 0 auto 0; z-index: 100; transition: background-color var(--t-base) var(--ease-out), border-color var(--t-base) var(--ease-out); border-bottom: 1px solid transparent; }
-.bindu-home .nav.is-scrolled { background: rgb(var(--canvas-rgb) / 0.96); border-bottom-color: var(--hairline-dark); }
-.bindu-home .nav-in { max-width: 1320px; margin: 0 auto; height: 64px; padding: 0 var(--gutter); display: flex; align-items: center; gap: var(--s-6); }
-.bindu-home .nav-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 500 18px/1 var(--font-sans); letter-spacing: -0.01em; min-height: 44px; }
-.bindu-home .nav-links { display: flex; gap: var(--s-5); margin-left: auto; font-size: 14px; }
-.bindu-home .nav-links a { text-decoration: none; color: var(--on-dark-body); padding: 12px 2px; }
-.bindu-home .nav-links a:hover { color: var(--on-dark); }
-.bindu-home .nav-demo { min-height: 38px; }
+.bindu-home .nav { position: fixed; inset: 0 0 auto 0; z-index: 100; transition: background-color var(--t-base) var(--ease-out); }
+.bindu-home .nav-in { max-width: 1320px; margin: 0 auto; height: 56px; padding: 0 var(--gutter); display: flex; align-items: center; gap: var(--s-5); }
+.bindu-home .nav-brand { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font: 600 18px/1 var(--font-display); letter-spacing: 0; min-height: 44px; }
+/* r38-1: nav type per DESIGN.md: sans, sentence case, body-sm, 500, muted; full contrast on hover and while open. No mono, caps or tracking. */
+.bindu-home .nav-links { display: flex; align-items: center; gap: var(--s-5); margin-left: auto; font: 500 var(--body-sm)/1 var(--font-sans); letter-spacing: 0; text-transform: none; }   /* r55: body-sm-strong 14px 500 */
+.bindu-home .nav-links a, .bindu-home .nav-reg-btn { text-decoration: none; color: var(--on-dark-mute); padding: 12px 2px; }
+.bindu-home .nav-reg.is-open .nav-reg-btn { color: var(--on-dark); }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .nav-links a:hover, .bindu-home .nav-reg-btn:hover { color: var(--on-dark); }
+}
+.bindu-home .nav-reg { position: relative; }
+.bindu-home .nav-reg-btn { display: inline-flex; align-items: center; gap: 6px; font: inherit; letter-spacing: inherit; background: none; border: 0; cursor: pointer; white-space: nowrap; transition: color var(--t-fast) var(--ease-out); }
+.bindu-home .nav-reg-btn svg { transition: transform 200ms var(--ease-ui); }
+.bindu-home .nav-reg.is-open .nav-reg-btn svg { transform: rotate(180deg); }
+.bindu-home .nav-reg-btn:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
+.bindu-home .nav-reg-panel { position: absolute; top: calc(100% + 2px); left: -12px; min-width: 176px; padding: var(--s-2); display: grid; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); }
+.bindu-home .nav-reg-panel[hidden] { display: none; }
+.bindu-home .nav-links .nav-reg-panel a { display: flex; align-items: center; min-height: 44px; padding: 0 var(--s-3); border-radius: var(--r-control); text-decoration: none; }
+.bindu-home .nav-links .nav-reg-panel a:focus-visible { color: var(--on-dark); text-decoration: none; background: var(--canvas-mid); }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .nav-links .nav-reg-panel a:hover { color: var(--on-dark); text-decoration: none; background: var(--canvas-mid); }
+}
+@media (prefers-reduced-motion: reduce) { .bindu-home .nav-reg-btn svg { transition: none; } }
+/* r36-3: a shorter bar (56px, like parallel.ai's ~60): the theme toggle is 36px on desktop; phones keep 44px (mobile.css) */
+.bindu-home .nav .theme-toggle { width: 36px; height: 36px; }
+.bindu-home .logo { display: block; border-radius: 50%; }
 .bindu-home .nav-menu { display: none; }
 .bindu-home[data-theme="light"] .theme-toggle .ic-sun, .bindu-home[data-theme="dark"] .theme-toggle .ic-moon { opacity: 0; }
-.bindu-home .nav-drawer { border-top: 1px solid var(--hairline-dark); background: rgb(var(--canvas-rgb) / 0.96); padding: 8px var(--gutter) 20px; display: grid; }
-.bindu-home .nav-drawer a { padding: 14px 0; border-bottom: 1px solid var(--hairline-dark); text-decoration: none; font-size: 18px; }
+.bindu-home .nav-drawer { background: var(--canvas); padding: 8px var(--gutter) 20px; display: grid; }
+.bindu-home .nav-drawer a:not(.btn) { padding: 14px 0; text-decoration: none; font-size: 18px; }
 .bindu-home .nav-drawer[hidden] { display: none; }
-@media (max-width: 860px) { .bindu-home .nav-links { display: none; } .bindu-home .nav-demo { margin-left: auto; } .bindu-home .nav-menu { display: inline-flex; } }
-@media (max-width: 420px) { .bindu-home .nav .nav-brand > span:last-child { display: none; } .bindu-home .nav-in { gap: 10px; } .bindu-home .nav-demo, .bindu-home .nav-menu { padding: 0 14px; } }
+.bindu-home .nav-drawer-head { margin: 0; padding: 14px 0 4px; font: 500 var(--body-sm)/1.2 var(--font-sans); color: var(--on-dark-mute); }
+.bindu-home .nav-drawer-group { display: grid; }
+.bindu-home .nav-drawer-group a { padding-left: var(--s-4); }
+@media (max-width: 860px) { .bindu-home .nav-links { display: none; } .bindu-home .nav-menu { display: inline-flex; } }
+@media (max-width: 420px) { .bindu-home .nav .nav-brand > span:last-child { display: none; } .bindu-home .nav-in { gap: 10px; } }
 
 /* ---------- hero ---------- */
 .bindu-home .hero { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; overflow: hidden; isolation: isolate; padding: 96px 0 72px; }
 .bindu-home .hero-in { position: relative; z-index: 2; width: 100%; }
 .bindu-home .hero-in > * { max-width: 640px; }
 .bindu-home .hero-eyebrow { margin-bottom: var(--s-5); }
-.bindu-home .hero-h { max-width: 13ch; margin-bottom: var(--s-5); font-size: clamp(44px, 5.8vw, 84px); }
-.bindu-home .mask { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
-.bindu-home .mask-line { display: block; animation: mask-up var(--t-scene) var(--ease-out) both; }
-@keyframes mask-up { from { transform: translateY(105%); } }
+.bindu-home .hero-h { max-width: 22ch; margin-bottom: var(--s-5); font-size: var(--hero-h-size); line-height: 0.98; font-weight: 500; letter-spacing: -0.02em; }   /* r59-1; r65-1: Newsreader 500, lighter tracking */
 .bindu-home .hero-sub { margin: 0 0 var(--s-5); max-width: 544px; }
 .bindu-home .hero-dates { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 22px; margin: 0 0 var(--s-6); }
 .bindu-home .hero-dates .bh-eyebrow { flex-basis: 100%; }
 .bindu-home .hero-deadline { display: inline-flex; flex-direction: column; gap: 4px; }
 .bindu-home .hero-date { font-size: clamp(20px, 2vw, 25.6px); line-height: 1; }
 .bindu-home .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
-@media (prefers-reduced-motion: reduce) { .bindu-home .mask-line { animation: none; } }
 
 /* scene (hero and finale) */
 .bindu-home .scene { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
 .bindu-home .scene-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .bindu-home .scene-static { position: absolute; fill: var(--sun); width: min(36vw, 520px); height: auto; right: 6vw; top: 50%; transform: translateY(-50%); opacity: 0.95; }
-.bindu-home .scene-label { position: absolute; left: var(--gutter); bottom: 18px; margin: 0; z-index: 2; font: 400 11px/1.4 var(--font-mono); letter-spacing: 0.04em; color: var(--on-dark-mute); max-width: 60%; }
+.bindu-home .scene-label { position: absolute; left: var(--gutter); bottom: 18px; margin: 0; z-index: 2; font: 400 12px/1.4 var(--font-mono); letter-spacing: 0; color: var(--on-dark-mute); max-width: 60%; }
 /* round 7 polish: a canvas backdrop keeps the caption readable where it crosses a frame on phones */
 @media (max-width: 599px) { .bindu-home .scene-label { background: var(--canvas); padding: 2px 6px 2px 0; } }
-.bindu-home .scene-btn { position: absolute; right: var(--gutter); bottom: 12px; z-index: 3; pointer-events: auto; min-height: 36px; padding: 0 14px; background: rgb(var(--canvas-rgb) / 0.6); }
+.bindu-home .scene-btn { position: absolute; right: var(--gutter); bottom: 12px; z-index: 3; pointer-events: auto; background: rgb(var(--canvas-rgb) / 0.6); }
 @media (max-width: 860px) {
   .bindu-home .hero { align-items: flex-start; padding-top: 104px; }
   .bindu-home .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, var(--canvas) 0%, rgb(var(--canvas-rgb) / 0.85) 52%, transparent 78%); }
@@ -68,10 +89,14 @@
 
 /* ---------- dialog: grows from the button that opened it ---------- */
 .bindu-home .dlg { padding: 0; border: 0; background: transparent; max-width: min(640px, calc(100vw - 24px)); width: 100%; color: var(--on-dark); overflow: visible; }
-.bindu-home .dlg::backdrop { background: rgb(var(--shade-rgb) / 0.62); backdrop-filter: blur(4px); }
-.bindu-home .dlg-in { border-radius: var(--r-lg); border: 1px solid var(--line-white-12); padding: var(--s-5); max-height: calc(100svh - 32px); overflow: auto; }
+.bindu-home .dlg::backdrop { background: rgb(var(--shade-rgb) / 0.62); }
+.bindu-home .dlg-in { border-radius: var(--r-lg); border: 1px solid var(--hairline-dark); background: var(--canvas); padding: var(--s-5); max-height: calc(100svh - 32px); overflow: auto; overscroll-behavior: contain; }
 .bindu-home .dlg.is-in:not(.no-motion) { animation: dlg-in var(--t-base) var(--ease-out) both; }
 @keyframes dlg-in { from { opacity: 0; transform: translate(calc(var(--ox, 50vw) - 50vw), calc(var(--oy, 50vh) - 50vh)) scale(0.4); } }
+/* r61-10: the exit. The window (inner box) and the backdrop fade over 160ms, then bits.tsx closes the dialog. The enter keyframe owns the dialog's own opacity, so the fade is on its children. */
+.bindu-home .dlg-in, .bindu-home .dlg::backdrop { transition: opacity 160ms var(--ease-out); }
+.bindu-home .dlg.is-out .dlg-in, .bindu-home .dlg.is-out::backdrop { opacity: 0; }
+.bindu-home .dlg.no-motion .dlg-in, .bindu-home .dlg.no-motion::backdrop { transition: none; }
 .bindu-home .dlg-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4); margin-bottom: var(--s-2); }
 .bindu-home .dlg-head h2 { font-size: var(--display-xs); line-height: var(--lh-display-sm); }   /* round 15 item 9: a smaller popup title */
 .bindu-home .dlg-x { font-size: 22px; line-height: 1; cursor: pointer; flex: none; }
@@ -83,29 +108,26 @@
 .bindu-home .check fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; }
 .bindu-home .check legend { margin-bottom: 12px; line-height: 1.5; }
 .bindu-home .check-opts { display: flex; flex-wrap: wrap; gap: 8px; }
-.bindu-home .opt { position: relative; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: var(--r-pill); border: 1px solid var(--line-white-25); cursor: pointer; font-size: 15px; }
+.bindu-home .opt { position: relative; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: var(--r-control); border: 1px solid var(--hairline-strong); background: var(--canvas); color: var(--on-dark); cursor: pointer; font-size: 14px; }
 .bindu-home .opt input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-.bindu-home .opt.is-on { border-color: var(--cobalt-signal); background: rgb(var(--cobalt-rgb) / 0.14); box-shadow: 0 0 0 1px var(--cobalt-signal); }
-.bindu-home .opt:focus-within { outline: var(--focus-dark); outline-offset: 2px; }
-.bindu-home .check-out { min-height: 120px; border-top: 1px solid var(--hairline-dark); padding-top: var(--s-4); }
+.bindu-home .opt.is-on { background: var(--brand-cobalt); border-color: var(--brand-cobalt); color: #fff; }
+.bindu-home .opt:focus-within { outline: var(--focus-ring-dark); outline-offset: 2px; }
+.bindu-home .check-out { min-height: 120px; padding-top: var(--s-4); }
 .bindu-home .check-out p { margin: 0 0 8px; }
 
-/* ---------- footer ---------- */
+/* ---------- footer (restored in r55-3 as at 1ba9176: brand and four link groups on one grid, roles row, legal line under a rule; Ollama type and tokens) ---------- */
 .bindu-home .foot { padding: var(--s-9) 0 var(--s-6); border-top: 1px solid var(--hairline-dark); }
-/* one grid: brand + four link groups share a single row, top-aligned, equal gaps (r5 item 5) */
 .bindu-home .foot-in { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(4, minmax(0, 1fr)); gap: var(--s-7) var(--s-6); align-items: start; margin-bottom: var(--s-7); }
-.bindu-home .foot-mark { display: inline-flex; align-items: center; gap: 12px; font: 500 22px/1 var(--font-sans); margin-bottom: var(--s-4); }
+.bindu-home .foot-mark { display: inline-flex; align-items: center; gap: 12px; font: 600 22px/1 var(--font-display); margin-bottom: var(--s-4); }
 .bindu-home .foot-brand p { max-width: 416px; margin: 0; }
 .bindu-home .foot-col ul { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 4px; }
-.bindu-home .foot-col a { text-decoration: none; color: var(--on-dark-body); display: inline-block; padding: 6px 0; }
-.bindu-home .foot-col a:hover { color: var(--on-dark); }
+.bindu-home .foot-col a { text-decoration: none; color: var(--on-dark-mute); display: inline-block; padding: 6px 0; font: 400 var(--body-sm)/1.43 var(--font-sans); letter-spacing: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .foot-col a:hover { color: var(--on-dark); }
+}
 .bindu-home .foot-legal { margin: var(--s-4) 0 0; }
 /* tablet and phone: brand on its own row, the four link groups in a 2 x 2 grid */
 @media (max-width: 1100px) { .bindu-home .foot-in { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bindu-home .foot-brand { grid-column: 1 / -1; } }
-
-
-
-
 
 /* calculator */
 .bindu-home .calc { display: grid; gap: var(--s-3); }   /* round 15 item 9: the popup fits one window at 1440x900 and 375x667 */
@@ -115,18 +137,18 @@
 .bindu-home .calc input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(90deg, var(--cobalt-signal) var(--fill), var(--hairline-dark) var(--fill)); }
 .bindu-home .calc input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--hairline-dark); }
 .bindu-home .calc input[type="range"]::-moz-range-progress { height: 4px; background: var(--cobalt-signal); }
-.bindu-home .calc input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -9px; border-radius: 50%; background: var(--on-dark); box-shadow: 0 0 0 6px rgb(var(--cobalt-rgb) / 0.25); }
+.bindu-home .calc input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -9px; border-radius: 50%; background: var(--on-dark); border: 2px solid var(--cobalt-signal); }
 .bindu-home .calc input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border: 0; border-radius: 50%; background: var(--on-dark); }
-.bindu-home .calc input[type="range"]:focus-visible { outline: var(--focus-dark); outline-offset: 4px; }
+.bindu-home .calc input[type="range"]:focus-visible { outline: var(--focus-ring-dark); outline-offset: 4px; }
 .bindu-home .calc-keep { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .bindu-home .calc-keep legend { margin-bottom: var(--s-2); }
 .bindu-home .calc .opt { min-height: 36px; padding: 0 var(--s-3); font-size: var(--caption); }
 .bindu-home .calc-lines { margin: 0; display: grid; }
-.bindu-home .calc-lines > div { display: flex; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) 0; border-top: 1px solid var(--hairline-dark); color: var(--on-dark-body); font-size: var(--caption); }
+.bindu-home .calc-lines > div { display: flex; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) 0; color: var(--on-dark-body); font-size: var(--caption); }
 .bindu-home .calc-lines dd { margin: 0; }
 .bindu-home .calc-book { width: 100%; }
-.bindu-home .calc-total { display: grid; gap: var(--s-1); padding: var(--s-3) var(--s-4); border-radius: var(--r-sm); background: var(--canvas-mid); border: 1px solid var(--hairline-dark); }
-.bindu-home .calc-sum { font-size: var(--display-sm); line-height: 1; letter-spacing: -0.03em; }
+.bindu-home .calc-total { display: grid; gap: var(--s-1); padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--canvas-soft); border: 1px solid var(--hairline-dark); }
+.bindu-home .calc-sum { font-size: var(--display-sm); line-height: 1; letter-spacing: 0; }
 
 /* ---------- 5 trust (round 2 #8: minimal; one motion, the row rules draw in) ---------- */
 .bindu-home .trust .container { max-width: 736px; }
@@ -136,7 +158,7 @@
 .bindu-home .trust-row { position: relative; display: grid; grid-template-columns: minmax(128px, 176px) minmax(0, 1fr); gap: var(--s-4); align-items: center; padding: var(--s-4) 0; border-top: 1px solid var(--hairline-dark); }
 .bindu-home .trust-row:last-child { border-bottom: 1px solid var(--hairline-dark); }
 .bindu-home .trust-row::before { content: ""; position: absolute; left: 0; top: -1px; width: 100%; height: 1px; background: var(--cobalt-signal); transform-origin: left center; }
-.bindu-home .trust-v { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 17px; line-height: 1.45; }
+.bindu-home .trust-v { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: var(--body); line-height: 1.45; }
 @media (prefers-reduced-motion: no-preference) {
   .bindu-home .trust-rows:not(.is-in) .trust-row::before { transform: scaleX(0); }
   .bindu-home .trust-row::before { transition: transform var(--t-slow) var(--ease-out) calc(var(--i, 0) * 0.12s); }
@@ -144,12 +166,12 @@
 @media (max-width: 560px) { .bindu-home .trust-row { grid-template-columns: 1fr; gap: 6px; } }
 
 /* IT drawer: plain hairline panel (no glass, no reveal animation) */
-.bindu-home .it { position: relative; border-radius: var(--r-lg); border: 1px solid var(--hairline-dark); background: var(--canvas-soft); }
-.bindu-home .it summary { position: relative; list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 var(--s-5); font: 500 var(--mono-button)/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.bindu-home .it { position: relative; border-radius: var(--r-lg); border: 1px solid var(--line-white-12); background: var(--canvas-soft); }
+.bindu-home .it summary { position: relative; list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 var(--s-5); font: 500 var(--body-sm)/1.43 var(--font-sans); letter-spacing: 0; }
 .bindu-home .it summary::-webkit-details-marker { display: none; }
 .bindu-home .it summary::after { content: "+"; margin-left: auto; font: 400 20px/1 var(--font-sans); transition: transform var(--t-base) var(--ease-out); }
 .bindu-home .it[open] summary::after { transform: rotate(45deg); }
-.bindu-home .it summary:focus-visible { outline: var(--focus-dark); outline-offset: -3px; border-radius: var(--r-lg); }
+.bindu-home .it summary:focus-visible { outline: var(--focus-ring-dark); outline-offset: -3px; border-radius: var(--r-lg); }
 .bindu-home .it-panel { position: relative; }
 .bindu-home .it-in { padding: 0 var(--s-5) var(--s-5); color: var(--on-dark-body); font-size: 15px; line-height: 1.55; display: grid; gap: var(--s-3); }
 .bindu-home .it-in p { margin: 0; }
@@ -159,29 +181,30 @@
 .bindu-home .it-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
 .bindu-home .it-layers li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
 .bindu-home .it-layers b { font-weight: 500; color: var(--on-dark); }
-.bindu-home .it-layers code { font: 500 11px/1 var(--font-mono); letter-spacing: 0.04em; padding: 5px 7px; border-radius: 5px; border: 1px solid var(--hairline-dark); color: var(--on-dark-body); }
+.bindu-home .it-layers code { font: 400 14px/1.43 var(--font-mono); letter-spacing: 0; padding: 6px 12px; border-radius: var(--r-control); border: 1px solid var(--hairline-dark); background: var(--canvas-soft); color: var(--on-dark-body); }
 .bindu-home .it-layers .t-caption { flex-basis: 100%; margin: 0; color: var(--on-dark-mute); }
-.bindu-home .ph { font: 500 12px/1.5 var(--font-mono); letter-spacing: 0.04em; color: var(--on-dark-mute); align-self: start; justify-self: start; border: 1px dashed var(--build-line-dark); border-radius: 6px; padding: 6px 8px; }
+.bindu-home .ph { font: 500 12px/1.5 var(--font-sans); letter-spacing: 0; color: var(--on-dark-mute); align-self: start; justify-self: start; border: 1px solid var(--hairline-strong); border-radius: var(--r-control); padding: 6px 12px; }
 @keyframes it-in { from { opacity: 0; transform: translateY(-8px); } }
 
 /* ---------- 6 roles, FAQ, finale ---------- */
 
-.bindu-home .faq { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--s-8); align-items: start; }
-@media (max-width: 900px) { .bindu-home .faq { grid-template-columns: 1fr; gap: 0; } }
-.bindu-home .faq-list { border-top: 1px solid var(--hairline-dark); }
-.bindu-home .faq-item { border-bottom: 1px solid var(--hairline-dark); }
-.bindu-home .faq-item { --faq-q: clamp(18.4px, 1.8vw, 24px); }
-.bindu-home .faq-item summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 16px; padding: var(--s-5) 0; }
+/* r54 (v3 step 4): a centred head over a centred list (max 768px) in one panel; the rows are separated by space only */
+.bindu-home .faq { display: block; }
+.bindu-home .faq-list { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+@media (min-width: 1024px) { .bindu-home .faq-list.v3-panel-wide { padding: 0 32px; } }
+.bindu-home .faq-item { --faq-q: 18px; border-bottom: 1px solid var(--hairline-dark); }
+.bindu-home .faq-item:last-child { border-bottom: 0; }
+.bindu-home .faq-item summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 16px; padding: var(--s-4) 0; }
 .bindu-home .faq-item summary::-webkit-details-marker { display: none; }
-.bindu-home .faq-item summary:focus-visible { outline: var(--focus-ring-dark); outline-offset: 4px; border-radius: 6px; }
-.bindu-home .faq-item .t-display-sm { font-size: var(--faq-q); }
+.bindu-home .faq-item summary:focus-visible { outline: var(--focus-ring-dark); outline-offset: 4px; border-radius: var(--r-control); }
+.bindu-home .faq-item .t-display-sm { font-family: var(--font-sans); font-size: var(--faq-q); font-weight: 500; line-height: 1.56; }
 /* the icon: 18px, the nav's stroke (1.6, round caps), centred on the first line box; minus when open (the bar turns) */
 .bindu-home .faq-ico { flex: none; margin-left: auto; width: 18px; height: calc(var(--faq-q) * var(--lh-display-sm)); display: flex; align-items: center; color: var(--ink); }
 .bindu-home .faq-ico svg { display: block; width: 18px; height: 18px; overflow: visible; }
 .bindu-home .faq-ico-v { transform-box: view-box; transform-origin: 12px 12px; transition: transform 200ms var(--ease-out); }
 .bindu-home .faq-item[open] .faq-ico-v { transform: rotate(90deg); }
 @media (prefers-reduced-motion: reduce) { .bindu-home .faq-ico-v { transition: none; } }
-.bindu-home .faq-a { padding: 0 0 var(--s-5); max-width: 640px; }
+.bindu-home .faq-a { padding: 0 0 var(--s-4); max-width: 640px; }
 .bindu-home .faq-a p { margin: 0 0 12px; }
 @media (prefers-reduced-motion: no-preference) { .bindu-home .faq-item[open] .faq-a { animation: it-in var(--t-base) var(--ease-out) both; } }
 
@@ -190,10 +213,59 @@
 /* 2 header: the wordmark collapses to the mark once the page scrolls */
 .bindu-home .nav-brand > span:last-child { display: inline-block; max-width: 90px; overflow: hidden; white-space: nowrap; transition: max-width var(--t-slow) var(--ease-out), opacity var(--t-base); }
 .bindu-home .nav.is-scrolled .nav-brand > span:last-child { max-width: 0; opacity: 0; }
-/* 3 masked headline reveal */
-.bindu-home .fx .rv { clip-path: inset(0 0 100% 0); transform: translateY(0.35em); transition: clip-path var(--t-scene) var(--ease-out), transform var(--t-scene) var(--ease-out); }
-.bindu-home .fx .rv.is-in { clip-path: inset(-0.2em -0.2em -0.3em -0.2em); transform: none; }
 /* 4 sheet lift: the band after the hero slides over it with a rounded top edge */
 .bindu-home .hero .scene-label { bottom: 46px; }
 .bindu-home .hero .scene-btn { bottom: 40px; }
 @media (max-width: 860px) { .bindu-home .hero { padding-bottom: 112px; } .bindu-home .hero .scene-label { bottom: 46px; max-width: 48%; } }
+
+/* round 42: floating instrument bar, section dot, progress rail */
+/* r55 (adaptation 4): the floating bar is the primary-nav: canvas fill, 1px hairline, rounded.full, no shadow, no blur */
+.bindu-home .nav { background: var(--canvas); border: 1px solid var(--hairline-dark); }
+.bindu-home .nav.is-scrolled { background: var(--canvas); }
+.bindu-home .nav-in { position: relative; }
+.bindu-home .nav-links { position: relative; }
+.bindu-home .nav-links a[aria-current="location"] { color: var(--brand-cobalt); }
+.bindu-home:not([data-theme="light"]) .nav-links a[aria-current="location"] { color: var(--cobalt-signal); }
+.bindu-home .nav-dot { position: absolute; left: 0; top: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-yellow); pointer-events: none; }
+@media (min-width: 768px) {
+  .bindu-home .nav { inset: 12px 0 auto 0; margin-inline: auto; width: min(1320px, calc(100% - 2 * var(--gutter))); border-radius: var(--nav-r); }
+  .bindu-home .nav-in { padding: 0 16px; transition: height var(--t-base) var(--ease-out); }
+  .bindu-home .nav.is-scrolled .nav-in { height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) { .bindu-home .nav-in { transition: none; } }
+
+/* round 43: the island. GSAP owns width, the pills and the section label; CSS only lays them out. */
+.bindu-home .nav { --nav-r: 12px; }   /* r65-9: the floating bar is a rounded rectangle */
+.bindu-home .nav-rest { display: contents; }
+@media (min-width: 861px) {
+  .bindu-home .nav-rest { display: flex; align-items: center; gap: var(--s-5); margin-left: auto; flex: none; }
+  .bindu-home .nav.is-island { overflow: clip; }
+  .bindu-home .nav.is-island .nav-in { justify-content: flex-start; }
+  .bindu-home .nav-rest .nav-links { margin-left: 0; }
+  .bindu-home .nav-brand { flex: none; }
+}
+.bindu-home .nav-links > a, .bindu-home .nav-reg { position: relative; z-index: 1; }
+.bindu-home .nav-pill, .bindu-home .nav-hover { position: absolute; left: 0; top: 0; height: 26px; border-radius: var(--r-control); box-sizing: border-box; pointer-events: none; z-index: 0; }
+/* r54: the active section pill is the secondary-button fill (one step darker than the bar, which is itself --canvas-mid), no outline; the hover pill is the quieter 4% fill */
+.bindu-home .nav-pill { height: 28px; background: rgb(var(--cobalt-rgb) / 0.14); border: 0; }   /* the active pill is cobalt (adaptation 2) */
+.bindu-home .nav-hover { height: 28px; background: var(--canvas-soft); border: 0; }
+.bindu-home .nav-dot { z-index: 1; }
+.bindu-home .nav-links { gap: 28px; }
+
+/* round 43: while the island changes size the bar drops its backdrop blur (opaque enough to read the same), so the width tween never repaints a blur over the canvas */
+.bindu-home .nav.is-moving { background: var(--canvas); }
+
+/* r52 (Austin, 25 Nov 2026): Book a demo on the expanded floating bar, at its right end after the theme toggle. It is inside .nav-rest, so the
+   collapsed pill (logo only) fades it with the links. Phones use the drawer's button. From 768 to 860px (no links, a Menu button) it stays last. */
+.bindu-home .nav-book { display: none; }
+@media (min-width: 768px) { .bindu-home .nav .nav-book { display: inline-flex; flex: none; } }
+@media (min-width: 768px) and (max-width: 860px) { .bindu-home .nav .nav-menu { order: 1; } .bindu-home .nav .nav-book { order: 2; } }
+
+/* r65-3: the getbindu.com header actions on the expanded bar (GitHub stars, Docs, Sign in), quiet ghost pills before Book a demo. They sit in
+   .nav-rest, so the collapsed pill hides them with the links. Under 1180px the bar has no room: they move to the drawer only. */
+.bindu-home .nav-act { display: none; }
+@media (min-width: 1180px) { .bindu-home .nav .nav-act { display: inline-flex; flex: none; gap: 6px; padding: 0 12px; } }
+.bindu-home .nav-gh-mark { width: 16px; height: 16px; flex: none; }
+.bindu-home .nav-gh-star { font-size: 12px; }
+.bindu-home .nav-gh span:not(.nav-gh-star) { font-variant-numeric: tabular-nums; }
+.bindu-home .nav-drawer-gh { display: inline-flex; align-items: center; gap: 8px; }

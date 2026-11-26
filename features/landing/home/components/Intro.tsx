@@ -29,6 +29,7 @@ export function Intro() {
   // before paint, so the hero's headline, sub-line, buttons and nav are already in their intro state
   useLayoutEffect(() => {
     if (phase === "intro" && (seen || reduceMotion())) { setPhase("gone"); return; }
+    if (phase === "intro" && window.innerWidth < 768) { getRoot().dataset.intro = "off"; setPhase("gone"); return; }   // phones skip the intro so the hero text paints at once
     getRoot().dataset.intro = phase === "intro" ? "on" : "off";
   }, [phase]);
 

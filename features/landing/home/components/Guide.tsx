@@ -2,13 +2,13 @@ import { getRoot } from "../lib/root";
 import { tRaf, tCaf } from "../lib/loop";
 import { isPhone } from "../lib/phone";
 import { useEffect, useRef } from "react";
-import { gsap, reduceMotion } from "../lib/motion";
+import { gsap, reduceMotion, SCRUB_SOFT } from "../lib/motion";
 import { rng, smoothPath } from "../lib/guide";
 import { isPaused, subscribePause } from "../lib/pause";
-import { shipHome, fin, FINP, flyU, mapU, sm01, sunSlot, SUN_DOT } from "../lib/shiphome";
+import { shipHome, fin, FINP, BREAK_SPAN, outQuart, mapU } from "../lib/shiphome";
 import { subscribeTheme } from "../lib/theme";
-import { track } from "../lib/pos";
-import { readCols, drawShip, buildFrom, SLOTS, NB, toRgb, type Cols } from "../lib/shipcanvas";
+import { track, scrollPos } from "../lib/pos";
+import { readCols, drawShip, buildFrom, SLOTS, NB, type Cols } from "../lib/shipcanvas";
 
 /* Round 18, item 1: the guide is a small container ship. It is drawn by us in ink (side view, about 40px wide on desktop) and sails
    a dashed sea lane down ONE side gutter of the page, meandering about 12px, so it never crosses text. It stays upright: it tilts up
@@ -17,8 +17,8 @@ import { readCols, drawShip, buildFrom, SLOTS, NB, toRgb, type Cols } from "../l
    dot with an ink ring travels the same route. Reduced motion: the lane and every proof dot are drawn. The site pause control freezes it.
    Round 25 item 1: ONE fixed, full-viewport canvas (pointer-events none, dpr 1.5 at most) draws all of it, redrawn only when something changed
    (dirty flag, from the single gsap ticker). Every dash of the lane and every tick is its own straight segment along the local tangent.
-   Round 25 item 2, r29 items 3 and 5: the finale. The ship stays in its right gutter on its normal course line and breaks into dots there, driven by fin.t (lib/shiphome);
-   the dots fly in curves into the dot of the i. The map's hand-off (the Bindu mark's dots flying to the gutter ship) is drawn here too, so every dot and the ship are on
+   Round 25 item 2, r29 items 3 and 5, r62-1: the ship ends where its lane ends: it breaks into its 34 dots there (a short scatter, then they fade out in place), driven by fin.b
+   (the scroll position, smoothed with SCRUB_SOFT). Nothing travels into the finale; the dot of the i builds from its own dots. The map's hand-off (the Bindu mark's dots flying to the gutter ship) is drawn here too, so every dot and the ship are on
    this one canvas. The ship assembles from its dots (and comes apart into them) a part at a time: drawShip takes a Build made from how far each dot has landed. */
 
 const clamp = (v: number, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
@@ -157,6 +157,7 @@ export function Guide() {
       trail = { y: new Float32Array(tY), x: new Float32Array(tX), r: new Float32Array(tR), o: new Float32Array(tO) };
       proofsData = anchors.filter((a) => a.id !== "finale").map((a) => ({ y: a.y, x: xAt(a.y), u: -1 }));
       m = { pinTop: finale ? finale.y : 0, range: finale ? Math.max(1, finale.h - vh) : 1, H, yStart, yEnd, xAt, ship, k, band, end };
+      fin.b = bv.v = rm ? 0 : rawB();
       lastKey = "";
       draw();
     };
@@ -166,20 +167,19 @@ export function Guide() {
 
     /* ---------- one frame: a pure function of scroll and fin.t ---------- */
     // r34-2: the finale's zoom starts at FINP.zoom viewport heights into its pin (the same place the finale's own scroll trigger uses)
-    const isGone = (sy: number) => !!ftk && sy >= ftk.top + FINP.zoom * window.innerHeight;
+    const isGone = (sy: number) => !!ftk && sy >= ftk.top + FINP.zoom * CH;
     let goneNow = false;
-    const onScrollGone = () => { if (rm && isGone(window.scrollY) !== goneNow) kick(); };   // reduced motion has no scroll redraw: only the hide and show change
+    const onScrollGone = () => { if (rm && isGone(scrollPos()) !== goneNow) kick(); };   // reduced motion has no scroll redraw: only the hide and show change
     const draw = () => {
       raf = 0;
       const mm = m;
       if (!mm || !CW) return;
-      const s = window.scrollY, vh = CH, W = CW;
+      const s = scrollPos(), vh = CH, W = CW;   // r65-13: no layout read inside the frame
       // r34-2: from the start of the finale's zoom on, the lane, the ship and its dots are not drawn (the final view is the photo, the button and the footer); they come back on scroll up
       goneNow = isGone(s);
       if (goneNow) { if (lastKey !== "gone") { ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, vh); lastKey = "gone"; } wakeAlive = false; shipAt.a = 0; return; }
-      const T = rm ? 0 : fin.t;
-      const ty = rm ? mm.yEnd : clamp(s + vh * 0.55, mm.yStart, mm.yEnd);
-      const key = `${ty.toFixed(1)}|${s.toFixed(0)}|${intro.t.toFixed(2)}|${T.toFixed(3)}|${fin.z.toFixed(2)}|${shipHome.brk.toFixed(4)}|${rock.a.toFixed(1)}`;
+            const ty = rm ? mm.yEnd : clamp(s + vh * 0.55, mm.yStart, mm.yEnd);
+      const key = `${ty.toFixed(1)}|${s.toFixed(0)}|${intro.t.toFixed(2)}|${fin.b.toFixed(3)}|${fin.z.toFixed(2)}|${shipHome.brk.toFixed(4)}|${rock.a.toFixed(1)}`;
       if (key === lastKey && !wakeAlive) return;
       lastKey = key;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -269,12 +269,8 @@ export function Guide() {
         const e = sm(intro.t), cx = W / 2, cy = s + vh / 2;
         px = cx + (px - cx) * e; py = cy + (py - cy) * e; sc *= 0.25 + 0.75 * e;
       }
-      // r32-1: the ship stays docked in its gutter while the finale's pin plays the hand-off: from where it parks until the zoom starts it holds its place on screen
-      let dock = 0;
-      if (mm.end && ftk && !rm) { const s0 = mm.yEnd - vh * 0.55; dock = Math.max(0, Math.min(s, ftk.top + FINP.zoom * vh) - s0); }
-      shipHome.x = px; shipHome.y = py - s + dock; shipHome.ship = mm.ship; shipHome.k = mm.k;
-      let sx = px, sy = py - s + bob + dock, sRot = tilt, sAlpha = Math.max(0, vis), sScale = mm.ship ? (SHIP_W / 56) * sc : 0.12, dotA = 1, showShip = mm.ship, bd: ReturnType<typeof buildFrom> | undefined;
-      if (!mm.ship && !phone && T > 0) { sScale = 0.25; sAlpha = sm01(T / 0.12); showShip = true; sy = py - s + dock; }
+      shipHome.x = px; shipHome.y = py - s; shipHome.ship = mm.ship; shipHome.k = mm.k;
+      let sx = px, sy = py - s + bob, sRot = tilt, sAlpha = Math.max(0, vis), sScale = mm.ship ? (SHIP_W / 56) * sc : 0.12, dotA = 1, showShip = mm.ship, bd: ReturnType<typeof buildFrom> | undefined;
       // slot j of the ship on screen (the ship's own tilt included)
       const cr = Math.cos((sRot * Math.PI) / 180), sr2 = Math.sin((sRot * Math.PI) / 180);
       const slotAt = (j: number, o: { x: number; y: number }) => { const a = SLOTS[j]!.x * sScale, b = SLOTS[j]!.y * sScale; o.x = sx + a * cr - b * sr2; o.y = sy + a * sr2 + b * cr; };
@@ -286,7 +282,8 @@ export function Guide() {
       };
       const land = new Float32Array(NB);
       if (mm.end && rm) { sAlpha = 0; dotA = 0; }
-      if (mm.end && phone && !rm && T > 0) dotA = 1 - sm01(T / 0.12);
+      const B = rm ? 0 : fin.b;
+      if (mm.end && !rm && B > 0 && (!mm.ship || phone)) { dotA = 1 - sm(B / 0.6); sAlpha *= 1 - sm(B / 0.6); }   // r62-1: phones and small gutters: the dot (or the ship) simply fades out at the lane end
       // r29-3: the map's hand-off. The 34 dots of the Bindu mark leave from where they are (shipHome.mark), fly a curve to their slot on the gutter ship (quart-out, staggered)
       // and the ship draws itself in as each lands. One function of the break value, so scrolling back plays it in reverse.
       if (handing) {
@@ -305,23 +302,20 @@ export function Guide() {
           bead(v * v * ax! + 2 * v * u * mx + u * u * sp.x, v * v * ay! + 2 * v * u * my + u * u * sp.y, 1.5 + 0.7 * Math.min(1, u * 3), 1 - land[j]!, shipHome.markFilled);
         }
       }
-      // r29-5: the finale. The ship stays in its gutter. When the scroll crosses its trigger it breaks into dots right there (fin.t, time-based): each dot leaves its slot, flies a
-      // curve into the dot of the i, shrinks and fades into it; the ship comes apart a part at a time. The dot of the i itself is the page's own element (it grows with finFill).
-      if (mm.end && !rm && !phone && T > 0) {   // r35: on phones the ship does not break into dots; the dot of the i assembles by itself
-        const pinTop = ftk ? ftk.top : mm.pinTop, range = ftk ? Math.max(1, ftk.h - vh) : mm.range, stageTop = Math.max(pinTop - s, Math.min(0, pinTop + range - s)), Ex = mm.end.x, Ey = stageTop + mm.end.y, R = mm.end.r;
-        dotA = 1 - sm01(T / 0.12);
-        for (let j = 0; j < NB; j++) land[j] = 1 - sm(flyU(T, j, NB) / 0.15);
+      // r62-1: the end of the lane. The ship breaks into its 34 dots right where the lane ends: each dot leaves its slot, scatters a short way and settles (quart-out, staggered), then
+      // fades out in place. A pure function of fin.b (scroll), so scrolling back up reassembles the ship. Nothing flies into the finale.
+      if (mm.end && !rm && !phone && mm.ship && B > 0) {
+        for (let j = 0; j < NB; j++) land[j] = 1 - sm(outQuart((B - (0.3 * j) / (NB - 1)) / 0.7) / 0.15);
         bd = buildFrom(land);
-        if (mm.ship) { sAlpha = 1; showShip = true; }
+        sAlpha = Math.max(0, vis); showShip = true;
         for (let j = 0; j < NB; j++) {
-          const u = flyU(T, j, NB); if (u <= 0.0001) continue;
-          slotAt(j, sp);
-          const q = sunSlot(j), tx = Ex + q.x! * R, ty2 = Ey + q.y! * R;   // r30-2: each ship dot lands in its own slot of the sunflower that is the dot of the i
-          const dx = tx - sp.x, dy = ty2 - sp.y, n = Math.hypot(dx, dy) || 1, off = ((j % 2 ? 1 : -1) * (0.18 + 0.14 * ((j * 7) % 5) / 4)) * n;   // a bow to one side or the other, different for each dot
-          const mx = (sp.x + tx) / 2 - (dy / n) * off, my = (sp.y + ty2) / 2 + (dx / n) * off, v = 1 - u;
-          const a = sm(u / 0.1) * (1 - sm((u - 0.85) / 0.15));
+          const u = outQuart((B - (0.3 * j) / (NB - 1)) / 0.7); if (u <= 0.0001) continue;
+          const a = sm(u / 0.1) * (1 - sm((B - 0.55 - (0.25 * j) / (NB - 1)) / 0.4));
           if (a <= 0.003) continue;
-          ctx.globalAlpha = a; ctx.fillStyle = slotCol(q.m); ctx.beginPath(); ctx.arc(v * v * sp.x + 2 * v * u * mx + u * u * tx, v * v * sp.y + 2 * v * u * my + u * u * ty2, lerp(2.4, SUN_DOT * R, u), 0, 6.2832); ctx.fill(); ctx.globalAlpha = 1;
+          slotAt(j, sp);
+          const ang = j * 2.39996 + 0.7, dist = (10 + 22 * (((j * 7) % 11) / 10)) * u;   // each dot scatters its own way, 10 to 32px
+          ctx.globalAlpha = a * vis; ctx.fillStyle = cols.yellow; ctx.strokeStyle = cols.ink; ctx.lineWidth = 0.8;
+          ctx.beginPath(); ctx.arc(sp.x + Math.cos(ang) * dist, sp.y + Math.sin(ang) * dist - 6 * u, lerp(2.2, 1.9, u), 0, 6.2832); ctx.fill(); ctx.stroke(); ctx.globalAlpha = 1;
         }
       }
       if (showShip && sAlpha > 0.002) {
@@ -334,9 +328,11 @@ export function Guide() {
       }
             if (wakeAlive) kick();
     };
-    // the colour of a dot of the sunflower, m = how yellow (the same mix as the page's own dots: yellow in the middle, cobalt at the rim)
-    const slotCol = (mix: number) => { const a = toRgb(cols.yellow), b = toRgb(cols.cobalt); return `rgb(${[0, 1, 2].map((i) => Math.round(255 * (b[i]! + (a[i]! - b[i]!) * mix))).join(",")})`; };
     const kick = () => { if (!raf && !isPaused()) raf = tRaf(draw); };
+    // r62-1: the break of the ship at the end of its lane follows the scroll position (SCRUB_SOFT), starting where the ship reaches the lane end
+    const rawB = () => (m ? clamp((scrollPos() - (m.yEnd - CH * 0.55)) / (BREAK_SPAN * CH)) : 0);
+    const bv = { v: fin.b };   // private, so the finale's own cleanup (killTweensOf(fin)) cannot stop it
+    const onScrollB = () => { const r = rawB(); if (r !== bv.v) gsap.to(bv, { v: r, duration: SCRUB_SOFT, ease: "power2.out", overwrite: true, onUpdate: () => { fin.b = bv.v; kick(); } }); };
     shipHome.kick = kick; shipHome.now = () => { if (raf) { tCaf(raf); raf = 0; } draw(); };
 
     /* ---------- wiring ---------- */
@@ -370,7 +366,7 @@ export function Guide() {
     window.addEventListener("resize", rebuild);
     window.addEventListener("guide:refresh", rebuild);
     window.addEventListener("load", rebuild);
-    if (!rm) window.addEventListener("scroll", kick, { passive: true });
+    if (!rm) { window.addEventListener("scroll", kick, { passive: true }); window.addEventListener("scroll", onScrollB, { passive: true }); }
     else window.addEventListener("scroll", onScrollGone, { passive: true });
     const unPause = subscribePause(() => { if (!isPaused()) { lastKey = ""; kick(); } });
     const unTheme = subscribeTheme(() => { cols = readCols(); lastKey = ""; kick(); });
@@ -382,7 +378,7 @@ export function Guide() {
     return () => {
       window.clearTimeout(timer); tCaf(raf); shipHome.kick = () => {}; shipHome.now = () => {}; stopIntro(); ro.disconnect(); introTween?.kill(); unPause(); unTheme(); gsap.killTweensOf(rock);
       window.removeEventListener("resize", rebuild); window.removeEventListener("guide:refresh", rebuild);
-      window.removeEventListener("scroll", kick); window.removeEventListener("scroll", onScrollGone); window.removeEventListener("load", rebuild);
+      window.removeEventListener("scroll", kick); window.removeEventListener("scroll", onScrollB); gsap.killTweensOf(bv); fin.b = 0; window.removeEventListener("scroll", onScrollGone); window.removeEventListener("load", rebuild);
       window.removeEventListener("click", onClick); window.removeEventListener("pointermove", onMove); root.classList.remove("g-over");
     };
   }, []);

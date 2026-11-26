@@ -1,8 +1,8 @@
 import { getRoot } from "../lib/root";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { sunflowerCircles } from "../lib/phyllotaxis";
-import { gsap, lockScroll, reduceMotion } from "../lib/motion";
+import { lockScroll, reduceMotion } from "../lib/motion";
 
 /* r25-2b: the site mark is the golden-angle sunflower drawn as dots in two colours: yellow in the inner part, cobalt toward the outside, blended over the middle rings
    (colour-mix of two tokens, so it follows both themes). Same box and spiral as before. This is the site's mark, not Bindu's official logo file; the colour change needs
@@ -12,7 +12,16 @@ const MARK_DOTS = sunflowerCircles(MARK_N, 100, 4).map((d, i) => {
   const t = i / (MARK_N - 1), p = Math.round(Math.min(1, Math.max(0, (t - 0.3) / 0.45)) * 5) * 20;   // 0 = all yellow, 100 = all cobalt, in steps of 20
   return { x: d.x.toFixed(1), y: d.y.toFixed(1), r: (d.r * 1.25).toFixed(2), fill: p === 0 ? "var(--sun)" : p === 100 ? "var(--cobalt-signal)" : `color-mix(in srgb, var(--cobalt-signal) ${p}%, var(--sun))` };
 });
-export function Mark({ size = 28, white = false, label = false }: { size?: number; white?: boolean; label?: boolean }) {
+/* r65-10: the statement chip's mark is a sunflower of dots, evenly spaced, in one colour. r65-19: 55 dots (was 34, Austin: more dots), a touch larger each */
+const CHIP_DOTS = sunflowerCircles(55, 100, 4).map((d) => ({ x: d.x.toFixed(1), y: d.y.toFixed(1), r: (d.r * 1.2).toFixed(2) }));
+export function Mark({ size = 28, white = false, label = false, chip = false }: { size?: number; white?: boolean; label?: boolean; chip?: boolean }) {
+  if (chip) return (
+    <span className="mark mark-chip" style={{ width: size, height: size }} aria-hidden="true">
+      <svg viewBox="0 0 100 100" focusable="false" aria-hidden="true">
+        {CHIP_DOTS.map((d, i) => <circle key={i} cx={d.x} cy={d.y} r={d.r} fill="currentColor" />)}
+      </svg>
+    </span>
+  );
   return (
     <span className={`mark${white ? " mark-white" : ""}`} style={{ width: size, height: size }} aria-hidden={label ? undefined : true}
       role={label ? "img" : undefined} aria-label={label ? "Bindu" : undefined}>
@@ -23,48 +32,36 @@ export function Mark({ size = 28, white = false, label = false }: { size?: numbe
   );
 }
 
-/* round 22 item 9, r34-1: the filled pill's label stays still (the letter roll is removed). The label is one plain span; the link keeps its accessible name (aria-label).
-   On hover the magnetic pull (within about 80px, max 6px, the label 3px further) and the arrow's 4px nudge (CSS) stay, and the click sends a tiny burst of 6 to 8 yellow and
-   cobalt dots from the arrow. Those need a fine pointer without reduced motion. The yellow never changes on hover. */
-export function BtnLabel({ children }: { children: string }) {
+/* r36-3: Bindu's official sunflower logo (public/home/bindu-logo-*.webp, PNG fallback), the brand mark in the nav and the footer. The dot-built Mark above stays for the statement chip.
+   64px copy for the nav (2x at 24px), 128px for the footer (2x at 40px). The link around it carries the accessible name, so the image itself is decorative. */
+export function Logo({ size = 24 }: { size?: number }) {
+  const n = size > 32 ? 128 : 64;
+  return (
+    <picture>
+      <source srcSet={`/home/bindu-logo-${n}.webp`} type="image/webp" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="logo" src={`/home/bindu-logo-${n}.png`} width={size} height={size} alt="" decoding="async" />
+    </picture>
+  );
+}
+
+/* r52 (DESIGN.md v2 section 5): a button's label, with an optional plain arrow after it (for links that leave the section).
+   Nothing moves: the magnetic pull, the click dot burst and the arrow nudge are retired with v1. The label is Inter 500 sentence case (r52
+   revision; the caps were rejected), and the link gets its accessible name (aria-label) from the label unless it has one. */
+export function BtnLabel({ children, arrow = true }: { children: string; arrow?: boolean }) {
   const host = useRef<HTMLSpanElement>(null);
   useEffect(() => {
-    const el = host.current;
-    const link = el?.closest<HTMLElement>("a,button");
-    if (!el || !link) return;
-    if (!link.hasAttribute("aria-label")) link.setAttribute("aria-label", children);
-    if (reduceMotion() || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    // r22-17: a tiny burst of 6 to 8 yellow and cobalt dots from the arrow on click (pointer devices, never under reduced motion)
-    const burst = () => {
-      const ar = link.querySelector<HTMLElement>(".btn-arrow"); if (!ar) return;
-      const r = ar.getBoundingClientRect(), n = 7;
-      for (let k = 0; k < n; k++) {
-        const d = document.createElement("i"); d.setAttribute("aria-hidden", "true");
-        d.style.cssText = `position:fixed;left:${r.left + r.width / 2}px;top:${r.top + r.height / 2}px;width:4px;height:4px;margin:-2px;border-radius:50%;pointer-events:none;z-index:300;background:${k % 2 ? "var(--cobalt-signal)" : "var(--proof-dot)"}`;
-        document.body.appendChild(d);
-        const a = (k / n) * 6.283 + Math.random() * 0.6, dist = 26 + Math.random() * 18;
-        gsap.to(d, { x: Math.cos(a) * dist, y: Math.sin(a) * dist, opacity: 0, duration: 0.4, ease: "power2.out", onComplete: () => d.remove() });
-      }
-    };
-    link.addEventListener("click", burst);
-    const st = { x: 0, y: 0 };
-    const apply = () => { link.style.translate = `${st.x.toFixed(2)}px ${st.y.toFixed(2)}px`; el.style.translate = `${(st.x * 0.5).toFixed(2)}px ${(st.y * 0.5).toFixed(2)}px`; };
-    const isPrimary = link.classList.contains("bh-btn-primary");
-    const move = (e: PointerEvent) => {
-      const r = link.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      const dx = e.clientX - cx, dy = e.clientY - cy, near = Math.abs(dx) < r.width / 2 + 80 && Math.abs(dy) < r.height / 2 + 80;
-      const tx = near ? Math.max(-6, Math.min(6, dx * 0.12)) : 0, ty = near ? Math.max(-6, Math.min(6, dy * 0.12)) : 0;
-      gsap.to(st, { x: tx, y: ty, duration: near ? 0.35 : 0.8, ease: near ? "power3.out" : "elastic.out(1, 0.45)", overwrite: true, onUpdate: apply });
-    };
-    if (isPrimary) window.addEventListener("pointermove", move, { passive: true });
-    return () => { link.removeEventListener("click", burst); window.removeEventListener("pointermove", move); gsap.killTweensOf(st); link.style.translate = ""; el.style.translate = ""; };
+    const link = host.current?.closest<HTMLElement>("a,button");
+    if (link && !link.hasAttribute("aria-label")) link.setAttribute("aria-label", children);
   }, [children]);
   return (
     <>
       <span ref={host} className="btn-l">{children}</span>
-      <span className="btn-arrow" aria-hidden="true">
-        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
-      </span>
+      {arrow && (
+        <span className="btn-arrow" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+        </span>
+      )}
     </>
   );
 }
@@ -112,17 +109,29 @@ export function Dialog({ open, onClose, opener, title, label, children, id }:
   const ref = useRef<HTMLDialogElement>(null);
   const [mounted, setMounted] = useState(false);   // the portal target is in the document, which the server does not have
   useEffect(() => setMounted(true), []);
+  /* r61-10: every way out (the button, Esc, a click on the backdrop, the parent closing it) fades the window and the backdrop out in 160ms
+     (a CSS transition on `.is-out`, a class GSAP does not touch) and then closes the native dialog, which returns focus to the opener. Reduced motion: at once. */
+  const leaving = useRef<number | null>(null);
+  const dismiss = useCallback(() => {
+    const d = ref.current;
+    if (!d || !d.open || leaving.current !== null) return;
+    if (reduceMotion()) { d.close(); return; }
+    d.classList.add("is-out");
+    leaving.current = window.setTimeout(() => { leaving.current = null; d.classList.remove("is-out"); if (d.open) d.close(); }, 160);
+  }, []);
+  useEffect(() => () => { if (leaving.current !== null) window.clearTimeout(leaving.current); }, []);
   useEffect(() => {
     const d = ref.current; if (!d) return;
     if (open && !d.open) {
+      d.classList.remove("is-out");
       if (opener) {
         const r = opener.getBoundingClientRect();
         d.style.setProperty("--ox", `${r.left + r.width / 2}px`); d.style.setProperty("--oy", `${r.top + r.height / 2}px`);
       }
       d.showModal(); lockScroll(true);
       d.classList.remove("is-in"); void d.offsetWidth; d.classList.add("is-in");
-    } else if (!open && d.open) d.close();
-  }, [open, opener, mounted]);
+    } else if (!open && d.open) dismiss();
+  }, [open, opener, mounted, dismiss]);
   useEffect(() => {   // Tab wraps inside the dialog (native modal focus can leave to the browser UI)
     const d = ref.current; if (!d) return;
     const trap = (e: KeyboardEvent) => {
@@ -139,17 +148,18 @@ export function Dialog({ open, onClose, opener, title, label, children, id }:
   useEffect(() => {
     const d = ref.current; if (!d) return;
     const onClosed = () => { lockScroll(false); onClose(); opener?.focus(); };
-    const onClick = (e: MouseEvent) => { if (e.target === d) d.close(); };
-    d.addEventListener("close", onClosed); d.addEventListener("click", onClick);
-    return () => { d.removeEventListener("close", onClosed); d.removeEventListener("click", onClick); };
-  }, [onClose, opener, mounted]);
+    const onClick = (e: MouseEvent) => { if (e.target === d) dismiss(); };
+    const onCancel = (e: Event) => { e.preventDefault(); dismiss(); };   // Esc
+    d.addEventListener("close", onClosed); d.addEventListener("click", onClick); d.addEventListener("cancel", onCancel);
+    return () => { d.removeEventListener("close", onClosed); d.removeEventListener("click", onClick); d.removeEventListener("cancel", onCancel); };
+  }, [onClose, opener, mounted, dismiss]);
   if (!mounted) return null;
   return createPortal(
     <dialog ref={ref} className={`dlg${reduceMotion() ? " no-motion" : ""}`} aria-modal="true" aria-labelledby={`${id}-h`}>
       <div className="dlg-in band-dark">
         <div className="dlg-head">
           <h2 id={`${id}-h`} className="t-display-sm">{title}</h2>
-          <button type="button" className="btn-icon dlg-x" onClick={() => ref.current?.close()} aria-label="Close">×</button>
+          <button type="button" className="btn-icon dlg-x" onClick={dismiss} aria-label="Close">×</button>
         </div>
         {label && <p className="chip chip-illus dlg-label">{label}</p>}
         {children}

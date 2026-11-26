@@ -3,135 +3,39 @@
 
 /* ---------- 5 hero: headline word by word, then the selector under the CTA ---------- */
 .bindu-home .hero-line { display: block; }
-.bindu-home .hw { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
-.bindu-home .hw-i { display: inline-block; animation: mask-up var(--t-scene) var(--ease-out) both; }
-@media (prefers-reduced-motion: reduce) { .bindu-home .hw-i { animation: none; } }
 
 /* ---------- 6 statement ---------- */
-.bindu-home .stmt { text-align: center; min-height: 80vh; min-height: 80svh; display: flex; align-items: center; }
+/* r56: the statement fills one full window again (pre-r54 it was min-height 80svh, centred; now 100svh) at its pre-r54 display size or larger */
+.bindu-home .stmt { text-align: center; min-height: 100vh; min-height: 100svh; display: flex; align-items: center; }
 .bindu-home .stmt > .container { max-width: 1040px; }
-.bindu-home .stmt-t { font-size: clamp(30.4px, 5vw, 68px); line-height: 1.12; letter-spacing: var(--track-lg); text-wrap: balance; }
-.bindu-home .stmt-w { --l: 0; color: color-mix(in srgb, var(--on-dark) calc(var(--l) * 100%), var(--on-dark-mute)); }
-.bindu-home .stmt-chip { --c: 0; display: inline-flex; align-items: center; gap: 0.28em; padding: 0.02em 0.4em 0.02em 0.3em; border: 1px solid color-mix(in srgb, var(--yellow-outline) calc(var(--c) * 100%), var(--line-white-25));
-  border-radius: var(--r-pill); font-size: 0.86em; vertical-align: 0.04em; background: color-mix(in srgb, var(--brand-yellow) calc(var(--c) * 100%), transparent); }
-.bindu-home .stmt-chip .stmt-w { color: color-mix(in srgb, var(--ink) calc(var(--c) * 100%), var(--on-dark)); }
-.bindu-home .stmt-chip .mark { width: 0.8em !important; height: 0.8em !important; color: color-mix(in srgb, var(--ink) calc(var(--c) * 100%), var(--on-dark)); }
+/* r55: the statement is a section title at the file's display-lg (30px), 1.2 line height, no tracking */
+.bindu-home .stmt-t { margin: 0 auto; font-size: clamp(34px, 5.2vw, 76px); line-height: 1.12; letter-spacing: 0; text-wrap: balance; }
+.bindu-home .stmt-w { color: var(--on-dark); }   /* r59-2: dim and lit are opacity, set by GSAP; with no JS the sentence is fully lit */
+/* r65-10: the chip sits on the sentence's baseline (the word sets the box's baseline; the mark is centred on the box) and the mark is a dot sunflower
+   in cobalt. r65-19: the word is the sentence's size (1em, was 0.86em); padding retuned for Work Sans so the space above the capitals matches the
+   space below the baseline, and the left and right insets match. */
+.bindu-home .stmt-chip { position: relative; isolation: isolate; display: inline-flex; align-items: baseline; gap: 0.22em; padding: 0.1em 0.26em 0.09em 0.24em; border: 0;
+  border-radius: var(--r-control); font-size: 1em; line-height: 1; vertical-align: baseline; background: rgb(var(--fg-rgb) / 0.04); }   /* r65-14: a faint ground, so the yellow fades in from almost nothing */
+.bindu-home .stmt-chip .mark { align-self: center; position: relative; top: -0.02em; }
+.bindu-home .stmt-chip-bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--bindu-yellow); }   /* r65-8: the Bindu chip stays yellow */
+.bindu-home .stmt-chip .stmt-w { color: #000; }
+.bindu-home .stmt-chip .mark { color: #1F55C4; }   /* r65-10: the dots in the yellow box are cobalt (Austin) */
+.bindu-home .stmt-chip .mark { width: 0.72em !important; height: 0.72em !important; }
 
-/* ---------- 7 "Sound familiar?" (r19): one grid line per row, scrubbed ---------- */
-.bindu-home .ba-h { margin-bottom: var(--s-8); }
-.bindu-home .ba-list { list-style: none; margin: 0; padding: 0; display: grid; }
-.bindu-home .ba-row { --s: 0; --r: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--s-5); align-items: start; padding: var(--s-8) 0; border-top: 1px solid var(--hairline-dark); }
-.bindu-home .ba-row:first-child { border-top: 0; padding-top: 0; }
-.bindu-home .ba-pain { grid-column: 1 / span 7; margin: 0; position: relative; justify-self: start; max-width: 100%; font: var(--display-weight) clamp(28px, 3.6vw, 48px)/1.12 var(--font-sans); letter-spacing: var(--track-md); text-wrap: balance; }
-.bindu-home .ba-pt { color: color-mix(in srgb, var(--on-dark-mute) calc(var(--s) * 100%), var(--on-dark)); }
-/* r28-6: one straight 1.5px bar per wrapped line (placed by script), square ends, drawn left to right with the row's progress, line after line */
-.bindu-home .ba-strikes { position: absolute; inset: 0; pointer-events: none; }
-.bindu-home .ba-strikes i { position: absolute; height: 1.5px; background: var(--line-ink); transform-origin: 0 50%; transform: scaleX(clamp(0, (var(--s) - var(--a, 0)) / var(--w, 1), 1)); }
-.bindu-home .ba-right { grid-column: 8 / span 5; display: grid; gap: var(--s-3); align-content: start; }
-.bindu-home .ba-ans { margin: 0; font: 400 clamp(20px, 2vw, 26px)/1.3 var(--font-sans); letter-spacing: var(--track-sm); color: var(--cobalt-signal); text-wrap: balance;
-  clip-path: inset(-0.2em calc(100% - var(--r) * 100%) -0.3em 0); }
-.bindu-home .ba-n { margin: 0; font-size: var(--body); line-height: var(--lh-body, 1.5); color: var(--on-dark-body); opacity: var(--r); transform: translateY(calc((1 - var(--r)) * 8px)); }
-@media (max-width: 860px) {
-  .bindu-home .ba-row { grid-template-columns: 1fr; row-gap: var(--s-4); padding: var(--s-6) 0; }
-  .bindu-home .ba-pain, .bindu-home .ba-right { grid-column: 1; }
-}
-
-/* ---------- 8 how it works (r21): pinned, three steps, kinetic typography on the page canvas ---------- */
-.bindu-home .sec.how { padding-top: 0; padding-bottom: var(--section-y); }
-.bindu-home .how-pin { position: relative; height: 330vh; height: 330svh; }
-.bindu-home .how-stage { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); display: grid; grid-template-columns: minmax(0, 1fr) 55%;
-  gap: var(--s-7); align-items: center; }
-.bindu-home .how-left { display: grid; gap: var(--s-6); align-content: center; }
-.bindu-home .how-left h2 { margin: 0; max-width: none; font-size: clamp(28px, 2.9vw, 40px); text-wrap: balance; }
-.bindu-home .how-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
-.bindu-home .how-step { padding-top: var(--s-3); border-top: 1px solid var(--hairline-dark); color: var(--on-dark-mute); transition: color var(--t-base) var(--ease-ui), border-color var(--t-base) var(--ease-ui); }
-.bindu-home .how-step.is-on { color: var(--on-dark); border-top-color: var(--cobalt-signal); }
-.bindu-home .how-step h3 { color: inherit; }
-.bindu-home .how-step p { margin: var(--s-2) 0 0; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 400ms var(--ease-ui), opacity 300ms var(--ease-ui); }
-.bindu-home .how-step.is-on p { max-height: 9em; opacity: 1; }
-.bindu-home .how-right { margin: 0; display: grid; gap: var(--s-4); min-width: 0; align-self: center; }
-.bindu-home .how-cap { font: 400 13px/1.3 var(--font-sans); color: var(--on-dark-mute); }
-.bindu-home .kt-body { display: grid; min-height: min(430px, calc(100svh - 64px - 120px)); align-items: center; }
-.bindu-home .how-card { grid-area: 1 / 1; --d: 1; align-self: center; }
-.bindu-home .how-card:not(:first-child) { visibility: hidden; opacity: 0; }
-/* staged elements: each fades in with a 12px rise between --a and --a + --b of the step's progress --d */
-.bindu-home .st, .bindu-home .kt-line, .bindu-home .kt-roll { --k: clamp(0, (var(--d, 1) - var(--a, 0)) / var(--b, 0.08), 1); opacity: var(--k); transform: translateY(calc((1 - var(--k)) * 12px)); }
-.bindu-home .kt { display: grid; gap: var(--s-6); color: var(--on-dark); font-family: var(--font-sans); }
-/* describe: one large sentence; the key words light up and lift into the record */
-.bindu-home .kt-say { margin: 0; min-height: 2.5em; font: var(--display-weight) clamp(26px, 3vw, 44px)/1.15 var(--font-sans); letter-spacing: var(--track-md); text-wrap: balance; }
-.bindu-home .kt-hl { --k: clamp(0, (var(--d, 1) - var(--a, 0)) / var(--b, 0.08), 1); color: color-mix(in srgb, var(--cobalt-signal) calc(var(--k) * 100%), var(--on-dark));
-  background: linear-gradient(var(--cobalt-signal), var(--cobalt-signal)) no-repeat 0 100% / calc(var(--k) * 100%) 2px; }
-.bindu-home .kt-rec { margin: 0; display: grid; gap: var(--s-3); }
-.bindu-home .kt-rec > div { display: grid; grid-template-columns: 136px minmax(0, 1fr); gap: var(--s-4); align-items: baseline; padding-top: var(--s-3); border-top: 1px solid var(--hairline-dark); }
-.bindu-home .kt-rec dt { font-size: 13px; color: var(--on-dark-mute); }
-.bindu-home .kt-rec dd { margin: 0; font: 500 clamp(18px, 1.7vw, 24px)/1.2 var(--font-sans); letter-spacing: var(--track-sm); }
-.bindu-home .kt-hs dd { display: flex; overflow: hidden; font-family: var(--font-mono); font-weight: 500; }
-.bindu-home .kt-roll { display: inline-block; white-space: pre; }
-.bindu-home .kt-live { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font: 500 13px/1 var(--font-sans); color: var(--on-dark-body); letter-spacing: 0; }
-.bindu-home .kt-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); }
-/* prove: a streaming event log (mono, small, left aligned, a faint 8px baseline grid), each tick drawn in cobalt */
-.bindu-home .kt-h { margin: 0; font: 400 12px/1 var(--font-mono); color: var(--on-dark-mute); }
-.bindu-home .kt-log { list-style: none; margin: 0; padding: 0; display: grid; background: repeating-linear-gradient(to bottom, transparent 0 23px, var(--hairline-dark) 23px 24px); }
-.bindu-home .kt-ln-wrap { display: grid; }
-.bindu-home .kt-ln { margin: 0; height: 24px; display: flex; align-items: center; gap: 14px; min-width: 0; white-space: nowrap; font: 400 13px/24px var(--font-mono); color: var(--on-dark-body); letter-spacing: 0; }
-.bindu-home .kt-ln time { flex: none; color: var(--on-dark-mute); }
-.bindu-home .kt-ln span { flex: none; }
-.bindu-home .kt-ln b { font-weight: 400; color: var(--on-dark); min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.bindu-home .kt-ln em { margin-left: auto; flex: none; display: inline-flex; align-items: center; gap: 6px; font-style: normal; color: var(--cobalt-signal); }
-.bindu-home .tick { width: 14px; height: 14px; fill: none; stroke: var(--cobalt-signal); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.bindu-home .tick path { stroke-dasharray: 1 1; stroke-dashoffset: calc(1 - clamp(0, (var(--d, 1) - var(--a, 0)) / var(--b, 0.08), 1)); }
-/* file: the log collapses into one precise record card */
-.bindu-home .kt-file { position: relative; justify-items: stretch; }
-.bindu-home .kt-collapse { position: absolute; inset: 0 0 auto 0; pointer-events: none; --c: clamp(0, (var(--d, 1) - 0.04) / 0.3, 1); opacity: calc(1 - var(--c)); }
-.bindu-home .kt-collapse .kt-ln { --k: 1; opacity: calc(1 - var(--c)); transform: translateY(calc(var(--c) * 96px)) scaleY(calc(1 - 0.7 * var(--c))); }
-.bindu-home .kt-card { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s-6); align-items: center; margin-top: 120px; }
-.bindu-home .kt-card-h { margin: 0; font: 500 15px/1.2 var(--font-sans); }
-.bindu-home .kt-qr { width: 200px; height: 200px; overflow: visible; }
-.bindu-home .kt-qr .qd-d { fill: var(--cobalt-signal); }
-.bindu-home .kt-qr .qd-f { fill: var(--on-dark); }
-.bindu-home .kt-qr .qd-y { fill: var(--proof-dot); stroke: var(--yellow-outline); stroke-width: 0.06; transform-box: fill-box; transform-origin: center; }
-.bindu-home .kt-card-t { display: grid; gap: var(--s-2); min-width: 0; }
-.bindu-home .kt-card-t p { margin: 0; }
-.bindu-home .kt-sig { font: 400 12px/1.3 var(--font-mono); color: var(--on-dark-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bindu-home .kt-rule { font-weight: 500; }
-.bindu-home .kt-done { margin: 0; font: var(--display-weight) clamp(20px, 2.2vw, 28px)/1.15 var(--font-sans); letter-spacing: var(--track-md); }
-.bindu-home .kt-mute { margin: 0; font-size: 13px; color: var(--on-dark-mute); }
-@media (max-width: 900px) {
-  .bindu-home .how-stage { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: var(--s-4); align-items: start; padding-top: var(--s-4); }
-  .bindu-home .how-left { gap: var(--s-3); }
-  .bindu-home .how-left h2 { font-size: clamp(24px, 6vw, 36px); }
-  .bindu-home .how-step { padding-top: var(--s-2); }
-  .bindu-home .how-step h3 { font-size: 18px; }
-  .bindu-home .how-step p { font-size: var(--body-sm); line-height: var(--lh-body-sm); }
-  .bindu-home .how-right { align-self: start; gap: var(--s-2); }
-  .bindu-home .kt-body { min-height: 0; }
-  .bindu-home .kt { gap: var(--s-3); }
-  .bindu-home .kt-say { font-size: 20px; }
-  .bindu-home .kt-rec { gap: var(--s-2); }
-  .bindu-home .kt-rec > div { grid-template-columns: 96px minmax(0, 1fr); padding-top: var(--s-2); gap: var(--s-2); }
-  .bindu-home .kt-rec dd { font-size: 16px; }
-  .bindu-home .kt-ln { font-size: 11px; gap: 8px; }
-  .bindu-home .kt-card { margin-top: 90px; gap: var(--s-4); }
-  .bindu-home .kt-qr { width: 112px; height: 112px; }
-}
-/* reduced motion: no pin, every step and every state shown */
-.bindu-home .how-pin.is-static { height: auto; }
-.bindu-home .how-pin.is-static .how-stage { position: static; height: auto; align-items: start; }
-.bindu-home .how-pin.is-static .how-step { color: var(--on-dark); }
-.bindu-home .how-pin.is-static .how-step p { max-height: none; opacity: 1; }
-.bindu-home .how-pin.is-static .kt-body { gap: var(--s-7); }
-.bindu-home .how-pin.is-static .how-card { grid-area: auto; }
-.bindu-home .how-pin.is-static .how-card:not(:first-child) { visibility: visible; opacity: 1; }
+/* r44-1: the "Sound familiar?" rows (r19, .ba-*) are gone; the four-step story is in r44.css */
 
 /* ---------- 13 finale (r28-3R): the photo behind a mask of the wordmark, grown by scroll until the photo fills the screen ---------- */
 /* The stage is a sticky full-viewport layer that stays pinned for the whole section (its height is taken back with a negative margin, so the section's flow is only the spacer and the footer). */
 .bindu-home .finale { position: relative; padding: 0; display: block; text-align: center; }
 .bindu-home .fz-stage { position: sticky; top: 0; height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh; overflow: hidden; z-index: 0; }
-.bindu-home .fz-photo { position: absolute; inset: 0; background: var(--canvas) var(--photo) 50% 75% / cover no-repeat; }
+.bindu-home .fz-photo { position: absolute; inset: 0; overflow: hidden; background: var(--canvas) var(--photo) 60% 50% / cover no-repeat; }
+/* r52-2: the port clip, at its own size (1280 x 676) from the top-left corner; Closing.tsx moves it with transform only (translate + scale) */
+.bindu-home .fz-video { position: absolute; left: 0; top: 0; width: 1280px; height: 676px; max-width: none; object-fit: cover; transform-origin: 0 0; pointer-events: none; }
+.bindu-home .fz-video[hidden] { display: none; }
 .bindu-home .fz-dot { position: absolute; z-index: 1; opacity: var(--g, 1); pointer-events: none; transform-origin: 50% 50%; }
 /* r30-2: the dot of the i is a golden-angle disc of 34 dots, yellow in the middle blending to cobalt at the rim; each dot appears when its ship dot lands */
 .bindu-home .fz-dot svg { display: block; overflow: visible; }
-.bindu-home .fz-dot circle { opacity: 0; fill: color-mix(in srgb, var(--proof-dot) calc(var(--m, 1) * 100%), var(--cobalt-signal)); stroke: color-mix(in srgb, var(--yellow-outline) calc(var(--m, 1) * 100%), transparent); stroke-width: 0.025; }
+.bindu-home .fz-dot circle { opacity: 0; fill: var(--bindu-yellow); stroke: var(--bindu-yellow-edge); stroke-width: 0.025; }   /* r55: the i is yellow (Austin); r65-8: kept yellow after the palette swap */
 .bindu-home .fz-grad { position: absolute; inset: 0; z-index: 1; opacity: 0; pointer-events: none; background: linear-gradient(to top, color-mix(in srgb, var(--ink) 72%, transparent), transparent 55%), color-mix(in srgb, var(--ink) 52%, transparent); }
 .bindu-home .fz-flow { position: relative; z-index: 1; }
 .bindu-home .fz-spacer { height: 395vh; height: 395svh; }   /* r32-1: 120vh of ship hand-off and a 20vh hold come first (was 275) */
@@ -141,22 +45,24 @@
 .bindu-home .finale .foot .t-muted { color: var(--on-photo-mute); }
 /* reduced motion: the masked wordmark (no zoom), then the photo filling the view with the footer */
 .bindu-home .finale.is-static .fz-stage { position: relative; margin-bottom: 0; }
-.bindu-home .finale.is-static .fz-flow { background: var(--canvas) var(--photo) 50% 75% / cover no-repeat; }
+.bindu-home .finale.is-static .fz-flow { background: var(--canvas) var(--photo) 60% 50% / cover no-repeat; }
 .bindu-home .finale.is-static .fz-after { position: relative; min-height: 100svh; }
 .bindu-home .finale.is-static .fz-dot { opacity: 1; }
 .bindu-home .finale.is-static .fz-dot circle { opacity: 1; }
 
 /* ---------- 11 footer: the role links moved here from the homepage ---------- */
-.bindu-home .foot-roles-wrap { margin-top: var(--s-6); }
+.bindu-home .foot-roles-wrap { margin-top: var(--s-5); }
 .bindu-home .foot-roles { margin: 0; }
 .bindu-home .foot-roles a { color: var(--on-dark-body); text-decoration: underline; text-decoration-color: var(--hairline-dark); text-underline-offset: 4px; }
-.bindu-home .foot-roles a:hover { color: var(--on-dark); text-decoration-color: var(--cobalt-signal); }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .foot-roles a:hover { color: var(--on-dark); text-decoration-color: var(--cobalt-signal); }
+}
 .bindu-home .foot-roles a:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
 
 /* phones: the hero (headline, sub-line and CTA) has to clear the fixed caption and pause control at 375 x 667 */
 @media (max-width: 600px) {
   .bindu-home .hero { padding-top: 84px; }
-  .bindu-home .hero-h { font-size: clamp(33.6px, 9.6vw, 44px); margin-bottom: var(--s-3); }
+  .bindu-home .hero-h { margin-bottom: var(--s-3); }
   .bindu-home .hero-sub { font-size: 16px; line-height: 1.45; margin-bottom: var(--s-4); }
 }
 
@@ -164,35 +70,47 @@
 .bindu-home .sec.ex { padding: 0; }
 .bindu-home .ex-pin { position: relative; height: 420vh; }
 .bindu-home .ex-stage { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); display: grid; align-content: center; gap: var(--s-4); grid-template-columns: minmax(0, 1fr); }
-.bindu-home .ex-head { display: grid; gap: var(--s-2); width: 100%; box-sizing: border-box; }
-.bindu-home .ex-head h2 { margin: 0; max-width: 20ch; }
-.bindu-home .ex-head p { margin: 0; max-width: 736px; }
+.bindu-home .ex-head { display: grid; justify-items: center; text-align: center; gap: var(--s-2); width: 100%; box-sizing: border-box; }
+.bindu-home .ex-head h2 { margin: 0; max-width: 20ch; text-wrap: balance; }
+.bindu-home .ex-head p { margin: 0; max-width: 56ch; color: var(--on-dark-mute); }
 /* r33-2: the board is one panel (canvas-mid, a step off the page canvas in both themes) with solid tiles. A tile is --line-ink with
    --canvas characters (light theme: navy tile, ivory characters; dark theme: ivory tile, ink characters). The verdict tiles keep their
    r33-1 colours (--board-pass, --board-stop) with navy characters, so the red and blue read as before. */
-.bindu-home .bd { width: 100%; box-sizing: border-box; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; background: var(--canvas-mid); border-radius: var(--r-sm); padding: var(--s-4) var(--s-5); }
+.bindu-home .bd { width: 100%; box-sizing: border-box; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); padding: var(--s-4) var(--s-5); }   /* r59-6: the board is a solid panel (readable flaps); the map shows around it */   /* r56: no opaque ground, so the dot map shows behind the board (the tiles are solid) */
+
 .bindu-home .bd-c { padding: 0 var(--s-5) 0 0; vertical-align: middle; white-space: nowrap; }
 .bindu-home .bd-c:last-child { padding-right: 0; }
 .bindu-home .bd .bd-route { position: relative; }
 .bindu-home .bd-flaps { display: inline-flex; gap: 0.6em; font: 500 clamp(11px, 1.15vw, 15px)/1 var(--font-mono); }
 .bindu-home .bd-word { display: inline-flex; gap: 3px; }
 /* a flap: dark on the light theme (the ink colour), light on the dark theme, split by a hairline across the middle */
-.bindu-home .fl { --tile: var(--line-ink); --tile-ink: var(--canvas); display: inline-block; width: 1.25em; height: 1.85em; line-height: 1.85em; text-align: center; border-radius: 2px; color: var(--tile-ink); background: var(--tile); }
+.bindu-home .fl { --tile: var(--line-ink); --tile-ink: var(--canvas); position: relative; display: inline-block; width: 1.25em; height: 1.85em; border-radius: 2px; color: var(--tile-ink); }
+/* r58: a flap is four half-height layers: the static top and bottom halves and the two folding flaps (A on top, B beneath it); each half shows half of the same glyph */
+.bindu-home .fl .fh { position: absolute; left: 0; right: 0; height: 50%; overflow: hidden; background: var(--tile); }
+.bindu-home .fl .fh b { position: absolute; left: 0; right: 0; height: 200%; display: flex; align-items: center; justify-content: center; font-weight: inherit; }
+.bindu-home .fl .fh-t, .bindu-home .fl .fh-fa { top: 0; border-radius: 2px 2px 0 0; }
+.bindu-home .fl .fh-t b, .bindu-home .fl .fh-fa b { top: 0; }
+.bindu-home .fl .fh-b, .bindu-home .fl .fh-fb { bottom: 0; border-radius: 0 0 2px 2px; box-shadow: inset 0 1px 0 rgb(0 0 0 / 0.35); }
+.bindu-home .fl .fh-b b, .bindu-home .fl .fh-fb b { bottom: 0; }
+.bindu-home .fl .fh-fa { transform-origin: 50% 100%; z-index: 3; }
+.bindu-home .fl .fh-fb { transform-origin: 50% 0; z-index: 2; }
+.bindu-home .fl .fh-b { z-index: 1; }
 .bindu-home .fl.is-blank { opacity: 0.35; }
-.bindu-home .fl.is-pass { --tile: var(--board-pass); --tile-ink: var(--navy-surface); }
-.bindu-home .fl.is-stop { --tile: var(--board-stop); --tile-ink: var(--navy-surface); }
+.bindu-home .fl.is-pass { --tile: var(--board-pass); --tile-ink: #fff; }   /* r56-5: Let through in --board-pass, Stopped in --board-stop, white characters (AA on both in the light theme) */
+.bindu-home .fl.is-stop { --tile: var(--board-stop); --tile-ink: #fff; }
+.bindu-home:not([data-theme="light"]) .fl.is-pass, .bindu-home:not([data-theme="light"]) .fl.is-stop { --tile-ink: #000; }   /* dark theme: the tiles are the lighter cobalt and red, so black characters */
 /* r31-1: the current row is full ink with a yellow dot at the left; earlier rows are muted */
 .bindu-home .bd-row .bd-flaps { transition: opacity 300ms var(--ease-ui); }
 /* r33-2: earlier rows are no longer dimmed (was 0.5): any opacity below 1 takes the blue and red tiles under AA; the yellow dot marks the current row */
 .bindu-home .bd .bd-route::before { content: ""; position: absolute; left: -16px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); opacity: 0; transition: opacity 300ms var(--ease-ui); }
 .bindu-home .bd-row.is-cur .bd-route::before { opacity: 1; }
-.bindu-home .bd-story { margin-top: var(--s-3); min-height: 176px; display: block; max-width: 736px; opacity: 0; transition: opacity 300ms var(--ease-ui); }
+.bindu-home .bd-story { margin-top: var(--s-3); margin-inline: auto; text-align: center; min-height: 176px; display: block; max-width: 736px; opacity: 0; transition: opacity 300ms var(--ease-ui); }
 .bindu-home .bd-story.is-open { opacity: 1; }
 .bindu-home .bd-fade { display: grid; gap: var(--s-2); animation: bd-in 420ms var(--ease-ui) both; }
 @keyframes bd-in { from { opacity: 0; } to { opacity: 1; } }
-.bindu-home .bd-h { margin: 0; min-height: 1.2em; font: var(--display-weight) 22px/1.2 var(--font-sans); letter-spacing: var(--track-sm); }
+.bindu-home .bd-h { margin: 0; min-height: 1.2em; font: var(--display-weight) 22px/1.2 var(--font-display); letter-spacing: var(--track-sm); }   /* r60-7: the display face like every other title (was the body face) */
 .bindu-home .bd-story p { margin: 0; }
-.bindu-home .bd-story .bd-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--s-3); font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-dark-mute); }
+.bindu-home .bd-story .bd-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px var(--s-3); font: 500 12px/1.4 var(--font-mono); letter-spacing: 0; color: var(--on-dark-mute); }   /* r60-6: sentence case, untracked (adaptation 7, no tracked capitals) */
 .bindu-home .bd-verdict.is-pass { color: var(--cobalt-signal); }
 .bindu-home .bd-verdict.is-stop { color: var(--stop); }
 .bindu-home .bd-meta .bd-route { display: inline-flex; align-items: center; gap: 8px; }
@@ -223,39 +141,34 @@
 @media (max-width: 600px) {
   .bindu-home .ex-stage { gap: var(--s-2); }
   .bindu-home .ex-head { gap: var(--s-1); }
-  .bindu-home .ex-head h2.t-display-md { font-size: 24px; }
-  .bindu-home .ex-head p { font-size: 11px; line-height: 1.35; }
+  .bindu-home .ex-head h2.t-display-lg { font-size: 24px; }
+  .bindu-home .ex-head p { font-size: 12px; line-height: 1.35; }
   .bindu-home .bd { border-spacing: 0 3px; }
   .bindu-home .bd .bd-word { gap: 2px; }
   .bindu-home .bd-flaps { font-size: 8px; row-gap: 2px; }
-  .bindu-home .bd .fl { width: 1.2em; height: 1.5em; line-height: 1.5em; }
+  .bindu-home .bd .fl { width: 1.2em; height: 1.5em; }
   .bindu-home .bd-story { margin-top: var(--s-2); min-height: 0; }
   .bindu-home .bd-story .bd-fade { gap: 6px; }
-  .bindu-home .bd-story p.t-body { font-size: 13px; line-height: 1.4; }
+  .bindu-home .bd-story p.t-body { font-size: var(--caption); line-height: 1.4; }
   .bindu-home .bd-h { font-size: 16px; min-height: 1.2em; }
   .bindu-home .ex-pin.is-static .bd-story { margin-top: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .bindu-home .bd-story, .bindu-home .bd-row .bd-flaps, .bindu-home .bd .bd-route::before { transition: none; } .bindu-home .bd-fade { animation: none; } }
 
-/* r22-6: the heading masks never clip descenders */
-.bindu-home .h-mask { padding-bottom: 0.16em; margin-bottom: -0.16em; }
 
 /* r22-15: the hero headline on exactly two lines at 768 and up (one sentence per line); at 375 up to three lines */
 @media (min-width: 768px) {
-  .bindu-home .hero-h { max-width: none; font-size: clamp(36px, 5.4vw, 76px); }
+  .bindu-home .hero-h { max-width: none; }
   .bindu-home .hero-line { white-space: nowrap; }
 }
 
 /* r22-16: a soft feathered scrim behind every section heading and the hero headline: canvas colour, no backdrop-filter (r24: a static gradient is far cheaper while scrolling), edges fading out through a radial mask, no border or box */
-.bindu-home main h2:not(.wm), .bindu-home .hero-h { position: relative; isolation: isolate; }
-.bindu-home main h2:not(.wm)::before, .bindu-home .hero-h::before { content: ""; position: absolute; z-index: -1; inset: -0.35em -0.7em; pointer-events: none;
+/* r40: only the hero keeps it; past the hero the map is blurred and dimmed (r40-3), and a canvas-colour scrim showed as a blob on the tint band */
+.bindu-home .hero-h { position: relative; isolation: isolate; }
+.bindu-home .hero-h::before { content: ""; position: absolute; z-index: -1; inset: -0.35em -0.7em; pointer-events: none;
   background: radial-gradient(closest-side, rgb(var(--canvas-rgb) / 0.85) 55%, rgb(var(--canvas-rgb) / 0) 100%);
   -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%); mask-image: radial-gradient(closest-side, #000 60%, transparent 100%); }
-/* r22-17: the full stop of a heading is a small yellow Bindu dot that drops in last */
-.bindu-home .dot-stop { display: inline-block; width: 0.15em; height: 0.15em; margin-left: 0.04em; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); vertical-align: baseline; }
 /* r22-13: the dot motif, restrained: dotted section rules and small Bindu dots as bullets (no dot grids) */
-.bindu-home .ba-row { border-top: 0; background: radial-gradient(circle, var(--cobalt-signal) 1.3px, transparent 1.6px) 0 0 / 14px 4px repeat-x; background-position: 0 0; padding-top: calc(var(--s-8) + 4px); }
-.bindu-home .ba-row:first-child { background: none; padding-top: 0; }
 .bindu-home .r6-inc li::before { background: var(--cobalt-signal); }
 
 /* r22-13: the scroll-progress rail */
@@ -281,3 +194,32 @@
 
 /* ---------- round 26, item 1: the normal wordmark again (r25's dot lettering is gone) ---------- */
 .bindu-home #faq.sec { padding-bottom: var(--s-5); }   /* r26-2: the FAQ's bottom padding was an empty band before the finale */
+
+/* r41-1: the map is sharp everywhere; each content block past the hero blurs only the map right behind it. A ::before layer 12 to 24px beyond the text, backdrop-filter blur, edges feathered by a mask: no box, border or shadow. Solid panels (Full Circle stage, pricing card, departures board) are left alone. */
+/* r43-4: Pricing (head, and the tabs from 601px; on phones the tab strip scrolls and would clip the layer) and the Examples head join the list */
+/* r58: the shipment head and caption no longer have a blur layer (it repainted over the map canvas every frame); the map has a solid ground.
+/* r48: one blur layer per content WINDOW instead of one per text block. Per-block layers nested inside each other (double blur) and resized
+   whenever a caption changed length, which made the patch jump; and the gaps between blocks left the map sharp right behind content.
+   Now each section past the hero has one layer the size of its content area (the sticky window for pinned sections), so the map is
+   softly blurred everywhere content sits and sharp in the side gutters. Blur only, no colour, feathered edges. */
+.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq) { isolation: isolate; }
+.bindu-home :is(.stmt > .container, .rl, .r6-pricing > .container, .container.faq,
+  .fl-pin.is-static .fl-win, .th-pin.is-flat .th-win, .ex-pin.is-static .ex-stage, .vc-pin:not(.is-arc) .vc-win) { position: relative; }
+.bindu-home :is(.stmt > .container, .fl-win, .th-win, .vc-win, .rl, .r6-pricing > .container, .container.faq)::before {   /* r59-6: .ex-stage left the list: no backdrop blur over the departures board, so the dot map shows */
+  content: ""; position: absolute; z-index: -1; inset: -24px -64px; pointer-events: none;
+  /* avoid-ai-design-ignore: K3 (r41-1: asked for by Austin) */
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 96px, #000 calc(100% - 96px), transparent), linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 64px), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 96px, #000 calc(100% - 96px), transparent), linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 64px), transparent);
+  mask-composite: intersect; }
+
+/* r59-6: the board is solid, the heading and the verdict story sit on a plain canvas fill with feathered edges (no filter), and the dot map shows in the rest of the window.
+   Each row's flaps are contained, so a flip repaints nothing outside the row. */
+.bindu-home .ex-head, .bindu-home .bd-story { position: relative; isolation: isolate; }
+.bindu-home .ex-head::before, .bindu-home .bd-story::before { content: ""; position: absolute; z-index: -1; inset: -12px -48px; pointer-events: none; background: var(--canvas);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(to bottom, transparent, #000 12px, #000 calc(100% - 12px), transparent); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(to bottom, transparent, #000 12px, #000 calc(100% - 12px), transparent); mask-composite: intersect; }
+.bindu-home .bd-flaps { contain: layout style; }
+/* the flap layers (two 3D-transformed halves per character) exist only while a row flips: otherwise every idle flap would be its own compositor layer, hundreds of them */
+.bindu-home .bd-row:not(.is-flip) .fl .fh-fa, .bindu-home .bd-row:not(.is-flip) .fl .fh-fb { display: none; }

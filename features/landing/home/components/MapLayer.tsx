@@ -2,7 +2,7 @@ import { getRoot } from "../lib/root";
 import { tRaf, tCaf } from "../lib/loop";
 import { useEffect, useRef, useState } from "react";
 import { hero } from "../content";
-import { reduceMotion } from "../lib/motion";
+import { useReducedMotion } from "../lib/motion";
 import { subscribeTheme } from "../lib/theme";
 import { setPaused } from "../lib/pause";
 import { track } from "../lib/pos";
@@ -74,7 +74,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
   const kickRef = useRef<() => void>(() => {});
   const control = useRef<((on: boolean) => void) | null>(null);
   const pausedRef = useRef(false);
-  const [still] = useState(() => reduceMotion());
+  const still = useReducedMotion();
   const [playing, setPlaying] = useState(true);
 
   /* the intro ends: the dust freezes where it is and fades out (CSS), then its WebGL context is released */
@@ -157,15 +157,22 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
       veil.width = el.width; veil.height = el.height;
       vctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       vctx.clearRect(0, 0, VW, VH);
-      let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
-      for (const n of Array.from(document.querySelectorAll<HTMLElement>(".hero-in > *"))) {
-        const q = n.getBoundingClientRect();
-        if (q.width <= 0 || q.height <= 0) continue;
-        l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom);
-      }
-      if (l < r && t < b) shade(l, t, r, b, 200, 0.74);
+      /* r59-1: a halo round the title's own box (strong, so the title sits on the map), and a lighter one round the sub-line and button */
+      const rect = (nodes: HTMLElement[]) => {
+        let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+        for (const n of nodes) {
+          const q = n.getBoundingClientRect();
+          if (q.width <= 0 || q.height <= 0) continue;
+          l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom);
+        }
+        return l < r && t < b ? { l, t, r, b } : null;
+      };
+      const kids = Array.from(document.querySelectorAll<HTMLElement>(".hero-in > *"));
+      const title = rect(kids.filter((n) => n.classList.contains("hero-h"))), rest = rect(kids.filter((n) => !n.classList.contains("hero-h")));
+      if (title) shade(title.l, title.t, title.r, title.b, 180, 0.8);
+      if (rest) shade(rest.l, rest.t, rest.r, rest.b, 120, 0.8);
       const lab = document.querySelector<HTMLElement>(".stage-ui .scene-label")?.getBoundingClientRect();
-      if (lab && lab.width > 0 && lab.height > 0) shade(lab.left, lab.top, lab.right, lab.bottom, 90, 0.6);
+      if (lab && lab.width > 0 && lab.height > 0) shade(lab.left, lab.top, lab.right, lab.bottom, 90, 0.75);
     };
 
     /* the dust, drawn on the 2D canvas only when WebGL is missing (the GL path draws it otherwise) */
@@ -235,8 +242,10 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
           }
         }
         ctx.globalAlpha = 1;
-        // the veil goes over the routes too, so nothing bright sits under the copy; it ramps in with the copy
-        if (heroA > 0) { ctx.globalAlpha = heroA; ctx.drawImage(veil, 0, 0, VW, VH); ctx.globalAlpha = 1; }
+        // the veil goes over the routes too, so nothing bright sits under the copy; it ramps in with the copy.
+        // r43-4: it leaves with the hero (shipFade), so past the hero the map is sharp and only the per-block blur (story.css) softens it
+        const vA = heroA * drawnFade;
+        if (vA > 0) { ctx.globalAlpha = vA; ctx.drawImage(veil, 0, 0, VW, VH); ctx.globalAlpha = 1; }
         if (!gl.current?.rig && outRef.current < 1) dust(INTRO_END, 1 - ease(outRef.current));
       }
       paintSweep(ctx, VW, VH, -0.15 + 1.3 * (((live ? ic : hc) / 16) % 1), col.cobalt);
@@ -264,7 +273,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     size();
     // the copy's measured rect changes once the webfonts land: re-measure the veil then
     document.fonts?.ready.then(() => { if (!done) { buildVeil(); draw(); } });
-    if (introRef.current) {
+    if (introRef.current && !isPhone()) {   // phones skip the intro (Intro.tsx), so they never download three.js for its dust
       // the intro's dust needs WebGL; the 2D path runs until (or instead of) it. OGL loads on its own chunk.
       const glEl = document.createElement("canvas");
       glEl.className = "intro-gl";
@@ -296,8 +305,8 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     }, { threshold: 0 });
     io.observe(heroEl);
     const onVis = () => kick();
-    // reduced motion has no frame loop: the still hero is redrawn on scroll only while its shipment fade changes
-    const onScroll = () => { if (still && Math.abs(shipFade() - drawnFade) > 0.001) draw(); };
+    // reduced motion (and the paused map) has no frame loop: the hero is redrawn on scroll only while its shipment and veil fade changes
+    const onScroll = () => { if (!raf && !introRef.current && Math.abs(shipFade() - drawnFade) > 0.001) draw(); };
     window.addEventListener("scroll", onScroll, { passive: true });
     // a theme change re-reads the colours and repaints the cached layer; the timeline keeps running
     const unsubTheme = subscribeTheme(() => { readColours(); paintBase(); draw(); });
@@ -333,7 +342,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
       <div ref={ui} className="stage-ui">
         <p className="scene-label">Illustration: shipments to EU ports on a map. Not live data.</p>
         {!still && (
-          <button type="button" className="btn btn-outline scene-btn" aria-pressed={!playing} onClick={toggle}>
+          <button type="button" className="btn btn-ghost scene-btn" aria-pressed={!playing} onClick={toggle}>
             {playing ? hero.pause : hero.play}
           </button>
         )}

@@ -1,0 +1,19 @@
+/* Round 47: a little of our own look in "What buyers say" and "The rules Bindu covers". Voices: the sunflower index dots, a cobalt route line under each quote with a yellow
+   dot, a faint dot grid in the front card. Motion is GSAP (Voices.tsx, Rules.tsx); CSS hides nothing. */
+.bindu-home .vc-card { position: relative; overflow: hidden; }
+.bindu-home .vc-card > * { position: relative; }
+.bindu-home .vc-card > .vc-map { position: absolute; right: 0; top: 0; width: 46%; height: 60%; fill: var(--line-ink); opacity: 0; transition: opacity var(--t-base) var(--ease-ui); pointer-events: none; }
+.bindu-home .vc-card.is-front > .vc-map, .bindu-home .vc-pin.is-list .vc-card > .vc-map { opacity: 0.1; }
+.bindu-home .vc-route { display: flex; align-items: center; gap: var(--s-3); font: 400 14px/1.43 var(--font-mono); letter-spacing: 0; color: var(--on-dark-mute); }
+.bindu-home .vc-route b { font-weight: 500; }
+.bindu-home .vc-lane { position: relative; flex: 1; height: 9px; min-width: 0; }
+.bindu-home .vc-lane::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; border-top: 1.5px dashed var(--route-line); }
+.bindu-home .vc-lane::after { content: ""; position: absolute; left: 0; top: 0; width: 1.5px; height: 9px; background: var(--route-line); }
+.bindu-home .vc-end { position: absolute; right: 0; top: 0; width: 1.5px; height: 9px; background: var(--route-line); }
+.bindu-home .vc-travel { position: absolute; right: -1px; top: -1px; width: 11px; height: 11px; box-sizing: border-box; border-radius: 50%; background: var(--proof-dot); border: 1.5px solid var(--yellow-outline); }
+.bindu-home .vc-dot { width: 30px; height: 30px; }
+.bindu-home .vc-dot::before { content: none; }
+.bindu-home .vc-dot svg { width: 22px; height: 22px; fill: var(--on-dark-mute); stroke: transparent; opacity: 0.7; transition: fill var(--t-base) var(--ease-ui), stroke var(--t-base) var(--ease-ui), opacity var(--t-base) var(--ease-ui); }
+.bindu-home .vc-dot.is-on svg { fill: var(--proof-dot); stroke: var(--yellow-outline); stroke-width: 0.6px; opacity: 1; }   /* r61-1: the darker edge so the active dot reads on white (dark theme: same yellow, no visible edge) */
+
+@media (prefers-reduced-motion: reduce) { .bindu-home .vc-card > .vc-map, .bindu-home .vc-dot svg { transition: none; } }

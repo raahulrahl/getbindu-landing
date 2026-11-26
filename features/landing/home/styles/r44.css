@@ -1,0 +1,249 @@
+/* Round 44: What Bindu does (#story), Full Circle's per-act heading, the supply-chain question on the shipment map, a smaller departures board, What buyers say (#voices)
+   and The rules Bindu covers (#rules). Tokens only. GSAP owns every hidden or moving state (components/Flow.tsx, Theatre.tsx, ShipmentJourney.tsx, Voices.tsx, Rules.tsx):
+   nothing here hides a GSAP target, so the server HTML and the reduced-motion page are the finished pictures. */
+
+/* ---------- r49-1 / r50-1: What Bindu does, one object that morphs through four steps (components/Flow.tsx) ----------
+   Tokens only. The server HTML is the finished frame: nothing here hides or moves a GSAP target in its final state (the stage, the record, the chips, the supplier cards, the routes).
+   Before the timeline is built, the step line shows the current step with a class (server: step 4). Once Flow.tsx builds it sets data-flow="on" and the timeline drives
+   every step line part (masked lines); the class rules then stand down. */
+.bindu-home .sec.flow { padding-top: 0; padding-bottom: var(--section-y); min-height: 0; }
+.bindu-home .fl-pin { position: relative; height: 360vh; height: 360svh; }
+.bindu-home .fl-pin.is-static { height: auto; }
+.bindu-home .fl-win { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); display: grid; grid-template-rows: auto minmax(0, 1fr); row-gap: var(--s-4); align-items: center; padding-block: var(--s-4); box-sizing: border-box; }
+/* r54 (v3 step 4): a centred head above ONE panel; the held step line (the captions) sits inside it on the left, the stage on the right */
+.bindu-home .fl-panel { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr); column-gap: var(--s-6); align-items: center; min-height: 0; min-width: 0; }
+.bindu-home .fl-pin.is-static .fl-win { position: static; height: auto; padding-top: var(--s-8); }
+.bindu-home .fl-pin.is-static .fl-panel { align-items: start; }
+.bindu-home .fl-top { display: grid; justify-items: center; gap: var(--s-2); min-width: 0; text-align: center; }
+/* the head inside a pin keeps the v3 section display but is capped by the window height so head, panel and stage share one window */
+.bindu-home .fl-top h2 { margin: 0; font-size: min(var(--display-lg), 7svh); text-wrap: balance; }
+.bindu-home .fl-lead { margin: 0; max-width: 52ch; }
+@media (min-width: 768px) { .bindu-home .fl-lead { max-width: none; } }
+
+/* the held part: the progress line (a thin ink line that draws itself between four round markers; the current marker fills solid and its
+   label slides in under it, Flow.tsx) and one step line. The step number shows once, inside its marker. */
+.bindu-home .fl-left { display: grid; gap: var(--s-6); align-content: center; min-width: 0; }
+.bindu-home .fl-prog { position: relative; display: flex; justify-content: space-between; max-width: 24rem; padding-bottom: 22px; }
+.bindu-home .fl-prog::before, .bindu-home .fl-prog-line { content: ""; position: absolute; left: 14px; right: 14px; top: 13px; height: 1.5px; }
+.bindu-home .fl-prog::before { background: var(--hairline-dark); }
+.bindu-home .fl-prog-line { background: var(--cobalt-signal); transform-origin: 0 50%; }
+.bindu-home .fl-pd { position: relative; display: block; width: 28px; height: 28px; }
+.bindu-home .fl-pm { position: relative; z-index: 1; display: grid; place-items: center; width: 28px; height: 28px; box-sizing: border-box; border-radius: 50%; border: 1px solid var(--hairline-strong); background: var(--canvas); color: var(--on-dark-mute); font: 500 14px/1 var(--font-display); transition: background var(--t-base) var(--ease-ui), color var(--t-base) var(--ease-ui), border-color var(--t-base) var(--ease-ui); }
+.bindu-home .fl-pd.is-done .fl-pm { border-color: var(--on-dark); color: var(--on-dark); }
+.bindu-home .fl-pd.is-on .fl-pm { background: var(--on-dark); border-color: var(--on-dark); color: var(--canvas); }
+.bindu-home .fl-pl { position: absolute; left: 50%; top: 34px; translate: -50% 0; white-space: nowrap; font: 600 14px/1.2 var(--font-display); color: var(--on-dark); }
+.bindu-home .fl-pd:first-of-type .fl-pl { left: 0; translate: 0 0; }
+.bindu-home .fl-pd:last-of-type .fl-pl { left: auto; right: 0; translate: 0 0; }
+.bindu-home .fl-beats { list-style: none; margin: 0; padding: 0; display: grid; }
+.bindu-home .fl-beat { grid-area: 1 / 1; display: grid; gap: var(--s-3); align-content: start; }
+.bindu-home .fl-beat h3 { margin: 0; display: grid; color: var(--on-dark); font: 600 var(--display-md)/1.33 var(--font-display); letter-spacing: 0; }
+.bindu-home .fl-t { display: block; text-wrap: balance; }
+.bindu-home .fl-cap { margin: 0; max-width: 30ch; font: 400 var(--body)/1.5 var(--font-sans); color: var(--on-dark-mute); text-wrap: pretty; }
+/* the masks round each split line keep descenders */
+.bindu-home .fl-ln-mask { padding-bottom: 0.1em; margin-bottom: -0.1em; }
+@media (min-width: 768px) {
+  /* before the timeline: only the current step shows (not a GSAP target; data-flow turns this off) */
+  .bindu-home .fl-pin:not(.is-static):not([data-flow]) .fl-beat:not(.is-on) { visibility: hidden; }
+}
+.bindu-home .fl-pin.is-static .fl-beats { gap: var(--s-6); }
+.bindu-home .fl-pin.is-static .fl-beat { grid-area: auto; }
+.bindu-home .fl-right { display: grid; gap: var(--s-3); min-width: 0; align-content: center; }
+.bindu-home .fl-illus { margin: 0; display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+
+/* r59-3: the stage is real product UI. One app frame (12px radius, 1px hairline, canvas fill) with a 40px title bar (app name, Illustration chip); inside, one
+   8px grid: a text input holds the typed sentence, the filing record is a key/value table (label column 120px, 1px hairline rows, 40px minimum row height),
+   rule chips are the Ollama chips (28px, 14px type), the suppliers are message cards (24px initial avatar, sender, channel icon, one line). Type is the page's own:
+   body face 14 to 16px, labels 500 and values 400, ui-monospace for the code, the files and the reference. Icons are Lucide (ISC), 16px, 1.5px stroke.
+   Lines are 1px straight hairlines; the routes and the bar are the one cobalt stroke (1.5px). No hand-drawn paths. */
+.bindu-home .fl-app { width: min(100%, max(640px, calc((100vh - 400px) * 1.5))); width: min(100%, max(640px, calc((100svh - 400px) * 1.5))); box-sizing: border-box; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); color: var(--on-dark); }
+.bindu-home .fl-appbar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); height: 40px; padding: 0 16px; box-sizing: border-box; border-bottom: 1px solid var(--hairline-dark); font: 500 14px/1 var(--font-sans); }
+.bindu-home .fl-appname { color: var(--on-dark); }
+.bindu-home .fl-stage { position: relative; container-type: inline-size; aspect-ratio: 16 / 10.4; width: calc(100% - 32px); margin: 16px; min-width: 0; color: var(--on-dark); font: 400 14px/1.43 var(--font-sans); }
+.bindu-home .fl-card { position: absolute; left: 0; top: 0; bottom: 0; z-index: 2; width: 56%; height: fit-content; max-height: 100%; margin-block: auto; box-sizing: border-box; isolation: isolate; display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; padding: 16px; }
+.bindu-home .fl-card-bg { position: absolute; inset: 0; z-index: -2; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); }
+.bindu-home .fl-ring { position: absolute; inset: -1px; z-index: -1; border: 1px solid var(--on-dark); border-radius: var(--r-md); pointer-events: none; }
+.bindu-home .fl-card-h { position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); min-height: 40px; padding-bottom: 8px; flex-wrap: wrap; }
+.bindu-home .fl-rec-t { font-weight: 500; color: var(--on-dark); }
+.bindu-home .fl-status { display: inline-flex; align-items: center; gap: 8px; color: var(--on-dark-body); }
+.bindu-home .fl-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px; background: var(--cobalt-signal); transform-origin: 0 50%; }
+.bindu-home .fl-dot { display: inline-block; flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); }
+.bindu-home .fl-ship { display: grid; gap: 8px; }
+.bindu-home .fl-ship-l, .bindu-home .fl-slot dt { font-weight: 500; color: var(--on-dark-mute); }
+/* the typed sentence sits in a text input */
+.bindu-home .fl-say { position: relative; display: block; white-space: nowrap; box-sizing: border-box; height: 40px; padding: 0 12px; border: 1px solid var(--hairline-strong); border-radius: 8px; background: var(--canvas); font: 400 14px/38px var(--font-sans); letter-spacing: 0; color: var(--on-dark); }
+.bindu-home .fl-say-in { position: relative; display: inline-block; }
+/* the words that lift out carry a 1px ink underline (an element, so the script can draw it with a transform) */
+.bindu-home .fl-w { position: relative; }
+.bindu-home .fl-ul { position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--on-dark); transform-origin: 0 50%; }
+/* made by the script: the caret (it blinks while idle), and the yellow dot that ends the sentence and later stamps the reference */
+.bindu-home .fl-caret { position: absolute; left: 0; top: 50%; width: 1px; height: 20px; margin: -10px 0 0 1px; pointer-events: none; }
+.bindu-home .fl-caret::after { content: ""; position: absolute; inset: 0; background: var(--on-dark); animation: fl-blink 1.06s steps(1, end) infinite; }
+.bindu-home .fl-caret.is-busy::after { animation: none; }
+@keyframes fl-blink { 50% { opacity: 0; } }
+.bindu-home .fl-ref-t { position: relative; }
+.bindu-home .fl-pilot { position: absolute; left: 100%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 6px; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); }
+.bindu-home .fl-slots { margin: 0; display: grid; }
+.bindu-home .fl-slot { position: relative; display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: center; gap: 8px; min-height: 40px; padding: 6px 0; box-sizing: border-box; }
+.bindu-home .fl-hr { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--hairline-dark); transform-origin: 0 50%; }
+.bindu-home .fl-slot dd { margin: 0; min-width: 0; font-weight: 400; }
+.bindu-home .fl-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.bindu-home .fl-chip { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 10px; box-sizing: border-box; border: 1px solid var(--hairline-dark); border-radius: var(--r-control); background: var(--canvas); font: 400 14px/1 var(--font-sans); color: var(--on-dark); white-space: nowrap; }
+.bindu-home .fl-chip em { font: normal 500 12px/1 var(--font-sans); display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: var(--r-control); }
+.bindu-home .fl-chip em.is-live { background: var(--live-bg); color: var(--live-fg); }   /* r65-2 */
+.bindu-home .fl-chip em.is-build { border: 1px solid var(--hairline-strong); color: var(--on-dark-mute); }
+.bindu-home .fl-code, .bindu-home .fl-docs .fl-chip { font-family: var(--font-mono); }
+.bindu-home .fl-ic { flex: none; fill: none; stroke: currentColor; color: var(--on-dark-mute); }
+.bindu-home .fl-docs { flex-direction: row; }
+.bindu-home .fl-docs .fl-chip .fl-ic { color: var(--on-dark); }
+.bindu-home .fl-ref { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); }
+.bindu-home .fl-ref-t { display: inline-block; font-size: 14px; letter-spacing: 0; }
+.bindu-home .fl-ref .fl-dot { width: 12px; height: 12px; }
+/* the routes and the two suppliers */
+.bindu-home .fl-routes { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.bindu-home .fl-route { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.bindu-home .fl-route path { fill: none; stroke: var(--cobalt-signal); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.bindu-home .fl-node { position: absolute; left: 68%; z-index: 1; width: 32%; height: 28%; box-sizing: border-box; display: grid; align-content: start; gap: 8px; padding: 12px; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); }
+.bindu-home .fl-node.n0 { top: 10%; }
+.bindu-home .fl-node.n1 { top: 62%; }
+.bindu-home .fl-node-h { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.bindu-home .fl-node-h b { font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bindu-home .fl-av { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--canvas-soft); border: 1px solid var(--hairline-dark); font: 500 12px/1 var(--font-sans); color: var(--on-dark); }
+.bindu-home .fl-node-h .fl-ic { margin-left: auto; }
+.bindu-home .fl-node-c { display: none; }
+/* the request each supplier received (one line), and the packet that carries it along the route (made by the script) */
+.bindu-home .fl-node-ask { white-space: nowrap; font: 400 14px/1.43 var(--font-sans); color: var(--on-dark-body); }
+.bindu-home .fl-pk { position: absolute; left: 0; top: 0; z-index: 4; width: 7px; height: 7px; border-radius: 50%; background: var(--cobalt-signal); pointer-events: none; }
+/* phones: no pin, no timeline: the heading, the four steps as a list, then the finished record */
+@media (max-width: 767px) {
+  .bindu-home .fl-pin, .bindu-home .fl-pin.is-static { height: auto; }
+  .bindu-home .fl-win, .bindu-home .fl-pin.is-static .fl-win { position: static; height: auto; padding-top: 0; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; gap: var(--s-5); align-items: start; }
+  .bindu-home .fl-panel { grid-template-columns: minmax(0, 1fr); row-gap: var(--s-5); }
+  .bindu-home .fl-top h2 { font-size: var(--display-lg); }
+  .bindu-home .fl-lead { max-width: 38ch; font-size: var(--body-lg); }
+  .bindu-home .fl-prog { display: none; }
+  .bindu-home .fl-left { gap: 0; }
+  .bindu-home .fl-beats { gap: var(--s-5); }
+  .bindu-home .fl-beat { grid-area: auto; }
+  .bindu-home .fl-beat h3 { font-size: var(--display-md); }
+  .bindu-home .fl-app { width: 100%; }
+  .bindu-home .fl-say { height: auto; min-height: 40px; padding: 8px 12px; white-space: normal; line-height: 1.43; }
+  .bindu-home .fl-slot { grid-template-columns: 84px minmax(0, 1fr); gap: 4px; }
+  .bindu-home .fl-ref-t { white-space: nowrap; }
+  .bindu-home .fl-stage { aspect-ratio: auto; width: calc(100% - 24px); margin: 12px; }
+  .bindu-home .fl-card { position: relative; width: 100%; height: auto; gap: 8px; padding: 16px; }
+  .bindu-home .fl-routes, .bindu-home .fl-node { display: none; }
+  .bindu-home .fl-say { white-space: normal; }
+}
+
+
+/* ---------- r44-2: Full Circle, a label and a heading per act ---------- */
+.bindu-home .th-kicker { margin: 0; font: 500 16px/1.43 var(--font-sans); letter-spacing: 0; color: var(--on-dark-mute); }   /* r52: v2 Label voice */
+.bindu-home .th-h { display: block; }
+.bindu-home .th-lead { min-height: 2lh; }
+@media (max-width: 900px) { .bindu-home .th-lead { min-height: 0; } }
+
+/* ---------- r44-3: the supply-chain question on the shipment map (a bubble and its answer, bottom left of the map) ---------- */
+.bindu-home .ship-ask { position: absolute; left: 12px; bottom: 12px; z-index: 2; width: min(300px, 46%); display: grid; gap: 6px; pointer-events: none; }
+.bindu-home .ship-ask-q { margin: 0; display: grid; gap: 6px; justify-items: start; padding: 10px 14px 12px; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); border-bottom-left-radius: var(--r-xs); font: 500 var(--body-sm)/1.35 var(--font-sans); color: var(--on-dark); }
+.bindu-home .ship-ask-a { margin: 0; padding: 0 0 0 12px; position: relative; font: 400 var(--body-sm)/1.4 var(--font-sans); color: var(--on-dark-body); }
+.bindu-home .ship-ask-a::before { content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 2px; border-radius: 1px; background: var(--cobalt-signal); }
+@media (max-width: 860px) { .bindu-home .ship-pin:not(.is-static) .ship-ask { display: none; } }   /* the pinned phone window has no room beside the map: the milestone list carries the steps */
+.bindu-home .ship-pin.is-static .ship-ask { position: static; width: auto; max-width: 340px; margin-top: var(--s-3); }
+
+/* ---------- r44-4: the departures board fits one window (1440 x 900 and 1920 x 1080), 768px and up ---------- */
+@media (min-width: 768px) {
+  .bindu-home .ex-stage { gap: var(--s-3); }
+  .bindu-home .ex-head h2 { max-width: none; font-size: min(var(--display-lg), 6svh); }
+  .bindu-home .ex-head p { max-width: 56ch; font-size: min(var(--body), 2.2svh); }
+  /* r45-1: left-aligned to the container's left edge and bigger again. The board runs from that edge to the right gutter (not centred, no 960px cap),
+     the flap type scales with the width and the height of the window, and the story reads at body size on a 64ch line. */
+  .bindu-home .bd { border-spacing: 0 clamp(3px, 0.55svh, 6px); padding: var(--s-4) var(--s-5); margin-inline: auto; width: min(100%, 1200px); }
+  .bindu-home .bd-flaps { font-size: clamp(10px, min(1.15vw, 2.1svh), 20px); }
+  .bindu-home .bd .fl { width: 1.05em; height: 2em; }
+  .bindu-home .bd-c { padding-right: var(--s-5); }
+  .bindu-home .bd-story { margin-top: var(--s-3); min-height: 0; max-width: 64ch; margin-inline: auto; text-align: center; height: clamp(176px, 24svh, 260px); }
+  .bindu-home .bd-fade { gap: var(--s-2); }
+  .bindu-home .bd-story p.t-body { font-size: var(--body); line-height: 1.55; }
+  .bindu-home .bd-h { font-size: clamp(20px, 3svh, 28px); min-height: 0; }
+  .bindu-home .ex-pin.is-static .bd-story { height: auto; }
+}
+
+/* ---------- r44-5: What buyers say, quote cards on a curved 3D track ---------- */
+.bindu-home .sec.vc { padding: 0; }
+.bindu-home .vc-win { display: grid; gap: var(--s-6); padding-block: var(--section-y); box-sizing: border-box; }
+.bindu-home .vc-head { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: var(--s-4); }   /* r60-1: centred like every other section title */
+.bindu-home .vc-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); }
+.bindu-home .vc-card { display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-6); box-sizing: border-box; padding: var(--s-6); background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); }
+.bindu-home .vc-q { margin: 0; font: var(--display-weight) var(--display-sm)/1.4 var(--font-display); letter-spacing: 0; color: var(--on-dark); text-wrap: pretty; }
+.bindu-home .vc-who { margin: 0; display: grid; gap: 2px; font: 400 var(--body-sm)/1.4 var(--font-sans); color: var(--on-dark-body); }
+.bindu-home .vc-who b { font-weight: 600; color: var(--on-dark); }
+.bindu-home .vc-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
+.bindu-home .vc-dots { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
+.bindu-home .vc-dot { width: 26px; height: 26px; padding: 0; border: 0; background: none; display: grid; place-items: center; cursor: pointer; border-radius: 50%; }
+.bindu-home .vc-dot::before { content: ""; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; border: 1.5px solid var(--on-dark-mute); transition: background var(--t-base) var(--ease-ui), border-color var(--t-base) var(--ease-ui); }
+.bindu-home .vc-dot.is-on::before { background: var(--proof-dot); border-color: var(--yellow-outline); }
+.bindu-home .vc-dot:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 1px; }
+.bindu-home .vc-hint { margin: 0; }
+/* before hydration, without JS and on reduced motion: the plain vertical list (no dots, no hint) */
+.bindu-home .vc-pin.is-list .vc-foot { display: none; }
+/* the arc: a sticky window, 70svh of scroll per step */
+.bindu-home .vc-pin.is-arc { position: relative; height: calc(var(--vc-n) * var(--vc-per) * 1vh + 100vh); height: calc(var(--vc-n) * var(--vc-per) * 1svh + 100svh); }
+.bindu-home .vc-pin.is-arc .vc-win { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); align-content: center; gap: var(--s-5); padding-block: var(--s-4); }
+.bindu-home .vc-pin.is-arc .vc-stage { position: relative; height: clamp(300px, 46svh, 420px); perspective: 1500px; perspective-origin: 50% 40%; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; outline-offset: 6px; }
+.bindu-home .vc-pin.is-arc .vc-stage.is-drag { cursor: grabbing; }
+.bindu-home .vc-pin.is-arc .vc-cards { position: absolute; inset: 0; display: block; transform-style: preserve-3d; }
+.bindu-home .vc-pin.is-arc .vc-card { position: absolute; left: 50%; top: 0; width: min(640px, 80%); height: 100%; backface-visibility: hidden; cursor: inherit; }
+.bindu-home .vc-pin.is-arc .vc-card:not(.is-front) { cursor: pointer; }
+.bindu-home .vc-pin.is-arc .vc-q { font-size: clamp(22px, min(2.2vw, 4.4svh), 32px); }
+/* phones: one card at a time, swiped (scroll snap) */
+.bindu-home .vc-pin.is-swipe .vc-win { padding-inline: 0; }
+.bindu-home .vc-pin.is-swipe .vc-head, .bindu-home .vc-pin.is-swipe .vc-foot { padding-inline: var(--gutter); }
+.bindu-home .vc-pin.is-swipe .vc-stage { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-padding-inline: var(--gutter); }
+.bindu-home .vc-pin.is-swipe .vc-stage::-webkit-scrollbar { display: none; }
+.bindu-home .vc-pin.is-swipe .vc-cards { display: flex; gap: var(--s-3); padding-inline: var(--gutter); width: max-content; }
+.bindu-home .vc-pin.is-swipe .vc-card { flex: none; width: calc(100vw - 2 * var(--gutter) - 12px); min-height: 280px; scroll-snap-align: start; }
+.bindu-home .vc-pin.is-swipe .vc-q { font-size: 22px; }
+.bindu-home .vc-pin.is-swipe .vc-hint { display: none; }
+
+/* ---------- r57: The rules Bindu covers, an infinite minimal gallery (components/Rules.tsx) ----------
+   Type-only tiles on the Ollama card (canvas, 1px hairline, 12px, no shadow): a huge ghosted mono regulation number, the name in the display face, one plain line, the goods,
+   the status chip, a cobalt "Read the rule". The loop view clips; JS moves the track (drift, scroll speed, drag) and bends the tiles; nothing here hides a GSAP target.
+   Native (phones, reduced motion, first paint): a scroll-snap row of the five tiles. */
+.bindu-home .sec.rl { padding-inline: 0; overflow-x: clip; }
+.bindu-home .rl-head { display: grid; justify-items: center; text-align: center; gap: var(--s-3); margin: 0 auto var(--s-6); }
+.bindu-home .rl-head h2 { margin: 0; text-wrap: balance; overflow: visible; }
+.bindu-home .rl-lead { margin: 0; color: var(--on-dark-mute); }
+.bindu-home .rl-view { position: relative; }
+.bindu-home .rl-track { position: relative; list-style: none; margin: 0; padding: 0; display: flex; gap: 24px; width: max-content; }
+.bindu-home .rl-view.is-native { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-padding-inline: var(--gutter); overscroll-behavior-x: contain; }
+.bindu-home .rl-view.is-native::-webkit-scrollbar { display: none; }
+.bindu-home .rl-view.is-native .rl-track { padding-inline: var(--gutter); }
+.bindu-home .rl-view.is-native .rl-tile { scroll-snap-align: start; }
+.bindu-home .rl-view.is-loop { overflow: hidden; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; padding-block: 24px; margin-block: -24px; }
+.bindu-home .rl-view.is-loop.is-drag { cursor: grabbing; }
+.bindu-home .rl-view.is-loop:focus-visible { outline: var(--focus-ring-dark); outline-offset: -3px; }
+.bindu-home .rl-tile { position: relative; flex: none; box-sizing: border-box; width: min(360px, 82vw); min-height: 450px; overflow: hidden; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); }
+.bindu-home .rl-view.is-bend .rl-tile { will-change: transform; }   /* r59-7: layers only while the row bends */
+.bindu-home .rl-ghost { position: absolute; inset: 20px 0 auto 16px; display: grid; justify-items: start; font: 400 clamp(88px, 8.6vw, 112px)/0.92 var(--font-mono); letter-spacing: -0.04em; color: color-mix(in srgb, var(--on-dark-mute) 8%, transparent); pointer-events: none; user-select: none; -webkit-user-select: none; white-space: nowrap; }
+.bindu-home .rl-over { position: relative; box-sizing: border-box; min-height: inherit; display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-6); padding: 24px; }
+.bindu-home .rl-top { display: grid; gap: 4px; }
+.bindu-home .rl-t { margin: 0; font: 500 var(--display-lg)/1.2 var(--font-display); letter-spacing: 0; color: var(--on-dark-body); transition: color var(--t-ui) var(--ease-ui); }
+.bindu-home .rl-tile.is-hot .rl-t { color: var(--on-dark); }
+.bindu-home .rl-view[data-hot] .rl-tile:not(.is-hot) .rl-t { color: var(--on-dark-mute); }
+.bindu-home .rl-full { margin: 0; font: 500 var(--caption)/1.33 var(--font-sans); color: var(--on-dark-mute); }
+.bindu-home .rl-bot { display: grid; gap: var(--s-2); }
+.bindu-home .rl-d { margin: 0; font: 400 var(--body-sm)/1.45 var(--font-sans); color: var(--on-dark); text-wrap: pretty; }
+.bindu-home .rl-cov, .bindu-home .rl-date { margin: 0; font: 400 var(--caption)/1.4 var(--font-sans); color: var(--on-dark-mute); }
+.bindu-home .rl-cov span { color: var(--on-dark-body); }
+.bindu-home .rl-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.bindu-home .rl-links { margin: var(--s-1) 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px var(--s-4); }
+.bindu-home .rl-read { font: 500 var(--body-sm)/1.4 var(--font-sans); color: var(--brand-cobalt); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.bindu-home:not([data-theme="light"]) .rl-read { color: var(--cobalt-signal); }
+.bindu-home .rl-src { font: 400 var(--caption)/1.4 var(--font-sans); color: var(--on-dark-mute); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.bindu-home .rl-read:focus-visible, .bindu-home .rl-src:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 3px; border-radius: 2px; }
+.bindu-home .rl-read, .bindu-home .rl-src { min-height: 24px; }
+@media (max-width: 767px) { .bindu-home .rl-read, .bindu-home .rl-src { display: inline-flex; align-items: center; min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .bindu-home .rl-t { transition: none; } }
+/* r61-3: the Rules row's pause control, the hero pause button's style (btn btn-ghost), 44px target */
+.bindu-home .rl-ctl { display: flex; justify-content: center; margin-top: var(--s-5); }
+.bindu-home .rl-pause { min-height: 44px; min-width: 44px; }

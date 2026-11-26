@@ -1,24 +1,26 @@
 import { getRoot } from "../lib/root";
 import { isPhone } from "../lib/phone";
 import { tRaf, tCaf } from "../lib/loop";
-import { track } from "../lib/pos";
+import { track, viewH } from "../lib/pos";
 import { shipHome, mapU } from "../lib/shiphome";
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { journey } from "../content";
-import { gsap, reduceMotion } from "../lib/motion";
+import { gsap, getLenis, useReducedMotion } from "../lib/motion";
 import { subscribeTheme } from "../lib/theme";
 import { readCols, drawShip, buildFrom, SLOTS, NB, type Cols } from "../lib/shipcanvas";
 import { toRgb } from "../lib/shipcanvas";
 import {
-  COAST_D, GRAT_D, DOTS, MAP_H, MAP_W, MILESTONES, SHIP_GEO, dropAt, routeAt,
+  LAND, GRAT_D, DOTS, MAP_H, MAP_W, MILESTONES, SHIP_GEO, dropAt, routeAt,
   type Frame,
 } from "../lib/shipmap";
 import "../styles/shipment.css";
 
 const clamp = (v: number, lo = 0, hi = 1) => (v < lo ? lo : v > hi ? hi : v);
 const smooth = (t: number) => t * t * (3 - 2 * t);
+const LEAN = 0.3;          // extra zoom as the ship reaches a milestone
+const PULL = 1.0;          // the zoom at the end, relative to the story's framing (the whole route in view)
 const ZOOM = 1.6;          // camera zoom while following the ship, on top of the story's framing
-const WAKE = 90;           // length of the bright wake behind the ship, in map units
+const WAKE_PX = 70;        // length of the fading wake behind the ship, in screen pixels
 const GATHER = 0.86;       // the trail dots start to gather into the sunflower at this point (the ship nears the port)
 const CAM_EASE = 0.14;     // the camera moves a seventh of the way to its framing each frame (about half a second)
 
@@ -28,18 +30,17 @@ const shipProgress = (p: number) => clamp((p - 0.04) / 0.92);
    is a pure function of how far into that tail the scroll is, so it plays at any scroll speed while the map is still on screen, and in reverse going back up. */
 const tail = () => (isPhone() ? 0.5 : 0.8);   // r35: a shorter tail on phones (the CSS pin is 220svh there: 170 for the route and 50 for the tail)
 
-/* r25-1: the map is two canvases. The coastlines, land wash and graticule are pre-rendered once to an offscreen canvas (per story and frame size, redrawn only on
-   resize, theme or story change); the route, the trail, the dots, the markers and the ship are drawn live above it, only when something changed. Milestone notes
-   and labels stay real HTML text, positioned with transforms and written only when they change. */
+/* r25-1, rebuilt in r59-5: one canvas, everything vector and redrawn at the camera's scale every frame (the old pre-rendered land bitmap was scaled by the camera, which is what
+   made the map blur when it zoomed in). Land is Natural Earth, drawn ring by ring (only the rings in view, cached Path2D, constant screen-width strokes); the route, the trail,
+   the dots, the markers and the ship are drawn on top. Milestone notes and labels stay real HTML text, positioned with transforms and written only when they change. */
 /* built on first use: Path2D does not exist on the server, where this module is also evaluated */
-let paths: { LAND: Path2D; GRAT: Path2D } | null = null;
-const getPaths = () => (paths ??= { LAND: new Path2D(COAST_D), GRAT: new Path2D(GRAT_D) });
+let gratPath: Path2D | null = null;
 
 /* r19 item 6: the milestone notes sit beside the route at their points: (dx, dy) in screen pixels, alternating above and below */
 const NOTE_OFF: [number, number][] = [[16, -26], [-16, 30], [16, -26], [-16, 30], [16, -26], [-16, 30]];
 
 export function ShipmentJourney() {
-  const [isStatic] = useState(reduceMotion);
+  const isStatic = useReducedMotion();
   const pin = useRef<HTMLDivElement>(null);
   const frameEl = useRef<HTMLDivElement>(null);
   const cv = useRef<HTMLCanvasElement>(null);
@@ -56,6 +57,23 @@ export function ShipmentJourney() {
   const geo = SHIP_GEO[story!.id];
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const [current, setCurrent] = useState(isStatic ? MILESTONES.length - 1 : 0);
+  /* r44-3: the supply-chain question folded in. At the proof milestone of each story one small question bubble and its answer line appear on the map (and stay for the
+     next milestone), driven by the existing `current` milestone, so they reverse with the scroll. GSAP owns the start state, set after hydration; static: always shown. */
+  const askEl = useRef<HTMLDivElement>(null);
+  const askSeen = useRef(false);
+  const ask = story!.ask;
+  const askOn = current >= ask.at && current <= ask.at + 1;
+  const askOnRef = useRef(false);
+  askOnRef.current = askOn;
+  useEffect(() => {
+    const el = askEl.current;
+    if (!el) return;
+    if (isStatic) { gsap.set(el, { clearProps: "opacity,visibility,transform" }); return; }
+    const first = !askSeen.current;
+    askSeen.current = true;
+    if (first) { gsap.set(el, { autoAlpha: askOn ? 1 : 0, y: askOn ? 0 : 10 }); return; }
+    gsap.to(el, { autoAlpha: askOn ? 1 : 0, y: askOn ? 0 : 10, duration: 0.45, ease: askOn ? "power2.out" : "power2.in", overwrite: true });
+  }, [askOn, story, isStatic]);
   // the camera's framing, eased from one story's framing to the next (so the map animates between them)
   const view = useRef<Frame>({ ...(SHIP_GEO[journey.stories[0]!.id])!.frame });
 
@@ -67,49 +85,51 @@ export function ShipmentJourney() {
     let ink = "rgba(237,232,218,", dpr = 1;
     const inkRgb = () => { const [r, g, b] = toRgb(cols.ink); ink = `rgba(${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)},`; };
     inkRgb();
+    let askBox = [0, 0, 0, 0];   // the question card in the frame (measured on resize, never per frame): an obstacle for the notes while it shows
     let ppu = 1;   // screen pixels per map unit, measured on resize
     // round 15 item 10: the frame may be height-limited (the viewBox is letterboxed), so a map unit is min(w / MAP_W, h / MAP_H) pixels
     let vw = MAP_W, vh = MAP_H;
     const tw: number[] = [];   // each label's text width in screen pixels (measured once the font is in)
     const nw: number[] = [], nh: number[] = [];   // the same for the milestone notes (width and height of the label card)
+    const noteOff = NOTE_OFF.map((o) => [o[0], o[1]] as [number, number]);   // r55: the offset each note uses (the placement pass may flip or push it); the look is unchanged
     const setCw = () => getRoot().style.setProperty("--cw", `${document.documentElement.clientWidth}px`);   // r22-11: the map bleeds to the right edge
     setCw(); window.addEventListener("resize", setCw);
     // places on the route, computed once per story
     const msPos = MILESTONES.map((m) => routeAt(route, m.t * route.length));
     const dotPos = Array.from({ length: DOTS }, (_, i) => routeAt(route, dropAt(i) * route.length));
 
-    // the pre-rendered base: coastlines, land wash and graticule, for the region the camera can see on this route, at the follow zoom
-    let off: HTMLCanvasElement | null = null, reg = { x0: 0, y0: 0, w: 1, h: 1 };
-    const paintBase = (c: CanvasRenderingContext2D, px: number) => {   // px: user units per css pixel
+    // the base, drawn live: the rings in view, at this frame's scale, as ONE path (one fill, one stroke). px: user units per css pixel; (x0, y0, x1, y1): the view box in map units.
+    // Points closer than about a pixel to the last one drawn are skipped, so a wide view does not walk every vertex of every coast.
+    const paintBase = (c: CanvasRenderingContext2D, px: number, x0: number, y0: number, x1: number, y1: number) => {
       c.lineJoin = "round"; c.lineCap = "round"; c.setLineDash([]);
-      c.lineWidth = px; c.strokeStyle = `${ink}0.1)`; c.stroke(getPaths().GRAT);
-      c.fillStyle = `${ink}0.05)`; c.fill(getPaths().LAND);
-      c.strokeStyle = `${ink}0.7)`; c.stroke(getPaths().LAND);
-    };
-    const buildBase = () => {
-      const pts = route.pts, sf = target.s * ZOOM;
-      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-      for (const [x, y] of pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
-      const hxF = vw / (2 * ppu * sf), hyF = vh / (2 * ppu * sf), hxO = vw / (2 * ppu * target.s), hyO = vh / (2 * ppu * target.s);
-      x0 = Math.min(x0 - hxF, target.cx - hxO); x1 = Math.max(x1 + hxF, target.cx + hxO); y0 = Math.min(y0 - hyF, target.cy - hyO); y1 = Math.max(y1 + hyF, target.cy + hyO);
-      let k = ppu * sf * dpr;
-      const w0 = (x1 - x0) * k, h0 = (y1 - y0) * k;
-      k *= Math.min(1, 4096 / w0, 4096 / h0, Math.sqrt(9e6 / (w0 * h0)));
-      off = off ?? document.createElement("canvas");
-      off.width = Math.ceil((x1 - x0) * k); off.height = Math.ceil((y1 - y0) * k);
-      const oc = off.getContext("2d")!;
-      oc.setTransform(1, 0, 0, 1, 0, 0); oc.clearRect(0, 0, off.width, off.height);
-      oc.setTransform(k, 0, 0, k, -x0 * k, -y0 * k);
-      paintBase(oc, dpr / k);
-      reg = { x0, y0, w: x1 - x0, h: y1 - y0 };
+      c.lineWidth = px; c.strokeStyle = `${ink}0.1)`; c.stroke((gratPath ??= new Path2D(GRAT_D)));
+      const minSize = 0.6 * px, skip = 1.6 * px;   // rings smaller than about half a pixel are not drawn
+      c.beginPath();
+      for (let i = 0; i < LAND.length; i++) {
+        const r = LAND[i]!;
+        if (r.x1 < x0 || r.x0 > x1 || r.y1 < y0 || r.y0 > y1 || (r.x1 - r.x0 < minSize && r.y1 - r.y0 < minSize)) continue;
+        const pts = r.pts;
+        let lx = pts[0]![0], ly = pts[0]![1];
+        c.moveTo(lx, ly);
+        for (let k = 1; k < pts.length; k++) {
+          const q = pts[k]!;
+          if (Math.abs(q[0] - lx) + Math.abs(q[1] - ly) < skip && k < pts.length - 1) continue;
+          c.lineTo(q[0], q[1]); lx = q[0]; ly = q[1];
+        }
+        c.closePath();
+      }
+      c.fillStyle = `${ink}0.05)`; c.fill();
+      c.lineJoin = "miter"; c.lineCap = "butt";   // a 0.75px coast needs no round joins, and they are the slow path
+      c.strokeStyle = `${ink}0.7)`; c.lineWidth = 0.75 * px; c.stroke();
     };
 
     const measure = () => {
       const r = fEl.getBoundingClientRect();
       vw = r.width || MAP_W; vh = r.height || MAP_H;
-      dpr = Math.min(1.5, window.devicePixelRatio || 1);
+      dpr = Math.min(isPhone() ? 1.5 : 2, window.devicePixelRatio || 1);   // r58: the real device pixel ratio, up to 2 on desktop (was 1.5), so the map and the ship are sharp
       cvs.width = Math.round(vw * dpr); cvs.height = Math.round(vh * dpr);
       ppu = Math.min(vw / MAP_W, vh / MAP_H) || 1;
+      const ae = askEl.current; if (ae) askBox = [8, vh - 12 - ae.offsetHeight - 6, 12 + ae.offsetWidth + 6, vh - 6];
       // round 17: where the route start sits in the figure at the start frame (the ink guide's dot lands here and becomes the cargo)
       const fr = mapFig.current?.getBoundingClientRect(), og = originEl.current;
       if (fr && og) {
@@ -118,12 +138,11 @@ export function ShipmentJourney() {
         og.style.top = `${(r.top - fr.top + vh / 2 + ppu * s0 * (y0 - target.cy)).toFixed(1)}px`;
         window.dispatchEvent(new Event("guide:refresh"));
       }
-      buildBase();
     };
 
     // the scroll position, 0 to 1 (the ship's place is shipProgress of this). Pinned: the pin's own scroll range.
     const tk = track(el);
-    const moveRange = () => tk.h - window.innerHeight - tail() * window.innerHeight;   // the part of the pin the ship sails in
+    const moveRange = () => tk.h - viewH() - tail() * viewH();   // the part of the pin the ship sails in
     const progress = () => {
       const range = moveRange();
       return shipProgress(range > 0 ? clamp(-tk.rectTop() / range) : 0);
@@ -131,7 +150,7 @@ export function ShipmentJourney() {
     // the hand-off (0 to 1): from the moment the ship is at the port (p = 0.96 of the sailing range) through the tail of the pin
     const handoff = () => {
       const range = moveRange();
-      return range > 0 ? clamp((-tk.rectTop() - 0.96 * range) / (tail() * window.innerHeight + 0.04 * range)) : 0;
+      return range > 0 ? clamp((-tk.rectTop() - 0.96 * range) / (tail() * viewH() + 0.04 * range)) : 0;
     };
     let lastT = isStatic ? 1 : progress();
     let raf = 0, tween = 0, fadeRaf = 0;
@@ -158,14 +177,18 @@ export function ShipmentJourney() {
     const frOff = { x: 0, y: 0 };
     /* ---------- the live canvas ---------- */
     const circle = (x: number, y: number, r: number) => { ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); };
-    const draw = () => {
+    let drawT = 0;
+    const draw = (soft = false) => {
       if (!st.inited) return;
+      const nowT = performance.now();
+      if (soft && nowT - drawT < 10) return;   // r58: the fade loop does not repaint a frame the scroll render has just painted
+      drawT = nowT;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, vw, vh);
       const { s, cx, cy, t, d } = st, S = ppu * s, X = (x: number) => vw / 2 + S * (x - cx), Y = (y: number) => vh / 2 + S * (y - cy);
-      // the base: the pre-rendered bitmap, moved and scaled with the camera (drawn live only while the camera is outside it, e.g. while easing between stories)
-      const covers = off && cx - vw / (2 * S) >= reg.x0 && cx + vw / (2 * S) <= reg.x0 + reg.w && cy - vh / (2 * S) >= reg.y0 && cy + vh / (2 * S) <= reg.y0 + reg.h;
-      if (off && covers) ctx.drawImage(off, X(reg.x0), Y(reg.y0), reg.w * S, reg.h * S);
-      else { ctx.save(); ctx.translate(vw / 2, vh / 2); ctx.scale(S, S); ctx.translate(-cx, -cy); paintBase(ctx, 1 / S); ctx.restore(); }
+      // the base: land and graticule redrawn at the camera's scale (vector, constant-width strokes), never a scaled bitmap
+      ctx.save(); ctx.translate(vw / 2, vh / 2); ctx.scale(S, S); ctx.translate(-cx, -cy);
+      paintBase(ctx, 1 / S, cx - vw / (2 * S), cy - vh / (2 * S), cx + vw / (2 * S), cy + vh / (2 * S));
+      ctx.restore();
       // the route, the trail behind the ship and its bright wake
       const rp = route.pts, trace = (d0: number, d1: number) => {
         const a = routeAt(route, d0), b = routeAt(route, d1);
@@ -173,12 +196,16 @@ export function ShipmentJourney() {
         for (let i = 0; i < rp.length; i++) if (route.cum[i]! > d0 && route.cum[i]! < d1) ctx.lineTo(X(rp[i]![0]), Y(rp[i]![1]));
         ctx.lineTo(X(b.x), Y(b.y));
       };
+      // the path ahead: dashed cobalt; the path behind: solid cobalt; both 1.5 css px at any zoom. The ship's wake fades out over about 70px behind it.
       ctx.lineCap = "butt"; ctx.lineWidth = 1.5; ctx.strokeStyle = `rgba(${cols.rr},${cols.rg},${cols.rb},0.85)`; ctx.setLineDash([6, 6]);
-      ctx.beginPath(); rp.forEach(([x, y]: [number, number], i: number) => (i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y)))); ctx.stroke();
+      if (d < route.length) { trace(d, route.length); ctx.stroke(); }
       ctx.setLineDash([]); ctx.lineCap = "round"; ctx.lineJoin = "round";
       if (d > 0) {
-        ctx.strokeStyle = `rgba(${cols.rr},${cols.rg},${cols.rb},0.5)`; trace(0, d); ctx.stroke();
-        ctx.lineWidth = 4; ctx.globalAlpha = 0.4; ctx.strokeStyle = cols.route; trace(Math.max(0, d - WAKE), d); ctx.stroke(); ctx.globalAlpha = 1;
+        ctx.strokeStyle = cols.route; trace(0, d); ctx.stroke();
+        const wk = WAKE_PX / S, N = 6;
+        ctx.lineWidth = 3;
+        for (let k = 0; k < N; k++) { ctx.globalAlpha = 0.5 * (1 - k / N); ctx.strokeStyle = cols.route; trace(Math.max(0, d - (k + 1) * wk / N), Math.max(0, d - k * wk / N)); ctx.stroke(); }
+        ctx.globalAlpha = 1; ctx.lineWidth = 1.5;
       }
       // the trail dots: each is dropped when the ship passes it, then gathers into the sunflower at the port; yellow with a darker edge once filed
       const filed = t >= 0.995 && live;
@@ -200,7 +227,7 @@ export function ShipmentJourney() {
       MILESTONES.forEach((_, i) => {
         const mx = X(msPos[i]!.x), my = Y(msPos[i]!.y), reached = i <= st.cur, coming = !live && i === MILESTONES.length - 1;
         if (nA[i]! > 0.01 && window.innerWidth > 860) {   // (under 861px the cards are hidden and the list carries the steps, so no leaders)
-          const [dx, dy] = NOTE_OFF[i]!;
+          const [dx, dy] = noteOff[i]!;
           ctx.lineWidth = 1; ctx.strokeStyle = `${ink}${nA[i]!.toFixed(2)})`; ctx.beginPath(); ctx.moveTo(Math.floor(mx) + 0.5, Math.floor(my) + 0.5); ctx.lineTo(Math.floor(mx + dx) + 0.5, Math.floor(my + dy) + 0.5); ctx.stroke();   // r28-9: a 1px ink leader
         }
         circle(mx, my, 3.2); ctx.lineWidth = 1.5;
@@ -238,14 +265,44 @@ export function ShipmentJourney() {
         lT[i] = lf >= mg && lf + tw[i] <= vw - mg && top >= mg && top + 12 <= vh - mg ? 1 : 0;
         putText(sp, x + ox, y + oy - 8, a === "end", lA[i]!);
       });
-      MILESTONES.forEach((m, i) => {
+      /* r55-5 (kept in r56, look unchanged): notes never overlap each other, a map label or another milestone point. The current note is placed first, then the earlier ones,
+         newest first; each tries its own offset, then flipped and pushed ones, and takes the first clear one; an earlier note with no clear place is hidden. */
+      const placed: number[][] = [];
+      if (askOnRef.current && askBox[2]! > 0) placed.push(askBox);
+      geo!.labels.forEach((l, i) => {
+        if (!tw[i] || lT[i] === 0) return;
+        const a = l.off?.[2] ?? "start", x = X(l.p[0]) + (l.off?.[0] ?? 7), y = Y(l.p[1]) + (l.off?.[1] ?? -6) - 8, lf = x - (a === "end" ? tw[i]! : 0);
+        placed.push([lf - 3, y - 2, lf + tw[i]! + 3, y + 16]);
+      });
+      const pts = msPos.map((q) => [X(q.x), Y(q.y)]);
+      const hit = (r: number[], o: number[]) => r[0]! < o[2]! && r[2]! > o[0]! && r[1]! < o[3]! && r[3]! > o[1]!;
+      const order = MILESTONES.map((_, i) => i).sort((a, b) => { const ka = a > st.cur ? 1000 + a : st.cur - a, kb = b > st.cur ? 1000 + b : st.cur - b; return ka - kb; });
+      order.forEach((i) => {
+        const m = MILESTONES[i]!;
         const sp = notes.current[i];
         if (!sp) return;
         if (!nw[i]) { nw[i] = sp.offsetWidth; nh[i] = sp.offsetHeight; }
-        const [dx, dy] = NOTE_OFF[i]!, x = X(msPos[i]!.x), y = Y(msPos[i]!.y), right = dx > 0, above = dy < 0;
-        const lf = right ? x + dx : x + dx - nw[i], top = above ? y + dy - nh[i]! : y + dy;
-        const inFrame = lf >= 4 && lf + nw[i]! <= vw - 4 && top >= 4 && top + nh[i]! <= vh - 4;
-        nT[i] = t < m.t - 0.03 || !inFrame ? 0 : 1;   // a step shows once it is reached; past steps stay (muted by colour, not by fading)
+        const w = nw[i]!, h = nh[i]!, x = pts[i]![0]!, y = pts[i]![1]!, base = NOTE_OFF[i]!;
+        const rect = (dx: number, dy: number) => { const lf = dx > 0 ? x + dx : x + dx - w, top = dy < 0 ? y + dy - h : y + dy; return [lf, top, lf + w, top + h]; };
+        const cands: [number, number][] = [];
+        for (const k of [1, 2.2, 3.6]) for (const hx of [1, -1, 4, -4]) for (const sy of [1, -1]) cands.push([base[0] * hx, base[1] * k * sy]);
+        cands.unshift([base[0], base[1]], [-base[0], base[1]], [base[0], -base[1]], [-base[0], -base[1]]);
+        let best = cands[0]!, bestScore = Infinity;
+        for (const cd of cands) {
+          const r = rect(cd[0], cd[1]);
+          let score = 0;
+          if (!(r[0]! >= 4 && r[2]! <= vw - 4 && r[1]! >= 4 && r[3]! <= vh - 4)) score += 1000;
+          for (const o of placed) if (hit(r, o)) score += 100;
+          pts.forEach((p, k) => { if (k !== i && hit(r, [p[0]! - 6, p[1]! - 6, p[0]! + 6, p[1]! + 6])) score += 40; });
+          score += (Math.abs(cd[0]) + Math.abs(cd[1])) * 0.01;
+          if (score < bestScore) { bestScore = score; best = cd; }
+        }
+        noteOff[i] = best;
+        const [dx, dy] = best, right = dx > 0;
+        const r = rect(dx, dy), top = r[1]!;
+        const inFrame = r[0]! >= 4 && r[2]! <= vw - 4 && top >= 4 && r[3]! <= vh - 4;
+        nT[i] = t < m.t - 0.03 || !inFrame || (bestScore >= 100 && i !== st.cur) ? 0 : 1;   // a step shows once it is reached; past steps stay (muted by colour, not by fading)
+        if (nT[i]) placed.push(r);
         sp.dataset.state = i < st.cur ? "done" : i === st.cur ? "current" : "next";
         putText(sp, x + dx, top, !right, nA[i]!);
       });
@@ -255,7 +312,7 @@ export function ShipmentJourney() {
       let more = false;
       const step = (a: number[], tg: number[]) => a.forEach((v, i) => { const dv = tg[i]! - v; if (Math.abs(dv) < 0.02) a[i] = tg[i]!; else { a[i] = v + dv * 0.25; more = true; } });
       step(nA, nT); step(lA, lT);
-      text(); draw();
+      text(); draw(true);
       if (more) fadeRaf = tRaf(fade);
     };
     const settleFades = () => { if (isStatic) { nA.forEach((_, i) => (nA[i] = nT[i]!)); lA.forEach((_, i) => (lA[i] = lT[i]!)); } else if (!fadeRaf) fadeRaf = tRaf(fade); };
@@ -279,9 +336,16 @@ export function ShipmentJourney() {
       const v = view.current;
       const d = t * route.length;
       const f = routeAt(route, d);
+      /* r59-5: the camera starts wide on the whole route, eases in to follow the ship, leans in on each milestone as the ship reaches it (a smooth bump either side of the
+         milestone), and pulls back out over the last stretch to show the route travelled before the hand-off. A pure function of the scroll, so it reverses. */
       const w = smooth(clamp((t - 0.04) / 0.2));                    // overview first, then follow
-      const s = v.s * (1 + (ZOOM - 1) * w);
-      const cx = v.cx + (f.x - v.cx) * w, cy = v.cy + (f.y - v.cy) * w;
+      let lean = 0;
+      for (let i = 1; i < MILESTONES.length - 1; i++) lean = Math.max(lean, smooth(clamp(1 - Math.abs(t - MILESTONES[i]!.t) / 0.05)));
+      const pull = smooth(clamp((t - 0.9) / 0.1));
+      const fs = v.s * (1 + (ZOOM - 1) * w) * (1 + LEAN * lean);
+      const s = fs + (v.s * PULL - fs) * pull;
+      const fcx = v.cx + (f.x - v.cx) * w, fcy = v.cy + (f.y - v.cy) * w;
+      const cx = fcx + (v.cx - fcx) * pull, cy = fcy + (v.cy - fcy) * pull;
       const hx = Math.cos((f.angle * Math.PI) / 180), hy = Math.sin((f.angle * Math.PI) / 180);
       if (hx > 0.35) flip.current = 1; else if (hx < -0.35) flip.current = -1;
       at.current = { x: f.x, y: f.y };
@@ -306,12 +370,12 @@ export function ShipmentJourney() {
       tween = near ? 0 : tRaf(settle);
     };
 
-    const unTheme = subscribeTheme(() => { cols = readCols(); inkRgb(); buildBase(); draw(); });
+    const unTheme = subscribeTheme(() => { cols = readCols(); inkRgb(); draw(); });
     const detach = () => { unTheme(); window.removeEventListener("resize", setCw); };
 
     if (isStatic) {
       // reduced motion: the full route, every milestone, the ship already at the port with the sunflower filed; no easing
-      measure();
+      measure(); setCurrent(MILESTONES.length - 1);
       Object.assign(view.current, target);
       render(1);
       return detach;
@@ -325,7 +389,9 @@ export function ShipmentJourney() {
     };
     const onScroll = () => { if (!raf) raf = tRaf(update); };
     const onResize = () => { measure(); onScroll(); };
-    const io = new IntersectionObserver(([e]) => { visible = e!.isIntersecting; if (visible) onScroll(); gsap.to(shipHome, { pres: visible ? 1 : 0, duration: 0.4, overwrite: true, onUpdate: () => paintBreak() }); });
+    /* r58: while this pin is on screen the page scroll is smoothed for about 0.3s (Lenis lerp 0.2) instead of the page's 0.1 (about 0.6s), so the ship answers the wheel */
+    const lerpTo = (v: number) => { const l = getLenis(); if (l) l.options.lerp = v; };
+    const io = new IntersectionObserver(([e]) => { visible = e!.isIntersecting; lerpTo(visible ? 0.2 : 0.1); if (visible) onScroll(); gsap.to(shipHome, { pres: visible ? 1 : 0, duration: 0.4, overwrite: true, onUpdate: () => paintBreak() }); });
     io.observe(el);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
@@ -334,7 +400,7 @@ export function ShipmentJourney() {
     onScroll();
     document.fonts?.ready.then(() => { tw.length = 0; nw.length = 0; measure(); onScroll(); });
     return () => {
-      detach(); io.disconnect(); gsap.killTweensOf(shipHome); shipHome.pres = 1; shipHome.dock = 0; shipHome.brk = 0; shipHome.markOn = false; shipHome.kick(); gsap.killTweensOf(brk.current); brk.current.v = 0;
+      detach(); io.disconnect(); lerpTo(0.1); gsap.killTweensOf(shipHome); shipHome.pres = 1; shipHome.dock = 0; shipHome.brk = 0; shipHome.markOn = false; shipHome.kick(); gsap.killTweensOf(brk.current); brk.current.v = 0;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (raf) tCaf(raf);
@@ -360,7 +426,7 @@ export function ShipmentJourney() {
       <div ref={pin} className={`ship-pin${isStatic ? " is-static" : ""}`}>
         <div className="ship-stage" data-guide-gutter>
           <div className="sec-head">
-            <h2 id="ship-h" className="t-display-md">{journey.title}</h2>
+            <h2 id="ship-h" className="t-display-lg" suppressHydrationWarning>{journey.title}</h2>
             <p className="t-body-lg ship-sub">{story!.sub}</p>
             <div className="seg-track ship-seg">
               <div
@@ -405,6 +471,10 @@ export function ShipmentJourney() {
                     return <span key={`${story!.id}-n${i}`} ref={(el) => { notes.current[i] = el; }} className={`ship-note${coming ? " is-coming" : ""}`}><b>{label}</b><i>{(story!.milestones[i])!.detail}</i></span>;
                   })}
                   {geo!.labels.map((l, i) => <span key={`${story!.id}-${l.text}`} ref={(el) => { labels.current[i] = el; }} className="ship-label">{l.text}</span>)}
+                </div>
+                <div ref={askEl} className="ship-ask">
+                  <p className="ship-ask-q"><span className="chip chip-illus">{journey.illus}</span><span>{ask.q}</span></p>
+                  <p className="ship-ask-a">{ask.a}</p>
                 </div>
               </div>
               <figcaption className="ship-cap">

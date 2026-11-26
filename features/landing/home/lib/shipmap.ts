@@ -1,9 +1,10 @@
 /* Simplified map geometry for the example shipments (ShipmentJourney): five illustrative routes, one per regulation.
    Hand-drawn in our own code from rough coordinates (no copied assets, no survey data). Illustration, not to scale.
    Projection: equirectangular, scaled by cos(25°) so shapes look right at this latitude band.
-   Coastline provenance: typed by hand from memory of the coast's rough shape (round 14, item 6); not traced from any map. */
+   Coastlines: Natural Earth 1:50m land (public domain), lib/landfine.ts. Sea lanes: lib/sealanes.ts, generated off the land (scripts/gen-sealanes.mjs). */
 import { sunflower } from "./phyllotaxis";
-import { landRings } from "./landdata";
+import { fineRings } from "./landfine";
+import { SEA_LANES } from "./sealanes";
 
 const WEST = -84, NORTH = 56;
 const COS0 = Math.cos((25 * Math.PI) / 180);
@@ -18,10 +19,14 @@ export function project(lon: number, lat: number): Pt {
   return [(lon - WEST) * COS0 * K, (NORTH - lat) * K];
 }
 
-/* r22-4: land from Natural Earth 1:50m (public domain), simplified; see lib/landdata.ts and LICENSES.md. COAST_D draws the crisp 1px coastlines and
-   the same closed outlines are filled with a light land wash. GRAT_D is a faint graticule every 30 degrees. */
-const ringD = (r: [number, number][]) => r.map(([lo, la], i) => { const [x, y] = project(lo, la); return `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`; }).join("") + "Z";
-export const COAST_D = landRings().map(ringD).join("");
+/* r59-5: land from Natural Earth 1:50m (public domain), simplified to 0.025 degrees (lib/landfine.ts). Every ring is kept as projected points with its box, so the map can
+   redraw only the rings in view, at the camera's scale, every frame (never a bitmap that is scaled). GRAT_D is a faint graticule every 30 degrees. */
+export type LandRing = { pts: Pt[]; x0: number; y0: number; x1: number; y1: number };
+export const LAND: LandRing[] = fineRings().map((r) => {
+  const pts = r.map(([lo, la]) => project(lo, la));
+  const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+  return { pts, x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) };
+});
 export const GRAT_D = (() => {
   let d = "";
   for (let lo = -180; lo <= 180; lo += 30) { const [x0, y0] = project(lo, 75), [x1, y1] = project(lo, -60); d += `M${x0.toFixed(1)} ${y0.toFixed(1)}L${x1.toFixed(1)} ${y1.toFixed(1)}`; }
@@ -32,44 +37,12 @@ export const GRAT_D = (() => {
 // the drawn world, so the dot field and the grid cover every framing (world units)
 export const WORLD = { x: -420, y: -260, w: 2500, h: 1000 };
 
-// the five routes, [lon, lat] in order along the sea: each one is a list of waypoints kept off the land
-const ROUTE_EUDR: Pt[] = [
-  [-80.0, -2.2], [-81.2, -2.5], [-81.5, 1.0], [-80.2, 6.0], [-79.55, 8.8], [-79.9, 9.35],
-  [-79.2, 9.9], [-76.5, 11.3], [-70.0, 12.8], [-65.5, 17.2], [-61.5, 19.8], [-55.0, 25.0], [-45.0, 33.0],
-  [-32.0, 40.0], [-22.0, 45.0], [-13.0, 48.5], [-6.5, 49.8], [-3.0, 49.5], [-0.5, 49.7], [1.2, 50.9], [2.5, 51.2], [3.6, 51.35], [4.35, 51.25],
-];
-// Suez and the Mediterranean, shared by the Asian routes
-const RED_SEA: Pt[] = [
-  [42.0, 14.5], [41.0, 18.0], [39.0, 21.5], [38.2, 24.0], [35.5, 28.0], [33.2, 28.5], [32.6, 29.9], [32.4, 31.1], [32.2, 31.6],
-];
-const MED: Pt[] = [
-  [27.0, 33.2], [24.5, 34.5], [21.5, 35.8], [18.0, 35.5], [15.5, 35.0], [11.8, 36.0], [9.0, 37.5], [5.0, 37.5], [2.5, 38.5], [0.5, 38.4],
-];
-const MED_TO_GIBRALTAR: Pt[] = [[-1.5, 37.0], [-4.0, 36.4], [-5.6, 36.0]];
-const ATLANTIC_NORTH: Pt[] = [
-  [-7.0, 36.0], [-9.6, 37.0], [-10.2, 39.5], [-9.8, 43.5], [-6.0, 47.5], [-6.5, 49.0], [-3.0, 49.6], [-0.5, 49.7], [1.2, 50.9], [2.5, 51.2], [3.6, 51.35],
-];
-const NORTH_SEA_TO_HAMBURG: Pt[] = [[3.0, 52.9], [4.8, 54.0], [7.8, 54.2], [8.7, 53.95], [9.5, 53.7], [9.95, 53.52]];
-const ROUTE_CBAM: Pt[] = [
-  [72.2, 18.6], [68.5, 19.5], [64.5, 19.5], [61.0, 18.5], [57.5, 15.8], [52.5, 14.0], [49.0, 12.0], [45.0, 11.0], [43.3, 12.0],
-  ...RED_SEA, ...MED, ...MED_TO_GIBRALTAR, ...ATLANTIC_NORTH, [4.05, 51.95],
-];
-const ROUTE_DPP: Pt[] = [
-  [122.3, 29.6], [121.5, 27.5], [120.5, 25.0], [119.0, 23.8], [116.0, 21.5], [112.0, 19.5], [110.0, 14.5], [109.0, 11.0], [107.0, 8.5],
-  [104.5, 6.5], [104.0, 4.0], [104.2, 1.2], [102.0, 2.8], [100.0, 4.3], [98.0, 6.0], [95.3, 6.5], [92.0, 7.5], [88.0, 6.5], [82.0, 5.5],
-  [78.0, 6.0], [74.0, 9.5], [73.0, 10.5], [70.0, 15.0], [68.0, 18.0], [64.0, 20.5], [60.5, 19.5], [57.5, 15.8], [52.5, 14.0], [49.0, 12.0],
-  [45.0, 11.0], [43.3, 12.0], ...RED_SEA, ...MED, ...MED_TO_GIBRALTAR, ...ATLANTIC_NORTH, ...NORTH_SEA_TO_HAMBURG,
-];
-const ROUTE_REACH: Pt[] = [
-  [-94.9, 29.4], [-94.6, 29.2], [-93.0, 28.8], [-90.0, 28.5], [-88.0, 28.8], [-86.5, 25.5], [-84.5, 24.0], [-82.0, 24.2], [-81.0, 24.0],
-  [-79.0, 28.0], [-76.5, 31.0], [-73.5, 35.5], [-70.0, 38.0], [-66.0, 40.5], [-60.0, 43.0], [-50.0, 44.0], [-40.0, 45.0], [-30.0, 46.5],
-  [-20.0, 48.0], [-12.0, 48.8], [-8.5, 49.6], [-6.0, 49.8], [-3.0, 49.6], [-0.5, 49.7], [1.2, 50.9], [2.5, 51.2], [3.6, 51.35], [4.35, 51.25],
-];
-const ROUTE_PPWR: Pt[] = [
-  [107.6, 10.2], [106.5, 8.5], [104.5, 7.0], [103.5, 5.0], [102.0, 2.8], [100.0, 4.3], [98.0, 6.0], [95.3, 6.5], [92.0, 7.5], [88.0, 6.5],
-  [82.0, 5.5], [78.0, 6.0], [74.0, 9.5], [73.0, 10.5], [70.0, 15.0], [68.0, 18.0], [64.0, 20.5], [60.5, 19.5], [57.5, 15.8], [52.5, 14.0],
-  [49.0, 12.0], [45.0, 11.0], [43.3, 12.0], ...RED_SEA, ...MED, [-0.1, 39.2], [-0.32, 39.45],
-];
+// the five routes, [lon, lat] along real sea lanes (lib/sealanes.ts: shortest sea paths off the land, through Panama, Suez, Gibraltar, the Channel, Singapore)
+const ROUTE_EUDR = SEA_LANES.eudr! as Pt[];
+const ROUTE_CBAM = SEA_LANES.cbam! as Pt[];
+const ROUTE_DPP = SEA_LANES.dpp! as Pt[];
+const ROUTE_REACH = SEA_LANES.reach! as Pt[];
+const ROUTE_PPWR = SEA_LANES.ppwr! as Pt[];
 
 // the framing: fit the route's box (with a margin) into the viewport; the camera zooms in on the ship from there
 export type Frame = { cx: number; cy: number; s: number };

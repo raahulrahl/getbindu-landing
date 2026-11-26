@@ -5,20 +5,19 @@
  * and the intro state on the wrapper before first paint, so nothing flashes.
  */
 
-import { IBM_Plex_Mono } from "next/font/google";
+import { Work_Sans } from "next/font/google";
 import { LandingJsonLd } from "../../landing-chrome";
 
-const plexMono = IBM_Plex_Mono({
+// r65-18: one font for the whole homepage, Work Sans (SIL OFL, variable weight), chosen by Austin from the font trial; replaces Newsreader.
+const workSans = Work_Sans({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-plex-mono",
+  style: ["normal", "italic"],
+  variable: "--font-work-sans",
   display: "swap",
-  // the arrow (U+2192) is not in the Latin subset; let it fall to the system mono face, as the mockup does, not to a metric-adjusted Arial
-  adjustFontFallback: false,
 });
 
-// Light unless the reader chose dark; the intro plays unless reduced motion is on.
-const PRE_PAINT = `(function(){var r=document.currentScript.parentElement;try{r.dataset.theme=localStorage.getItem("bindu-theme")==="dark"?"dark":"light"}catch(e){}if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){r.setAttribute("data-rm","")}else{r.dataset.intro="on"}})()`;
+// Light unless the reader chose dark; the intro plays unless reduced motion is on or the screen is a phone (under 768px), where the hero paints at once.
+const PRE_PAINT = `(function(){var r=document.currentScript.parentElement;try{r.dataset.theme=localStorage.getItem("bindu-theme")==="dark"?"dark":"light"}catch(e){}if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){r.setAttribute("data-rm","")}else if(window.innerWidth<768){r.dataset.intro="off"}else{r.dataset.intro="on"}})()`;
 
 export default function HomeLayout({
   children,
@@ -29,7 +28,7 @@ export default function HomeLayout({
     <>
       <LandingJsonLd />
       <div
-        className={`bindu-home ${plexMono.variable}`}
+        className={`bindu-home ${workSans.variable}`}
         data-theme="light"
         suppressHydrationWarning
       >

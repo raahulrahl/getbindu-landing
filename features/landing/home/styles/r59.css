@@ -1,0 +1,35 @@
+/* Round 59 (component review with Austin). Item 1: the hero. Title size, weight, tracking and line height are in site.css and tokens.css. */
+@media (min-width: 768px) {
+  /* the title may be wider than the 1200px container (it is up to 120px type), never wider than the window */
+  .bindu-home .hero .hero-in > .hero-h { width: min(calc(100vw - 2 * var(--gutter)), 1400px); margin-inline: calc((100% - min(calc(100vw - 2 * var(--gutter)), 1400px)) / 2); max-width: none; }
+  .bindu-home .hero .hero-in > .hero-sub { max-width: 62rem; font-size: clamp(20px, 1.7vw, 24px); line-height: 1.45; text-wrap: balance; }
+}
+/* charcoal on light, on-dark-mute on dark (adaptation 2 colours) */
+.bindu-home .hero .hero-sub.t-body-lg.t-soft { color: var(--on-dark-mute); }
+.bindu-home[data-theme="light"] .hero .hero-sub.t-body-lg.t-soft { color: var(--on-dark-body); }
+.bindu-home .hero-w { display: inline-block; }
+
+/* r60-2 (bolder, inside the system): the section lead lines and the Full Circle label sit one step darker (charcoal on light, 85% white on dark),
+   as the hero sub-line already does, so the leads read as part of the title instead of as footnotes. Pricing, FAQ, finale and footer untouched. */
+.bindu-home .band-dark .fl-lead.t-body-lg.t-soft, .bindu-home .band-dark .th-lead.t-body-lg.t-soft, .bindu-home .ship .sec-head .ship-sub, .bindu-home .rl-lead { color: var(--on-dark-body); }
+.bindu-home .th-kicker { color: var(--on-dark-body); }
+/* the rules row dims the tiles away from the focus, but never below the body grey */
+.bindu-home .rl-view[data-hot] .rl-tile:not(.is-hot) .rl-t { color: var(--on-dark-body); }
+
+/* r60-4 (apple-design): the two other accessibility media signals next to reduced motion. Reduced transparency: the blur layers behind the section
+   windows become the plain canvas fill they already feather into (no backdrop filter). More contrast: hairlines and the muted greys step up one level. */
+@media (prefers-reduced-transparency: reduce) {
+  .bindu-home :is(.stmt > .container, .fl-win, .th-win, .vc-win, .rl, .r6-pricing > .container, .container.faq)::before { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--canvas); }
+}
+@media (prefers-contrast: more) {
+  .bindu-home, .bindu-home[data-theme="light"] { --hairline-dark: var(--hairline-strong); --hairline-light: var(--hairline-strong); --on-dark-mute: var(--on-dark-body); --ink-mute: var(--ink-body); }
+}
+
+/* r60-5 (better-ui): colour transitions are suspended for the frame the theme changes in (lib/theme.ts adds and removes the class) */
+.bindu-home.theme-swap, .bindu-home.theme-swap *, .bindu-home.theme-swap *::before, .bindu-home.theme-swap *::after { transition: none !important; }
+
+/* r60-6: the testimonial dots are 26px hit areas around a 10px dot; touch gets the 44px minimum (the dot itself does not change) */
+@media (pointer: coarse) { .bindu-home .vc-dot { width: 44px; height: 44px; } }
+
+/* r60-7 (consistency): the shipment lead had -0.02em tracking, every other lead is 0 */
+.bindu-home .ship .sec-head .ship-sub { letter-spacing: 0; }

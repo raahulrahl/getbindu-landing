@@ -30,6 +30,7 @@ import "./globals.css";
 // PingFang SC (macOS) / Microsoft YaHei (Windows) / Noto Sans CJK SC (Linux).
 const geist = Geist({
   subsets: ["latin"],
+  preload: false, // the homepage does not use it; other pages load it on use
   variable: "--font-sans",
   fallback: [
     "-apple-system",
@@ -67,6 +68,7 @@ const inter = Inter({
 // the rare mixed case correctly.
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
+  preload: false, // the homepage does not use it; other pages load it on use
   variable: "--font-mono",
   fallback: [
     "ui-monospace",
@@ -82,6 +84,7 @@ const jetbrainsMono = JetBrains_Mono({
 // fallback metrics, same as Inter.
 const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
+  preload: false, // the homepage does not use it; other pages load it on use
   style: ["normal", "italic"],
   variable: "--font-serif",
   fallback: [
@@ -100,6 +103,7 @@ const sourceSerif = Source_Serif_4({
 // display headlines (e.g. "Ship to Europe without the <em>compliance bill.</em>").
 const newsreader = Newsreader({
   subsets: ["latin"],
+  preload: false, // the homepage does not use it; other pages load it on use
   style: ["normal", "italic"],
   axes: ["opsz"],
   variable: "--font-display",

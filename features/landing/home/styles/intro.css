@@ -22,10 +22,7 @@
 /* ---- hero: transparent, so the stage shows through. Its headline, sub-line, buttons and the nav wait for the intro ---- */
 .bindu-home .hero.band-dark { background: transparent; }
 .bindu-home .hero-h:focus { outline: none; }
-.bindu-home .hero-sub, .bindu-home .hero-in .cta { transition: opacity 500ms var(--ease-out) 620ms, transform 500ms var(--ease-out) 620ms; }
-.bindu-home[data-intro="on"] .hero-h .hw-i { animation: none; transform: translateY(105%); }
-.bindu-home[data-intro="off"] .hero-h .hw-i { animation-duration: 700ms; }   /* the headline reveals word by word, delays set inline */
-.bindu-home[data-intro="on"] .hero-sub, .bindu-home[data-intro="on"] .hero-in .cta { opacity: 0; transform: translateY(14px); }
+/* r54: the headline, sub-line and CTA are revealed by GSAP (components/Hero.tsx, the 30px fade-up); no hidden states here */
 .bindu-home .nav { transition: background-color var(--t-base) var(--ease-out), border-color var(--t-base) var(--ease-out), transform 450ms var(--ease-out) 540ms, opacity 450ms var(--ease-out) 540ms; }
 .bindu-home[data-intro="on"] .nav { opacity: 0; transform: translateY(-100%); }
 
@@ -41,7 +38,7 @@
 
 
 @media (prefers-reduced-motion: reduce) {
-  .bindu-home .stage-cam, .bindu-home .stage-ui, .bindu-home .intro-gl, .bindu-home .intro > *, .bindu-home .hero-sub, .bindu-home .hero-in .cta, .bindu-home .nav { transition: none; }
+  .bindu-home .stage-cam, .bindu-home .stage-ui, .bindu-home .intro-gl, .bindu-home .intro > *, .bindu-home .nav { transition: none; }
 }
 
 

@@ -1,7 +1,6 @@
 /* round 10 item 1: the hero has no box behind its copy. The soft radial fade is drawn on the map canvas (MapLayer.tsx,
    shade()); here only the text-shadow and the phone overrides that used to add a solid block. */
-.bindu-home .hero-h, .bindu-home .hero-sub { text-shadow: 0 0 2px rgb(var(--canvas-rgb) / 0.6), 0 1px 16px rgb(var(--canvas-rgb) / 0.5); }
-.bindu-home .scene-label { text-shadow: 0 0 6px rgb(var(--canvas-rgb) / 0.85); }
+/* r61-9: no text-shadow anywhere (DESIGN.md: no shadows); the halo drawn on the map canvas is the only legibility aid (MapLayer.tsx, buildVeil: title 0.8, sub-line 0.8, caption 0.75) */
 /* phones: the Illustration caption sits on the fade, with no solid chip */
 @media (max-width: 599px) { .bindu-home .scene-label { background: none; padding: 0; } }
 /* tablets and phones: the top scrim is a soft falloff, not a solid band */

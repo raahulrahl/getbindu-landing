@@ -6,7 +6,7 @@
    the regulation control is a segmented track with a sliding cobalt indicator. */
 
 /* the pinned stage: the head on top, the map and the milestones below, one window */
-.bindu-home .ship .sec-head { max-width: none; margin: 0; padding: 0; gap: var(--s-3); }
+.bindu-home .ship .sec-head { max-width: 900px; margin: 0 auto; padding: 0; gap: var(--s-3); }   /* r54: centred head: title, story line, tabs, status */
 .bindu-home .ship-pin { position: relative; height: 420vh; height: 420svh; }   /* r30-1: 340 for the route plus 80 of pinned scroll for the hand-off to the guide ship (ShipmentJourney TAIL) */
 .bindu-home .ship-stage { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); max-width: 1320px; margin: 0 auto; padding: 0 var(--gutter);
   display: flex; flex-direction: column; justify-content: center; gap: var(--s-5); }
@@ -20,7 +20,7 @@
    with the viewport height (svh): the sizes below only drop below their usual values on short screens. */
 .bindu-home .ship-stage { gap: clamp(8px, 2svh, 24px); }
 .bindu-home .ship .sec-head { gap: clamp(4px, 1.1svh, 12px); }
-.bindu-home .ship .sec-head h2 { font-size: min(var(--display-md), 6svh); }
+.bindu-home .ship .sec-head h2 { font-size: min(var(--display-lg), 6svh); }
 .bindu-home .ship .sec-head .t-soft { margin: 0; font-size: clamp(14px, 2.1svh, var(--body)); line-height: 1.4; }
 .bindu-home .ship-cap { margin-top: clamp(6px, 1.6svh, 16px); }
 
@@ -52,8 +52,7 @@
 .bindu-home .ship .ship-label text { font: 500 10px/1 var(--font-mono); letter-spacing: 0.04em; fill: var(--on-dark-mute); }   /* map labels are labels inside an illustration: mono stays */
 .bindu-home .ship .ship-readout { font: 500 10px/1 var(--font-mono); letter-spacing: 0.08em; fill: var(--on-dark-mute); }
 
-.bindu-home .ship-cap { margin: var(--s-4) 0 0; display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; font: 400 13px/1.4 var(--font-sans); color: var(--on-dark-mute); }
-.bindu-home .ship-cap .chip { font-size: 11px; }
+.bindu-home .ship-cap { margin: var(--s-4) 0 0; display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; font: 400 var(--caption)/1.4 var(--font-sans); color: var(--on-dark-mute); }
 
 .bindu-home .ship-list { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(0px, 0.5svh, 4px); }
 .bindu-home .ship-ms { display: grid; grid-template-columns: 1fr; gap: 12px; padding: clamp(5px, 1.35svh, 14px) 0; border-top: 1px solid var(--hairline-dark); color: var(--on-dark-mute);
@@ -88,8 +87,8 @@
   .bindu-home .ship-cap { margin-top: var(--s-3); font-size: 12px; }
   .bindu-home .ship-list { gap: 0; }
   .bindu-home .ship-ms { padding: 8px 0; }
-  .bindu-home .ship-ms h3 { font-size: 15px; }
-  .bindu-home .ship-ms p { font-size: 13px; }
+  .bindu-home .ship-ms h3 { font-size: var(--body-sm); }
+  .bindu-home .ship-ms p { font-size: var(--caption); }
   .bindu-home .ship-pin:not(.is-static) .ship-ms:not([data-state="current"]) p { display: none; }   /* keeps the stack inside one screen */
   .bindu-home .ship-pin.is-static .ship-stage { padding-bottom: var(--section-y); }
 }
@@ -104,12 +103,10 @@
   .bindu-home .ship-pin:not(.is-static) .ship-stage { gap: 6px; padding-top: 8px; padding-bottom: 52px; }   /* the bottom space clears the Mockup pill */
   .bindu-home .ship .sec-head { gap: 4px; }
   .bindu-home .ship .sec-head h2 { font-size: min(20px, 4svh); line-height: 1.1; }
-  .bindu-home .ship .sec-head .t-soft { font-size: 13px; line-height: 1.35; }
-  .bindu-home .ship .ship-chips .chip { height: 22px; }
+  .bindu-home .ship .sec-head .t-soft { font-size: var(--caption); line-height: 1.35; }
   .bindu-home .ship-pin:not(.is-static) .ship-cols { gap: 6px; }
   .bindu-home .ship-pin:not(.is-static) .ship-svg { width: clamp(150px, calc((100svh - 517px) * 1.4557), 100%); }
-  .bindu-home .ship-pin:not(.is-static) .ship-cap { margin-top: 4px; gap: 6px; font-size: 10.5px; line-height: 1.25; }
-  .bindu-home .ship-pin:not(.is-static) .ship-cap .chip { height: 20px; font-size: 10px; }
+  .bindu-home .ship-pin:not(.is-static) .ship-cap { margin-top: 4px; gap: 6px; font-size: 12px; line-height: 1.25; }
   .bindu-home .ship-pin:not(.is-static) .ship-list { grid-template-columns: 1fr 1fr; column-gap: 12px; }
   .bindu-home .ship-pin:not(.is-static) .ship-ms { grid-template-columns: 1fr; gap: 6px; padding: 4px 0; }
   .bindu-home .ship-pin:not(.is-static) .ship-ms h3 { font-size: 12px; line-height: 1.25; }
@@ -118,7 +115,7 @@
   .bindu-home .ship-pin:not(.is-static) .ship-now.is-coming { border-top-style: dashed; color: var(--on-dark); }
 }
 
-.bindu-home .ship .ship-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.bindu-home .ship .ship-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 
 /* round 15, item 7: colours. Route lines in bright cobalt (deeper on light); the cargo icon and the milestone markers in
    yellow, with the darker outline on light (--ship-outline is transparent on dark). In build stories end in "coming":
@@ -137,7 +134,7 @@
 .bindu-home .ship .ship-ms.is-coming h3 { font-weight: 500; }
 
 /* round 15 item 14: the control sits in the head; its width is capped */
-.bindu-home .ship .ship-seg { max-width: 720px; }
+.bindu-home .ship .ship-seg { max-width: 900px; }
 
 /* ---------- round 19, item 6: a paper chart in the page's own tokens (both themes), the guide ship, notes along the route ---------- */
 .bindu-home .ship .ship-coast { stroke: var(--line-ink); stroke-width: 1; stroke-dasharray: none; stroke-linecap: round; stroke-linejoin: round; opacity: 0.7; }
@@ -148,7 +145,7 @@
 .bindu-home .ship .ship-note.is-coming text { fill: var(--on-dark-body); }
 .bindu-home .ship .ship-tick { fill: none; stroke: var(--cobalt-signal); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .bindu-home .ship .ship-chips { gap: var(--s-4); }
-.bindu-home .ship-status { display: inline-flex; align-items: center; gap: 7px; font: 500 13px/1.2 var(--font-sans); color: var(--on-dark-body); }
+.bindu-home .ship-status { display: inline-flex; align-items: center; gap: 7px; font: 500 var(--caption)/1.2 var(--font-sans); color: var(--on-dark-body); }
 .bindu-home .ship-status b { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .bindu-home .ship-status.is-live b { background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); }
 .bindu-home .ship-status.is-build b { border: 1px dashed var(--on-dark-mute); }
@@ -170,8 +167,8 @@
 
 /* r22-12: the journey title steps up one size (display-lg, still limited by the screen height so the section fits one window); the story line is body-lg in full ink */
 .bindu-home .ship .sec-head h2 { font-size: min(var(--display-lg), 6.6svh); }
-.bindu-home .ship .sec-head .ship-sub { margin: 0; max-width: 60ch; color: var(--on-dark); font-size: clamp(15px, 2.3svh, 20px); line-height: 1.4; }
-@media (max-width: 600px) { .bindu-home .ship .sec-head h2 { font-size: min(24px, 4.4svh); } .bindu-home .ship .sec-head .ship-sub { font-size: 13px; line-height: 1.35; } }
+.bindu-home .ship .sec-head .ship-sub { margin: 0; max-width: 56ch; color: var(--on-dark-mute); font-size: clamp(15px, 2.3svh, 20px); line-height: 1.35; letter-spacing: -0.02em; }
+@media (max-width: 600px) { .bindu-home .ship .sec-head h2 { font-size: min(24px, 4.4svh); } .bindu-home .ship .sec-head .ship-sub { font-size: var(--caption); line-height: 1.35; } }
 
 /* r23-5: the map fills the content container exactly (no bleed) */
 
@@ -184,7 +181,7 @@
    in body-sm in the soft ink token (max 32ch). The current step's title is cobalt with a small yellow dot; past steps are muted but readable (on-dark-body, AA); steps not yet
    reached are not shown (the script keeps them at opacity 0). */
 .bindu-home .ship-txt .ship-note { display: grid; gap: 3px; width: max-content; max-width: min(32ch, 36vw); white-space: normal; text-align: left; color: var(--on-dark-body); }
-.bindu-home .ship-txt .ship-note::before { content: ""; position: absolute; z-index: -1; inset: -4px -8px; border-radius: 10px; background: color-mix(in srgb, var(--canvas) 78%, transparent); filter: blur(4px); }
+.bindu-home .ship-txt .ship-note::before { content: ""; position: absolute; z-index: -1; inset: -4px -8px; border-radius: var(--r-md); background: color-mix(in srgb, var(--canvas) 78%, transparent); filter: blur(4px); }
 .bindu-home .ship-txt .ship-note b { font: 600 var(--body)/1.25 var(--font-sans); color: var(--on-dark); letter-spacing: var(--track-sm); }
 .bindu-home .ship-txt .ship-note i { font: 400 var(--body-sm)/1.35 var(--font-sans); font-style: normal; color: var(--on-dark-body); max-width: 32ch; }
 .bindu-home .ship-txt .ship-note[data-state="current"] b { color: var(--cobalt-signal); }
@@ -200,3 +197,11 @@
 .bindu-home .ship-ms[data-state="done"] h3 { color: var(--on-dark-body); }
 .bindu-home .ship-ms p, .bindu-home .ship-ms[data-state="done"] p { color: var(--on-dark-body); }
 .bindu-home .ship-pin:not(.is-static) .ship-ms[data-state="next"] { opacity: 0; }
+
+/* r58: the map stage has its own solid ground, so the page's background dots never show through it; no blur or filter on the stage itself */
+.bindu-home .ship-svg { background: var(--canvas); }
+/* the head and the caption sit on a plain canvas fill with feathered edges (no filter), so their text never lies on the page dots */
+.bindu-home .ship .sec-head, .bindu-home .ship-cap { position: relative; isolation: isolate; }
+.bindu-home .ship .sec-head::before, .bindu-home .ship-cap::before { content: ""; position: absolute; z-index: -1; inset: -16px -48px; pointer-events: none; background: var(--canvas);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(to bottom, transparent, #000 14px, #000 calc(100% - 14px), transparent); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(to bottom, transparent, #000 14px, #000 calc(100% - 14px), transparent); mask-composite: intersect; }

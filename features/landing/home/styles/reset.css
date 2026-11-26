@@ -3,7 +3,7 @@
    homepage wrapper those resets are rolled back first. Loaded before tokens.css: every sheet after it has the same or a
    higher specificity and wins where it declares a value. */
 .bindu-home *, .bindu-home ::before, .bindu-home ::after { margin: revert; padding: revert; border: revert; }
-.bindu-home :is(h1, h2, h3, h4, h5, h6) { font-family: revert; font-size: revert; font-weight: revert; letter-spacing: revert; line-height: revert; }
+.bindu-home :is(h1, h2, h3, h4, h5, h6) { font-family: var(--font-display); font-size: revert; font-weight: 500; letter-spacing: -0.01em; line-height: revert; }
 .bindu-home a { color: revert; text-decoration: revert; }
 .bindu-home :is(img, svg, video, canvas, audio, iframe, embed, object) { vertical-align: revert; }
 .bindu-home :is(button, input, select, optgroup, textarea) { font: revert; letter-spacing: revert; color: revert; background-color: revert; border-radius: revert; opacity: revert; font-feature-settings: revert; font-variation-settings: revert; }

@@ -1,33 +1,32 @@
-/* Bindu v3 design tokens. Source of truth: v3/DESIGN.md (x.ai base + Together AI structure + Apple polish).
-   Brand hexes are PLACEHOLDERS until Raahul sends the main app's exact yellow and cobalt (see v3/DECISIONS.md #1).
-   Contrast figures are WCAG 2.x ratios, measured. */
-
-/* ---------- fonts (round 16): the only two families on the site ----------
-   Inter (display and body; 400, 500, 600) and IBM Plex Mono (labels, buttons, numbers; 400, 500). Both SIL OFL 1.1.
-   Self-hosted from v3/public/fonts (latin, woff2). No other font-family is declared anywhere. */
+/* Bindu homepage tokens, r55 (DESIGN.md v4): the Ollama DESIGN.md exactly, plus the adaptation list at its end.
+   Token NAMES are the old ones (hundreds of rules use them); only the values changed. Neutrals, type, radii and spacing are
+   Ollama's. The two accents Austin kept are yellow (Book a demo, Live chip, proof and ship dots, the finale i, map shipments)
+   and cobalt (route lines, progress, active markers, inline links, active nav and tabs, focus ring). Nothing else is coloured.
+   Fonts (adaptation 1): r65-18, one font everywhere: Work Sans (OFL, variable, via next/font), replacing r65-1's Newsreader,
+   for headings, body and UI (Austin: "the whole site must have the same font"); code ui-monospace. IBM Plex Mono is retired. */
 
 /* ---------- colour channels (round 13) ----------
    Every colour in the site is a token or one of these RGB channel triplets. The dark values below are the 5182 values;
    [data-theme="light"] (end of this file) changes only colour values, never a size, space or position. */
 .bindu-home {
-  --fg-rgb: 255 255 255;            /* "white" overlays on dark (hairlines, veils, dots): navy on light */
+  --fg-rgb: 255 255 255;            /* "white" overlays on dark (hairlines, veils, dots): black on light */
   --canvas-rgb: 10 10 10;           /* the page colour, used for shades and halos over the map */
-  --ink-rgb: 10 10 10;              /* "black" overlays on light bands */
+  --ink-rgb: 0 0 0;              /* "black" overlays on light bands */
   --shade-rgb: 0 0 0;               /* shadows and the dialog backdrop */
   --cobalt-rgb: 61 123 255;         /* the cobalt signal, as channels for alpha tints */
   --brand-cobalt-rgb: 0 71 171;     /* the brand cobalt (text and fills on light) */
-  --yellow-rgb: 255 212 0;          /* the brand yellow */
-  --plot-bg: #070B16;               /* the small plot panel in How it works */
+  --yellow-rgb: 61 123 255;         /* r65-2: no yellow; the old "yellow" role is cobalt */
+  --plot-bg: #171717;               /* the small plot panel in How it works */
   --key-num: var(--on-dark);        /* r17: key numbers are plain text colour; yellow is reserved for the CTA and the dots */
 }
 
 .bindu-home {
   /* ---------- brand (placeholders) ---------- */
-  --brand-yellow: #FFD400;          /* one filled pill per view, Live chips, key numbers. 13.8:1 on canvas; never text on white (1.4:1) */
+  --brand-yellow: #2F66E0;          /* r65-2: historic name, the primary fill is cobalt (white label 5.1:1). Was: one filled pill per view, Live chips, key numbers. 13.8:1 on canvas; never text on white (1.4:1) */
   --brand-cobalt: #0047AB;          /* the system. Fills (white text 8.4:1), links + frames on white bands (8.4:1). Never small text on black (2.4:1) */
 
   /* derived steps (recompute from the real hexes when they arrive) */
-  --yellow-press: #E6BF00;          /* pressed fill */
+  --yellow-press: #2453BF;          /* pressed fill */
   --yellow-glow: transparent;
   --cobalt-signal: #3D7BFF;         /* lines, data trails, progress, active steps on black: 5.2:1 (UI graphics need 3:1) */
   --cobalt-deep: #0A1A3D;           /* glow cores, blueprint grid tint, app-frame wash on black */
@@ -37,75 +36,89 @@
   --cobalt-tint: rgb(var(--cobalt-rgb) / 0.12);   /* active fills, selected rows */
 
   /* ---------- neutrals: 90% of the page ---------- */
-  /* dark (x.ai) */
-  --canvas: #0A0A0A;                /* page */
-  --canvas-soft: #141416;           /* cards, app chrome on dark */
-  --canvas-mid: #1C1D21;            /* nested surfaces, hovered rows */
-  --hairline-dark: #26282D;         /* 1px dividers on dark */
-  --line-white-25: rgb(var(--fg-rgb) / 0.25); /* the outline-pill border */
-  --line-white-12: rgb(var(--fg-rgb) / 0.12); /* card border on dark */
-  --on-photo: #FFFFFF;              /* text on the finale photo (both themes): 15:1 on the photo's sky, AA on the dark gradient */
+  /* dark theme: only the file's own dark tokens (adaptation 3): canvas = surface-dark #171717, text = on-dark and on-dark-mute */
+  --canvas: #0A0A0A;                /* r65-2: page */
+  --canvas-soft: #161616;           /* cards and nested surfaces: white at 5% over #171717 */
+  --canvas-mid: #161616;            /* nested surfaces, hovered rows */
+  --hairline-dark: rgb(255 255 255 / 0.12);  /* 1px dividers and card borders on dark */
+  --hairline-strong: rgb(255 255 255 / 0.25);  /* the file hairline-strong, on dark */
+  --line-white-25: rgb(var(--fg-rgb) / 0.25);
+  --line-white-12: rgb(var(--fg-rgb) / 0.12);
+  --on-photo: #FFFFFF;              /* text on the finale photo (both themes) */
   --on-photo-body: rgb(255 255 255 / 0.86);
   --on-photo-mute: rgb(255 255 255 / 0.74);
   --on-photo-line: rgb(255 255 255 / 0.22);
-  --on-dark: #FFFFFF;               /* 19.8:1 */
-  --on-dark-body: #DADBDF;          /* 14.3:1 */
-  --on-dark-mute: #8A8E95;          /* 6.0:1, captions and eyebrows on dark */
+  --on-dark: #F2F2F2;               /* r65-2: every text colour is the one ink */
+  --on-dark-body: #F2F2F2;
+  --on-dark-mute: #F2F2F2;   /* on-dark-mute */
   --ship-outline: transparent;
-  --ship-fill: var(--brand-yellow);  /* shipment dots and routes: the brand yellow on dark */
+  --ship-fill: var(--cobalt-signal);   /* r65-2: shipments are cobalt */  /* shipment dots and routes: the brand yellow on dark */
   --route-line: var(--cobalt-signal);  /* round 15 item 7: route lines on the journey map: bright cobalt #3D7BFF on dark, deeper cobalt on light */
-  --yellow-outline: var(--brand-yellow);  /* the edge on yellow fills: same as the fill on dark, darker on light */      /* the darker edge round the yellow shipments: light theme only, dark draws none */
-  --on-cobalt: #F4F6FA;             /* off-white text on the cobalt fill (segmented control): 8.3:1 on --brand-cobalt */
-  /* light (Together reading bands, Apple parchment) */
-  --paper: #FFFFFF;
-  --paper-soft: #F5F5F7;            /* Apple parchment: alternate light band, cards on white */
-  --hairline-light: #E6E6E9;
+  --yellow-outline: var(--cobalt-signal);  /* the edge on yellow fills: same as the fill on dark, darker on light */      /* the darker edge round the yellow shipments: light theme only, dark draws none */
+  --on-cobalt: #FFFFFF;             /* off-white text on the cobalt fill (segmented control): 8.3:1 on --brand-cobalt */
+  /* light (the default): Ollama's neutrals */
+  --paper: #FFFFFF;                 /* canvas */
+  --paper-soft: #FAFAFA;            /* surface-soft */
+  --hairline-light: #E5E5E5;
   --line-black-12: rgb(var(--ink-rgb) / 0.12);
-  --ink: #0A0A0A;                   /* 19.8:1 on white */
-  --ink-body: #5C5F66;              /* 6.4:1 on white, 5.9:1 on parchment */
-  --ink-mute: #6B6E75;              /* 5.1:1 on white, 4.7:1 on parchment */
+  --ink: #000000;
+  --ink-body: #525252;              /* charcoal */
+  --ink-mute: #737373;              /* body grey (the file's #a3a3a3 mute is under 3:1 on white, so it is not used for text) */
 
   /* ---------- status ---------- */
-  --live-bg: var(--brand-yellow);   /* Live chip: yellow fill, ink text */
-  --live-fg: var(--ink);
+  --live-bg: var(--on-dark);        /* r65-2: Live chip is the ink fill with the canvas colour as its label */
+  --live-fg: var(--canvas);
   --build-line-dark: rgb(var(--fg-rgb) / 0.40); /* In build chip: dashed outline, no fill */
   --build-line-light: rgb(var(--ink-rgb) / 0.35);
 
   /* ---------- type ---------- */
-  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;     /* generic fallbacks only: no second family */
-  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+  --font-sans: var(--font-work-sans), "Work Sans", ui-sans-serif, system-ui, sans-serif;   /* r65-18: body and UI, Work Sans */
+  --font-display: var(--font-work-sans), "Work Sans", ui-sans-serif, system-ui, sans-serif;   /* r65-18: headings, the same face */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* scale: display weight 400 with negative tracking (x.ai); body 17px / 1.47 (Apple); mono caps labels (Together) */
-  --display-xl: clamp(48px, 6.6vw, 96px);        /* 48 -> 96 */
-  --display-lg: clamp(40px, 5vw, 72px);      /* 40 -> 72 */
-  --display-md: clamp(32px, 3.4vw, 48px);        /* 32 -> 48 */
-  --display-sm: clamp(24px, 2.2vw, 32px);      /* 24 -> 32 */
-  --display-xs: 20px;                         /* 20 */
-  --track-xl: -0.03em; --track-lg: -0.03em; --track-md: -0.025em; --track-sm: -0.015em;   /* r17: Notion-style tight display tracking */
-  --display-weight: 600;
-  --lh-display: 1.0; --lh-display-sm: 1.12;
-  --body-lg: 19px;  /* 19 */  --lh-body-lg: 1.5;
-  --body: 17px;     /* 17 */  --lh-body: 1.5;
-  --body-sm: 15px;  /* 15 */  --lh-body-sm: 1.45;
-  --caption: 13px;  /* 13 */
-  --mono-eyebrow: 12px;  /* 12, uppercase, +0.12em */
-  --mono-button: 13px; /* 13, uppercase, +0.06em, weight 500 */
-  --mono-chip: 11px;   /* 11, uppercase, +0.08em */
-  --mono-number: 14px;  /* 14, readouts */
+  /* the file's hierarchy table: display-xl 36/500/1.11, display-lg 30/500/1.2, heading-lg 24/600/1.33, heading-md 20, heading-sm 18, body 16/1.5, body-sm 14, caption 12; letter-spacing 0 */
+  --hero-h-size: clamp(48px, 8vw, 120px);          /* r56-1 (DESIGN.md adaptation 8): the hero title only; every other title keeps the file sizes */
+  --display-xl: var(--hero-h-size);
+  --display-lg: 36px;                            /* section titles (r56: 30 -> 36, Austin: type should make a statement) */
+  --display-md: 28px;                            /* heading-lg, +4 */
+  --display-sm: 22px;                            /* heading-md, +2 */
+  --display-xs: 20px;                            /* heading-sm, +2 */
+  --track-xl: 0; --track-lg: 0; --track-md: 0; --track-sm: 0;
+  --display-weight: 500;
+  --lh-display: 1.11; --lh-display-lg: 1.2; --lh-display-sm: 1.4;
+  --body-lg: 20px;  /* the lead (r56: 16 -> 20) */  --lh-body-lg: 1.5;
+  --body: 18px;     /* body-md (r56: 16 -> 18) */  --lh-body: 1.5;
+  --body-sm: 16px;  /* body-sm (r56: 14 -> 16) */  --lh-body-sm: 1.43;
+  --caption: 14px;  /* caption-sm (r56: 12 -> 14) */
+  --mono-eyebrow: 12px;
+  --mono-button: 16px;
+  --mono-chip: 12px;
+  --mono-number: 14px;  /* code-sm */
 
   /* ---------- space (4px base) ---------- */
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 80px; --s-10: 120px;
-  --section-y: clamp(80px, 11vw, 160px);   /* Apple-generous band padding */
+  --section-y: 48px;                       /* the file: 88px desktop, 64px tablet, 48px mobile (below) */
+  --lead-gap: 32px;                        /* head to content: 32px (spacing.xxl) */
   --container: 1200px;
   --gutter: clamp(16px, 4vw, 32px);
 
   /* ---------- shape ---------- */
-  --r-sm: 12px;         /* r17: cards, inputs (Notion) */
-  --r-lg: 16px;         /* r17: large containers */
-  --r-pill: 9999px;     /* r17: pills for CTAs (and status chips) only */
+  /* r54 (DESIGN.md v3 section 3, Sublime's scale). Round shapes only for dots and icon buttons. The old names are kept and remapped. */
+  --r-xs: 6px;          /* rounded.sm: code chips, command tags */
+  --r-sm: 8px;          /* rounded.md: dropdown panels, small surfaces */
+  --r-md: 12px;         /* rounded.lg: cards */
+  --r-lg: 12px;         /* cards and panels: the file has one card radius */
+  --r-xl: 12px;
+  --r-2xl: 12px;
+  --r-4xl: 12px;
+  --r-control: 6px;     /* r65-9 (Austin): every button, chip, tab, toggle and nav marker is a crisp rectangle with a small radius, no ovals */
+  --r-ui: 6px;
+  --r-hero: 12px;
 
   /* ---------- elevation: hairlines, not shadows ---------- */
-  --frame-shadow: none;   /* r17: cards are level 0, no shadow */
+  --frame-shadow: none;   /* the file: no shadows anywhere, a 1px hairline or the inverted surface */
+  --shadow-float: none;
+
   --glow-cobalt: none;   /* r17: glows removed */
   --glow-yellow: none;
 
@@ -113,17 +126,16 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);      /* expo-out: reveals, masks */
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);  /* scrubs, morphs */
   --t-fast: 160ms; --t-base: 320ms; --t-slow: 700ms; --t-scene: 1200ms;
-  --press-scale: 0.97;                             /* Apple's press micro-interaction, softened */
+  --press-scale: 1;                             /* Apple's press micro-interaction, softened */
   /* round 15 item 11: buttons and text links. One easing, two durations. No bounce. */
   --ease-ui: cubic-bezier(0.22, 1, 0.36, 1);
   --t-ui: 200ms;                                   /* colour wipe, arrow, underline */
-  --t-sheen: 600ms;                                /* the one sheen across the filled pill */
-  --link-wipe: var(--cobalt-signal);               /* text links: underline and the wiped text colour (deeper cobalt on light) */
+    --link-wipe: var(--cobalt-signal);               /* text links: underline and the wiped text colour (deeper cobalt on light) */
   --arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1 6h9M6.5 2.2 10.3 6 6.5 9.8' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");   /* a shape only: painted with currentColor tokens through a mask */
 
   /* ---------- sunflower / dot system (Bindu = dot) ---------- */
   --golden-angle: 137.50776deg;     /* phyllotaxis: dot n sits at n x golden angle, radius c*sqrt(n) */
-  --sun: var(--brand-yellow);       /* the completed sunflower = achievement / live */
+  --sun: var(--cobalt-signal);       /* the completed sunflower = achievement / live */
   --seed-pending: var(--cobalt-signal); /* dots still being gathered = the system at work */
   --dot-neutral: rgb(var(--fg-rgb) / 0.55); /* the single-dot divider */
   --mark-size-nav: 28px; --mark-size-foot: 40px;
@@ -135,11 +147,8 @@
 
 /* ---------- round 7: buttons and interaction (used by components.css and states.css) ---------- */
 .bindu-home {
-  --btn-h: 44px;                        /* every button and text-link row: one height */
-  --btn-px: 24px;                       /* generous side padding on pills */
-  --lift: -1px;                         /* hover: subtle lift */
-  --press-down: 1px;                    /* active: 1px press-down (bindu-design wins over the .97 scale) */
-  --nudge: 3px;                         /* arrow nudge on hover (text links use 2px) */
+  --btn-h: 36px;                        /* r54 v3: every button 36px from 768px; 44px on phones (mobile.css) */
+  --btn-px: 20px;                       /* the file: padding 8px 20px */
   --hover-fill-dark: rgb(var(--fg-rgb) / 0.06);
   --hover-fill-light: rgb(var(--ink-rgb) / 0.04);
   --hover-line-dark: rgb(var(--fg-rgb) / 0.6);
@@ -162,52 +171,54 @@
    Difault template (look only). Sizes, spaces and positions are the same as dark. AA contrast is listed in
    v3/DECISIONS.md (round 15, item 1). */
 .bindu-home[data-theme="light"] {
-  --fg-rgb: 14 26 48;               /* navy #14213D */
-  --canvas-rgb: 241 236 225;        /* #F5F1E8, the base */
-  --ink-rgb: 14 26 48;
-  --shade-rgb: 14 26 48;
+  --fg-rgb: 0 0 0;                  /* black overlays */
+  --canvas-rgb: 255 255 255;
+  --ink-rgb: 0 0 0;
+  --shade-rgb: 0 0 0;
   --cobalt-rgb: 31 85 196;
-  --yellow-rgb: 255 212 0;          /* #FFD400, same as dark; on light it carries a darker outline */
-  --brand-cobalt-rgb: 8 50 122;    /* #0A3A8C, darker cobalt for links, text and active states */
-  --key-num: var(--brand-cobalt);
+  --yellow-rgb: 31 85 196;
+  --brand-cobalt-rgb: 8 50 122;
+  --key-num: var(--on-dark);
   --link-wipe: var(--brand-cobalt);
-  --plot-bg: #FBF9F4;
-  --canvas: #F1ECE1;
-  --canvas-soft: #FBF9F4;           /* cards and panels: a step lighter than the base */
-  --canvas-mid: #E7E1D3;            /* nested surfaces, hovered rows */
-  --hairline-dark: #CFC8B6;
-  --on-dark: #0E1A30;               /* navy text */
-  --on-dark-body: #25314C;
-  --on-dark-mute: #404B66;
-  --ship-outline: #8A6A00;          /* light only: the darker edge round the yellow shipments */
-  --ship-fill: #E0B000;             /* light only: deeper gold for shipment dots and routes */
-  --yellow-outline: #B38F00;        /* the darker outline on yellow fills on light */
-  --route-line: #08327A;            /* deeper cobalt for route lines on light */
-  --paper: #FBF9F4;                 /* light bands: the panel colour, not white */
-  --paper-soft: #E7E1D3;            /* the alternate band */
-  --hairline-light: #CFC8B6;
-  --ink: #0E1A30;
-  --ink-body: #2F3A56;
-  --ink-mute: #434E6A;
-  --brand-yellow: #FFD400;
+  --plot-bg: #FAFAFA;
+  --canvas: #FFFFFF;
+  --canvas-soft: #FAFAFA;           /* surface-soft */
+  --canvas-mid: #FAFAFA;
+  --hairline-dark: #E5E5E5;
+  --hairline-strong: #D4D4D4;
+  --on-dark: #111111;               /* r65-2: all text is the one ink */
+  --on-dark-body: #111111;
+  --on-dark-mute: #111111;
+  --ship-outline: transparent;
+  --ship-fill: #1F55C4;
+  --yellow-outline: #08327A;
+  --route-line: #08327A;
+  --paper: #FFFFFF;
+  --paper-soft: #FAFAFA;
+  --hairline-light: #E5E5E5;
+  --ink: #111111;
+  --ink-body: #111111;
+  --ink-mute: #111111;
+  --brand-yellow: #1F55C4;          /* r65-2: the primary fill is cobalt (white label 6.6:1) */
   --brand-cobalt: #08327A;
-  --yellow-press: #E6BF00;
+  --yellow-press: #184496;
   --cobalt-signal: #1F55C4;
   --cobalt-deep: #E4E8F2;
+  --on-cobalt: #FFFFFF;
 }
 
 /* ---------- round 15: the deep navy surface (same in both themes) ----------
    Used by the "Four documents become one record" illustration. Text on it is off-white (AA on #0B1630: body 11:1, mute 6.3:1). */
 .bindu-home {
-  --navy-surface: #0B1630;
-  --navy-card: #13223F;
-  --navy-hair: #2A3858;
-  --navy-text: #F1F4FA;
-  --navy-body: #C9D2E4;
-  --navy-mute: #96A3BE;
-  --navy-cobalt: #3D7BFF;           /* the connector lines on navy */
-  --navy-cobalt-bright: #9DBBFF;    /* the pulse travelling along a beam on navy */
-  --navy-yellow: #FFD400;           /* the one record */
+  --navy-surface: #171717;          /* r55: the one dark surface is surface-dark (the name is historic) */
+  --navy-card: #262626;
+  --navy-hair: rgb(255 255 255 / 0.12);
+  --navy-text: #FFFFFF;
+  --navy-body: rgb(255 255 255 / 0.85);
+  --navy-mute: rgb(255 255 255 / 0.7);
+  --navy-cobalt: #3D7BFF;
+  --navy-cobalt-bright: #9DBBFF;
+  --navy-yellow: #3D7BFF;
 }
 
 /* ---------- round 17: hand-drawn ink and the night band ----------
@@ -216,21 +227,27 @@
    --night-band is the one full-bleed navy band per page (the shipment journey); a little raised in dark so it still reads
    against #0A0A0A. Text on it uses the --navy-* tokens (both themes). */
 .bindu-home {
-  /* r29-7: the page's background bands (the sections sit on these; the page background crossfades between them as you scroll, lib/bands.ts) */
-  --band-canvas: var(--canvas);
-  --band-tint: color-mix(in srgb, var(--canvas) 90%, var(--cobalt-signal));   /* a pale cobalt tint of the page colour */
-  --band-panel: var(--canvas-soft);
-  --line-ink: #EDE8DA;
-  --night-band: #101D3C;
-  --proof-dot: var(--brand-yellow);
+  --line-ink: #FFFFFF;              /* r55: drawn lines are ink (white on dark, black on light) */
+  --night-band: #171717;
+  --proof-dot: var(--cobalt-signal);
   --stop: #FF6B5E;                  /* r23-1: the Stopped verdict, a clear red (dark theme) */
-  --board-pass: #3D7BFF;            /* r33-2: the departures board's Let-through tile (cobalt, the same in both themes) */
-  --board-stop: #FF6B5E;            /* r33-2: the departures board's Stopped tile (red, the same in both themes) */
-  --font-guide: var(--font-sans);
+  --board-pass: #3D7BFF;            /* r56-5: the Let through outcome, cobalt (AA on #171717) */
+  --board-stop: #FF6B5E;            /* r56-5: the Stopped outcome (AA on #171717) */
+  --font-guide: var(--font-display);
 }
 .bindu-home[data-theme="light"] {
-  --band-tint: #E3E8F3;             /* pale cobalt tint on ivory; navy text 14:1 */
-  --line-ink: #0E1A30;   /* r22-13: deeper navy ink lines */
+  --line-ink: #111111;
   --stop: #B42318;                  /* r23-1: the Stopped verdict on light (AA on the canvas) */
-  --night-band: #0B1630;
+  --board-pass: #08327A;            /* r56-5: Let through on light (11:1 on white) */
+  --board-stop: #B42318;            /* r56-5: Stopped on light (6.5:1 on white) */
+  --night-band: #171717;
 }
+
+/* the file's section rhythm: 48px phones, 64px tablet (from 640px), 88px desktop (from 1024px) */
+@media (min-width: 640px) { .bindu-home { --section-y: 64px; } }
+@media (min-width: 1024px) { .bindu-home { --section-y: 88px; } }
+
+/* r61-2: native controls (scrollbars, radios, the range slider) follow the theme. The `*` selector is needed because app/custom.css forces
+   `.landing-light *` to light, which would otherwise win on every descendant. */
+.bindu-home:not([data-theme="light"]), .bindu-home:not([data-theme="light"]) * { color-scheme: dark; }
+.bindu-home[data-theme="light"], .bindu-home[data-theme="light"] * { color-scheme: light; }

@@ -18,10 +18,11 @@ export const cta = {
 export const nav = {
   theme: { toDark: "Switch to dark theme", toLight: "Switch to light theme" },
   links: [
-    { t: "How it works", href: "#how" },
+    { t: "How it works", href: "#story" },
     { t: "Pricing", href: "#pricing" },
     { t: "FAQ", href: "#faq" },
   ],
+  regulations: "Regulations",
   menu: "Menu",
   close: "Close",
 };
@@ -29,12 +30,12 @@ export const nav = {
 /* the intro (components/Intro.tsx): the dot line, then one mono label, then the hand-off to the page */
 export const intro = {
   dot: "Every proof is a dot.",
-  tag: "BINDU · TRADE COMPLIANCE OS",
+  tag: "Bindu, trade compliance OS",
 };
 
 export const hero = {
-  title: ["Describe a shipment.", "Bindu handles the rules."],
-  sub: "Bindu works out which EU rules apply to your goods, gathers the proof from your suppliers and files it, whether you import six containers a year or six hundred.",
+  title: ["Ship it.", "Trace it.", "Bindu."],   /* r65-5: Austin's words */
+  sub: "Bindu works out which EU rules apply to your goods, gathers the proof from your suppliers and files it. Every line traces back to the supplier document behind it.",
   mono: "Six containers a year or six hundred.",
   artLabel: "Illustration: every proof is a dot. Together they make the filing.",
   pause: "Pause animation",
@@ -81,46 +82,6 @@ export const pains = {
   ],
 };
 
-export const how = {
-  eyebrow: "How it works",
-  title: "One sentence in. The proof comes back.",
-  frame: "Workspace · example shipment",
-  illus: "Illustration",
-  steps: [
-    { n: "01", t: "Describe", d: "Tell Bindu about the shipment in plain words. It works out which EU rules apply and what proof each one needs." },
-    { n: "02", t: "Prove", d: "Bindu asks your suppliers by WhatsApp or email, with no login for them, for exactly what's missing. Each document is checked against its rule." },
-    { n: "03", t: "File", d: "Bindu builds one compliance record. Some rules are still in build." },
-  ],
-  describeText: "Two containers of cocoa beans from Ecuador to Antwerp, arriving in June.",
-  describeRules: [
-    { t: "EUDR", s: "Live" }, { t: "Textile passports", s: "Live" },
-    { t: "CBAM", s: "In build" }, { t: "REACH", s: "In build" }, { t: "PPWR", s: "In build" }, { t: "Battery passports", s: "In build" },
-  ],
-  pieces: [
-    { k: "wa", t: "Material certificate", m: "WhatsApp · supplier" },
-    { k: "mail", t: "Re: supplier declaration", m: "Email · supplier" },
-    { k: "pdf", t: "Invoice_final_v3.pdf", m: "PDF" },
-    { k: "img", t: "Photo of the product label", m: "Image · WhatsApp" },
-    { k: "xls", t: "product_data (2).xlsx", m: "Spreadsheet" },
-    { k: "wa", t: "Packing list, two containers", m: "WhatsApp · supplier" },
-  ],
-  record: "Compliance record",
-  recordRows: ["What it is and how much", "Who supplied it", "Where it was made", "Supplier declaration"],
-  plotsTitle: "Each document checked against its rule",
-  plotsDone: "4 of 4 checks pass",
-  path: ["Supplier", "Check", "Filing"],
-  refLabel: "Reference number for customs",
-  ref: "EXAMPLE-26-0000-0142",
-  refNote: "Made-up number",
-  filed: "Filed",
-  feed: [
-    { t: "now", e: "Compliance record filed, reference issued" },
-    { t: "4s", e: "Check 4 passed: documents match the rule" },
-    { t: "8s", e: "Supplier answered on WhatsApp" },
-    { t: "12s", e: "Request sent to supplier, no login needed" },
-  ],
-};
-
 /* Round 13, item 6: one shipment, five regulation stories. Every story runs along the same example route (Guayaquil to
    Antwerp) with six milestones, so the animation is the same for each. live: false means the last milestone says
    "coming" and the dots do not turn into a filing. Status chips follow the status list (EUDR and textile passports Live). */
@@ -131,7 +92,7 @@ export const journey = {
   caption: "Example shipment, not a real customer. Map simplified, not to scale. Each story has its own illustrative route.",
   stories: [
     {
-      id: "eudr", tab: "EUDR", live: true,
+      id: "eudr", ask: { at: 1, q: "Which supplier hasn't sent the plot coordinates?", a: "Co-op B has sent every plot. Trader C is still missing some." }, tab: "EUDR", live: true,
       chips: [{ text: "EUDR Live", live: true }],
       sub: "2 containers of cocoa beans, Guayaquil (Ecuador) to Antwerp. The proof is collected along the way, not at the end.",
       milestones: [
@@ -144,7 +105,7 @@ export const journey = {
       ],
     },
     {
-      id: "cbam", tab: "CBAM", live: false,
+      id: "cbam", ask: { at: 2, q: "Has the mill sent its emissions figures for this batch?", a: "Yes, by email. One figure is missing, so Bindu asks again." }, tab: "CBAM", live: false,
       chips: [{ text: "CBAM In build", live: false }],
       sub: "Example: 2 containers of steel, Mumbai (India) to Rotterdam. The emissions data comes from the mill along the way. The CBAM report is in build.",
       milestones: [
@@ -157,7 +118,7 @@ export const journey = {
       ],
     },
     {
-      id: "dpp", tab: "DPP", live: true,
+      id: "dpp", ask: { at: 2, q: "Which supplier hasn't sent the fibre details?", a: "The dye house hasn't. Bindu asks it again." }, tab: "DPP", live: true,
       chips: [{ text: "Textile passports Live", live: true }, { text: "Battery passports In build", live: false }],
       sub: "Example: 2 containers of textile batches, Ningbo (China) to Hamburg. Each batch gets its product data, then a passport and a QR label. Textile passports are Live. Battery passports are in build.",
       milestones: [
@@ -170,7 +131,7 @@ export const journey = {
       ],
     },
     {
-      id: "reach", tab: "REACH", live: false,
+      id: "reach", ask: { at: 2, q: "Which ingredient still has no data sheet?", a: "One ingredient has none. Bindu asks the supplier again." }, tab: "REACH", live: false,
       chips: [{ text: "REACH In build", live: false }],
       sub: "Example: 2 containers of chemical products, Houston (United States) to Antwerp. Each substance is checked against the EU list of restricted chemicals (REACH). The compliance record is in build.",
       milestones: [
@@ -183,7 +144,7 @@ export const journey = {
       ],
     },
     {
-      id: "ppwr", tab: "PPWR", live: false,
+      id: "ppwr", ask: { at: 2, q: "Which packs are missing a material and weight?", a: "The outer carton. Bindu asks the supplier again." }, tab: "PPWR", live: false,
       chips: [{ text: "PPWR In build", live: false }],
       sub: "Example: 2 containers of packaged consumer goods, Cai Mep (Vietnam) to Valencia. Each pack is checked against the EU packaging rules (PPWR). The packaging record is in build.",
       milestones: [
@@ -285,7 +246,7 @@ export const faq = {
     { q: "Do I need to file if I buy from an EU importer?", a: "", pending: true },
     { q: "Is the simplified declaration enough?", a: "", pending: true },
     { q: "What if a supplier won't share data?", a: "Bindu asks them on WhatsApp or by email, with no login, and shows you what is still missing. A statement can only be filed once the proof is complete.", pending: true },
-    { q: "Do my suppliers need an account?", a: "No. Bindu asks them on WhatsApp or by email, with no login for them. Before anything leaves, they see exactly what you will learn, and they can say no.", pending: false },
+    { q: "Do my suppliers need an account?", a: "No. Bindu asks them on WhatsApp or by email, with no login for them. Before anything leaves, they see exactly what you will learn, and they can say no. Each line of your record then points back to the document they sent.", pending: false },
     { q: "Is my data shared with other companies?", a: "No. Every workspace is single-tenant and your data stays inside it. Nothing crosses to another company until the exchange layer ships, and that layer is still in build.", pending: false },
     { q: "Who's liable?", a: "", pending: true },
   ],
@@ -294,25 +255,16 @@ export const faq = {
 export const footer = {
   line: "Describe your shipment once. Bindu finds the rules that apply and files the statement.",
   cols: [
-    { h: "Product", l: [{ t: "How it works", u: "#how" }, { t: "Pricing", u: "#pricing" }] },
+    { h: "Product", l: [{ t: "How it works", u: "#story" }, { t: "Pricing", u: "#pricing" }] },
     { h: "Company", l: [{ t: "GitHub", u: "https://github.com/GetBindu/Bindu" }, { t: "raahul@getbindu.com", u: "mailto:raahul@getbindu.com" }] },
   ],
-  legal: "© 2026 GetBindu · The73 B.V. · KvK 92797911 · Amsterdam, NL · Hosted in the EU · Prices exclude VAT",
+  legal: "© 2026 GetBindu · The73 B.V. · KvK 92797911 · Amsterdam, NL · Hosted in the EU · Prices exclude VAT", // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
 };
 
 /* Round 17 (one story). Statement, before and after, the hero selector. Facts only from the brief; statuses as in the brief. */
 export const statement = {
-  before: "Describe a shipment once.",
-  after: "works out the rules and the HS code, gathers the evidence and prepares the filing.",
-};
-
-export const beforeAfter = {
-  title: "Sound familiar?",
-  cards: [
-    { before: "My suppliers won't send the data.", after: "Bindu asks them for you, by WhatsApp or email.", detail: "Before anything leaves, your supplier sees exactly what you'll learn, and can say no. Their files never move." },
-    { before: "I don't know which rules apply.", after: "Bindu tells you which apply.", detail: "Describe the shipment once. Bindu works out the rules, the HS code and the evidence each rule needs." },
-    { before: "Will customs hold my goods?", after: "Bindu files and returns the reference customs asks for.", detail: "Every answer is signed by the company that gave it, so the proof holds up when someone asks." },
-  ],
+  before: "Describe your shipment.",   /* r65-14: Austin's words */
+  after: "handles the rules, codes, evidence and filing.",
 };
 
 export const finaleWordmark = { label: "Bindu", letters: ["b", "ı", "ndu"] };
@@ -326,3 +278,106 @@ export const footerRoles = {
     { t: "traders", href: "/eudr" },
   ],
 };
+
+/* Round 44 (r44-1), rebuilt in round 46 (r46-1) in the shape of the old "Ask your supply chain" theatre: a pinned, scrubbed window, four beats on the left, a live stage on the right.
+   Not EUDR-specific: generic rule names with their statuses exactly as in the brief (deforestation = EUDR, Live; packaging = PPWR, In build). Everything on the stage (the sentence, the code,
+   the suppliers, the files, the reference number) is made up and labelled Illustration. */
+export const story = {
+  title: "One shipment, four steps.",
+  lead: "Write one plain sentence. Bindu finds the rules, asks for proof and files.",
+  label: "What Bindu does with a shipment, in four steps",
+  stageLabel: "An example shipment going from one sentence to a filed record",
+  illus: "Illustration",
+  caption: "Made-up shipment, suppliers, files, code and reference number.",
+  stops: [
+    { id: "describe", t: "Describe the shipment", short: "Describe", cap: "You write one plain sentence about the shipment.", say: "40 bags of coffee from Huila to Rotterdam" },
+    { id: "rules", t: "Rules and customs code", short: "Rules", cap: "Bindu finds the rules that apply and the customs code.", rules: [{ t: "Deforestation", live: true }, { t: "Packaging", live: false }], code: "HS 0901.11" },
+    { id: "proof", t: "Proof from suppliers", short: "Proof", cap: "Bindu asks suppliers by email or WhatsApp. No login.", files: ["email: plot-file.pdf", "WhatsApp: certificate.pdf"] },
+    { id: "file", t: "Filing and reference", short: "Filing", cap: "Bindu prepares the filing; the reference number comes back.", ref: "REF 25NL7K3X9M" }, // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
+  ],
+  stage: {
+    // the sentence in parts; `k` marks the words that lift out into the rules and the code
+    say: [{ t: "40 bags", k: "pack" }, { t: " of " }, { t: "coffee", k: "coffee" }, { t: " from Huila to Rotterdam" }],
+    record: "Filing record",
+    slots: { ship: "Shipment", rules: "Rules", code: "Customs code", proof: "Proof", ref: "Reference" },
+    shipment: "40 bags of coffee, Huila to Rotterdam",
+    rules: [{ t: "Deforestation", live: true, from: "coffee" }, { t: "Packaging", live: false, from: "pack" }],
+    live: "Live",
+    build: "In build",
+    code: "HS 0901.11",
+    filed: "Filed for deforestation",
+    ref: "25NL7K3X9M",
+    threads: [
+      { ch: "Email", who: "Finca La Esperanza", ask: "Plot file, please", file: "plot-file.pdf" },
+      { ch: "WhatsApp", who: "Cooperativa Huila", ask: "Lot certificate, please", file: "certificate.pdf" },
+    ],
+  },
+};
+
+/* Round 44 (r44-5): PLACEHOLDER quotes. They are made up, so the section carries a visible "Placeholder" chip. Replace them with quotes Raahul has approved and remove the chip
+   (go-live item in docs/home/usage-audit.md). No logos, avatars, star ratings or numbers. */
+export const TESTIMONIALS_PLACEHOLDER = [
+  { q: "I describe the shipment once, and Bindu tells me which proof each supplier still owes.", name: "Maria V.", role: "Importer", company: "Example Coffee Imports", country: "Netherlands" },
+  { q: "My buyers ask for the same plot data every season. Now I answer once and it goes where it is needed.", name: "Joseph K.", role: "Co-op manager", company: "Example Growers Co-op", country: "Uganda" },
+  { q: "Each client's proof sits on one record per shipment, so I know what is missing before I file.", name: "Anke D.", role: "Customs broker", company: "Example Customs Services", country: "Belgium" },
+  { q: "When a buyer asks for a reference number, I can find it and the document behind it.", name: "Samir R.", role: "Trader", company: "Example Trading", country: "Switzerland" },
+  { q: "Our suppliers answer on WhatsApp. Nobody has to learn a new login.", name: "Lena H.", role: "Sourcing lead", company: "Example Apparel Brand", country: "Germany" },
+];
+export const voices = {
+  title: "What buyers say.",
+  label: "Quotes from buyers",
+  placeholder: "Placeholder",
+  note: "Placeholder quotes and names, to be replaced with approved ones.",
+  prev: "Previous quote",
+  next: "Next quote",
+  hint: "Drag, use the arrow keys or scroll",
+};
+
+/* Round 44 (r44-6): the rules Bindu covers, one tile each. Statuses exactly as in the brief (docs/home/project-context.md section 2): EUDR Live, textile passports Live, battery
+   passports In build, CBAM, REACH and PPWR In build. The only date is EUDR's (30 Dec 2026 medium and large, 30 Jun 2027 most micro and small), cited to the Commission page. Each tile also
+   cites the regulation on EUR-Lex. No prices (pricing is the next section). The page links come from NAV_REGULATIONS (links.ts) by name. */
+export const rules = {
+  title: "The rules Bindu covers.",
+  lead: "Six EU rules, and where each one stands.",   /* r65-6, option a */
+  label: "Regulations",
+  covers: "Covers",
+  source: "Source",
+  note: "Illustration. The clips are from each rule's page on getbindu.com.",
+  /* r65-6: six cards in the parallel.ai shape (Austin). Facts, statuses, regulation numbers and sources as before; the passport card is split
+     into textiles (Live) and batteries (In build). `page` is the getbindu.com path the clip comes from; `chip` is the one floating line of the
+     record, an illustration with no invented numbers. The battery passport source is the Battery Regulation (EU) 2023/1542 (verify). */
+  items: [
+    { id: "eudr", reg: "EU 2023/1115", t: "EUDR", full: "Deforestation rule", href: "/eudr", read: "Read about EUDR", icon: "tree", d: "Proof that goods did not come from land deforested after 31 December 2020, and were produced legally.", covers: "Coffee, cocoa, rubber", live: true,
+      date: "Applies from 30 Dec 2026 for medium and large companies, and from 30 Jun 2027 for most micro and small ones.", src: { t: "European Commission", u: EUDR_SOURCE },
+      page: "getbindu.com/eudr", video: "/videos/eudr-forest-hero.webm", poster: "/images/eudr-forest-hero.webp", chip: "Reference returned" },
+    { id: "textiles", reg: "EU 2024/1781", t: "Textile passport", full: "Digital product passport", href: "/dpp/textiles", read: "Read about textile passports", icon: "shirt", d: "A record you reach by QR code, with a garment's materials, origin and care details.", covers: "Clothing and textiles", live: true,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2024/1781/oj" },
+      page: "getbindu.com/dpp/textiles", video: "/videos/dpp-textiles-hero.webm", poster: "/images/dpp-textiles-hero.jpg", chip: "Passport readable by QR" },
+    { id: "battery", reg: "EU 2023/1542", t: "Battery passport", full: "Digital product passport", href: "/dpp/battery", read: "Read about battery passports", icon: "battery", d: "A digital record for each industrial and EV battery: what it is made of, where, and its carbon footprint.", covers: "Industrial and EV batteries", live: false,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2023/1542/oj" },
+      page: "getbindu.com/dpp/battery", video: "/videos/dpp-battery-hero.webm", poster: "/images/dpp-battery-hero.jpg", chip: "Battery record, coming" },
+    { id: "cbam", reg: "EU 2023/956", t: "CBAM", full: "Carbon border adjustment", href: "/cbam", read: "Read about CBAM", icon: "factory", d: "A carbon charge on certain goods brought into the EU, based on the emissions made producing them.", covers: "Steel, aluminium, cement, fertilisers", live: false,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2023/956/oj" },
+      page: "getbindu.com/cbam", video: "/videos/cbam-steel-hero.webm", poster: "/images/cbam-steel-hero.jpg", chip: "Emissions per shipment" },
+    { id: "reach", reg: "EC 1907/2006", t: "REACH", full: "Chemicals rule", href: "/reach", read: "Read about REACH", icon: "flask", d: "The EU list of restricted chemical substances. Each substance in a product is checked against it.", covers: "Chemicals and products that contain them", live: false,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2006/1907/oj" },
+      page: "getbindu.com/reach", video: "/videos/reach-tide-hero.webm", poster: "/images/reach-tide-hero.webp", chip: "Substances checked" },
+    { id: "ppwr", reg: "EU 2025/40", t: "PPWR", full: "Packaging rule", href: "/ppwr", read: "Read about PPWR", icon: "package", d: "The EU packaging rules, checked pack by pack for material and weight.", covers: "Packaged goods", live: false,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2025/40/oj" },
+      page: "getbindu.com/ppwr", video: "/videos/ppwr-recycling-hero.webm", poster: "/images/ppwr-recycling-hero.webp", chip: "Pack by pack" },
+  ] as { id: string; reg: string; t: string; full: string; href: string; read: string; icon: string; d: string; covers: string; live: boolean; date?: string; src: { t: string; u: string }; page: string; video: string; poster: string; chip: string }[],
+  live: "Live",
+  build: "In build",
+};
+
+/* Round 65 (r65-7): the blog row after pricing. Titles, dates and thumbnails come from each post's frontmatter (app/(en)/(home)/page.tsx). */
+export const blogRow = {
+  title: "From the blog.",   /* r65-7, option a */
+  all: "All posts",
+  read: "Read",
+  label: "Blog posts",
+  prev: "Previous posts",
+  next: "Next posts",
+  slugs: ["eudr-traces", "cbam-report", "digital-product-passport-textiles", "battery-passport", "reach-compliance", "eudr-timeline"],
+};
+export type BlogRowPost = { slug: string; title: string; date: string; iso: string; image: string; alt: string; category: string };

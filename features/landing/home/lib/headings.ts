@@ -1,51 +1,54 @@
 import { gsap, ScrollTrigger, SplitText, reduceMotion } from "./motion";
+import { isPending, onReady } from "./ready";
 
-/* Round 20, item 2: one heading system site-wide. Every section heading (h2) reveals line by line: each line slides up 100% inside its own
-   mask (60ms stagger, expo-out), tied to the scroll entry and played in reverse when you scroll back above it. GSAP SplitText (lines +
-   masks) re-splits on resize (autoSplit). Body text is not touched; the finale wordmark is a mask of its own and is skipped.
-   Reduced motion: nothing runs, headings show at once. Only transform is animated. */
+/* Round 54 (DESIGN.md v3 section 5): one reveal for every heading and lead on the page. Each line fades up from 30px below (opacity 0 to 1,
+   y 30 to 0), expo-out, 0.7s, lines staggered 0.08s, played ONCE when the heading reaches 92% down the viewport (it does not reverse). The
+   line masks of r20 are gone. GSAP SplitText (lines, no mask) re-splits on resize (autoSplit); a heading that already played is not hidden
+   again by a re-split. The yellow full stop is gone (r55: Ollama has none); a heading keeps its plain full stop. The lead under a heading
+   (.sec-head p, the Full Circle / Story / journey leads) fades up as one block just after it. Body text is not touched; the finale wordmark
+   and Full Circle's own heading (data-own) are skipped. Reduced motion: nothing runs, everything shows at once. */
+const LEADS = "main .sec-head > p, main .fl-lead, main .ship-sub, main .ex-head > p, main .vc-head > p, main .rl-head > p";
 export function startHeadings(): () => void {
   if (reduceMotion()) return () => {};
   const splits: SplitText[] = [];
   const tls = new Map<Element, gsap.core.Timeline>();
-  let batch: ScrollTrigger[] = [];
-  let dead = false;
+  const played = new Set<Element>();
+  const batches: ScrollTrigger[][] = [];
+  const leadTw = new Map<Element, gsap.core.Tween>();
+  let dead = false, fontsReady = false;
+  // runs for every heading not split yet; a section that has not hydrated yet is skipped (splitting its text would break hydration) and picked up when it is ready
   const run = () => {
-    if (dead) return;
-    document.querySelectorAll<HTMLElement>("main h2:not(.wm)").forEach((h) => {
+    if (dead || !fontsReady) return;
+    const fresh = Array.from(document.querySelectorAll<HTMLElement>("main h2:not(.wm):not([data-own])")).filter((h) => !tls.has(h) && !isPending(h));
+    const leads = Array.from(document.querySelectorAll<HTMLElement>(LEADS)).filter((p) => !leadTw.has(p) && !isPending(p));
+    if (!fresh.length && !leads.length) return;
+    fresh.forEach((h) => {
       splits.push(SplitText.create(h, {
-        type: "lines", mask: "lines", maskClass: "h-mask", autoSplit: true, aria: "auto",
-        // r24: one paused timeline per heading (lines up, then the yellow full stop); a single ScrollTrigger.batch plays it forward when the heading
-        // reaches 92% down the viewport and reverses it above that. No scrub, so nothing is written per scroll frame.
+        type: "lines", autoSplit: true, aria: "auto",
         onSplit: (self) => {
-          // r22-17: the full stop becomes a small yellow Bindu dot that drops in after the lines
-          const ln = self.lines[self.lines.length - 1] as HTMLElement | undefined;
-          let dot: HTMLElement | null = null;
-          if (ln) {
-            const tw = document.createTreeWalker(ln, NodeFilter.SHOW_TEXT);
-            let last: Text | null = null;
-            while (tw.nextNode()) last = tw.currentNode as Text;
-            if (last && /\.$/.test(last.data)) {
-              last.data = last.data.slice(0, -1);
-              dot = document.createElement("span"); dot.className = "dot-stop"; dot.setAttribute("aria-hidden", "true");
-              last.parentNode!.insertBefore(dot, last.nextSibling);
-            }
-          }
-          const tl = gsap.timeline({ paused: true });
-          tl.fromTo(self.lines, { yPercent: 100 }, { yPercent: 0, duration: 0.8, ease: "expo.out", stagger: 0.06 });
-          if (dot) tl.fromTo(dot, { scale: 0, yPercent: -80 }, { scale: 1, yPercent: 0, duration: 0.35, ease: "back.out(2)" }, ">-0.25");
+          if (played.has(h)) return;   // already revealed: a re-split on resize leaves it shown
+          const tl = gsap.timeline({ paused: true, onComplete: () => { played.add(h); } });
+          tl.fromTo(self.lines, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.08 });
           tls.set(h, tl);
           return tl;
         },
       }));
     });
-    batch = ScrollTrigger.batch(Array.from(tls.keys()) as HTMLElement[], {
-      start: "top 92%",
-      onEnter: (els) => els.forEach((e) => tls.get(e)?.play()),
-      onLeaveBack: (els) => els.forEach((e) => tls.get(e)?.reverse()),
+    leads.forEach((p) => {
+      const tw = gsap.fromTo(p, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", delay: 0.16, paused: true });
+      leadTw.set(p, tw);
     });
-    ScrollTrigger.refresh();
+    const play = (els: Element[]) => els.forEach((e) => { tls.get(e)?.play(); leadTw.get(e)?.play(); });
+    const targets = [...fresh, ...leads];
+    batches.push(ScrollTrigger.batch(targets, { start: "top 92%", once: true, onEnter: play }));
+    if (!late) ScrollTrigger.refresh();   // a late section's refresh is the one ready.ts does once per batch
   };
-  (document.fonts?.ready ?? Promise.resolve()).then(run);
-  return () => { dead = true; batch.forEach((t) => t.kill()); splits.forEach((s) => s.revert()); };
+  let late = false;
+  const off = onReady(() => { late = true; run(); });
+  (document.fonts?.ready ?? Promise.resolve()).then(() => { fontsReady = true; run(); late = true; });
+  return () => {
+    dead = true; off(); batches.forEach((b) => b.forEach((t) => t.kill()));
+    tls.forEach((t) => t.kill()); leadTw.forEach((t) => t.kill());
+    splits.forEach((s) => s.revert()); leadTw.forEach((_, p) => gsap.set(p, { clearProps: "opacity,transform" }));
+  };
 }

@@ -43,7 +43,7 @@
 .bindu-home .sub-rows li { display: grid; grid-template-columns: minmax(128px, 176px) minmax(0, 1fr); gap: var(--s-2) var(--s-4); padding: var(--s-4) 0; border-top: 1px solid var(--hairline-dark); }
 .bindu-home .sub-rows li:last-child { border-bottom: 1px solid var(--hairline-dark); }
 .bindu-home .sub-rows .bh-eyebrow { align-self: start; padding-top: 4px; }
-.bindu-home .sub-row-v { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 17px; line-height: 1.45; }
+.bindu-home .sub-row-v { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: var(--body); line-height: 1.45; }
 .bindu-home .sub-rows .t-caption { grid-column: 2; margin: 0; }
 .bindu-home .band-light .sub-rows li, .bindu-home .band-light .sub-rows li:last-child { border-color: var(--line-black-12); }
 @media (max-width: 559px) {

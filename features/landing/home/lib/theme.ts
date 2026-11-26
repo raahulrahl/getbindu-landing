@@ -14,10 +14,14 @@ export function getTheme(): Theme {
 
 export function setTheme(t: Theme) {
   const root = getRoot();
+  // r60-5: no colour transition runs during the swap (they would all fire at once and smear): switch them off, flush styles, restore after the next frame
+  root.classList.add("theme-swap");
   root.dataset.theme = t;
   root.style.colorScheme = t;
   // the browser chrome colour is the page colour of the theme just set
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", getComputedStyle(root).getPropertyValue("--canvas").trim());
+  void getComputedStyle(root).color;
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-swap")));
   try { localStorage.setItem(KEY, t); } catch { /* private mode: the choice lasts for this page only */ }
 }
 

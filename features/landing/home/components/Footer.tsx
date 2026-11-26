@@ -1,5 +1,5 @@
 import { footer, footerRoles } from "../content";
-import { Mark } from "./bits";
+import { Logo } from "./bits";
 import { FOOTER_PAGES, GUIDE_AND_LEGAL } from "../links";
 
 /* round 3: the sub-pages get their own two columns after the existing ones */
@@ -10,7 +10,7 @@ export function Footer() {
     <footer className="foot band-dark" role="contentinfo">
       <div className="container foot-in">
         <div className="foot-brand">
-          <span className="foot-mark"><Mark size={40} /><span>Bindu</span></span>
+          <span className="foot-mark"><Logo size={40} /><span>Bindu</span></span>
           <p className="t-body-sm t-muted">{footer.line}</p>
         </div>
         {cols.map((c) => (
