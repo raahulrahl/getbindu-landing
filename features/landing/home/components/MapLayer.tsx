@@ -1,10 +1,9 @@
 import { getRoot } from "../lib/root";
 import { tRaf, tCaf } from "../lib/loop";
-import { useEffect, useRef, useState } from "react";
-import { hero } from "../content";
+import { useEffect, useRef } from "react";
 import { useReducedMotion } from "../lib/motion";
 import { subscribeTheme } from "../lib/theme";
-import { setPaused } from "../lib/pause";
+import { isPaused, subscribePause } from "../lib/pause";
 import { track } from "../lib/pos";
 import { TM, buildPlan, createGL, flightOf, routeAt, state, type GLRig, type Plan, type Pt } from "../lib/particles";
 import { isPhone } from "../lib/phone";
@@ -65,17 +64,13 @@ function paintStatic(ctx: CanvasRenderingContext2D, f: Frame, c: Colors, a: numb
 export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: () => void }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const cam = useRef<HTMLDivElement>(null);
-  const ui = useRef<HTMLDivElement>(null);
   const introRef = useRef(intro);
   const endRef = useRef(onIntroEnd);
   endRef.current = onIntroEnd;
   const gl = useRef<{ el: HTMLCanvasElement; rig: GLRig | null; gone: boolean; timer: number } | null>(null);
   const outRef = useRef(1);                       // seconds since the intro ended, 0 to 1 (the dust fades out)
   const kickRef = useRef<() => void>(() => {});
-  const control = useRef<((on: boolean) => void) | null>(null);
-  const pausedRef = useRef(false);
   const still = useReducedMotion();
-  const [playing, setPlaying] = useState(true);
 
   /* the intro ends: the dust freezes where it is and fades out (CSS), then its WebGL context is released */
   useEffect(() => {
@@ -92,7 +87,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
   }, [intro]);
 
   useEffect(() => {
-    const el = canvas.current, camEl = cam.current, uiEl = ui.current, ctx = el?.getContext("2d");
+    const el = canvas.current, camEl = cam.current, ctx = el?.getContext("2d");
     if (!el || !camEl || !ctx) return;
     // the colours come from the theme tokens; they are read again on a theme change (see readColours below)
     let cobaltRgb: Rgb = [0, 0, 0], yellowRgb: Rgb = [0, 0, 0], veilRgb: Rgb = [0, 0, 0];
@@ -111,7 +106,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     const pt: Pt = { x: 0, y: 0, a: 0, size: 0, w: 0 };
     let ic = 0, hc = still ? 3 : 0, last = 0, lastDraw = 0, raf = 0, visible = true, ended = false, done = false;
     let drawnFade = 1;   // the shipment fade the last hero frame was drawn with (see shipFade)
-    let on = !still && !pausedRef.current;
+    let on = !still && !isPaused();
 
     /* r33-3: the yellow shipments leave with the hero. 1 while the hero is on screen, falling to 0 once it is 60% out of view
        (measured from the cached hero position, so no layout read in the frame loop). The hero's shipments and their trails
@@ -171,8 +166,6 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
       const title = rect(kids.filter((n) => n.classList.contains("hero-h"))), rest = rect(kids.filter((n) => !n.classList.contains("hero-h")));
       if (title) shade(title.l, title.t, title.r, title.b, 180, 0.8);
       if (rest) shade(rest.l, rest.t, rest.r, rest.b, 120, 0.8);
-      const lab = document.querySelector<HTMLElement>(".stage-ui .scene-label")?.getBoundingClientRect();
-      if (lab && lab.width > 0 && lab.height > 0) shade(lab.left, lab.top, lab.right, lab.bottom, 90, 0.75);
     };
 
     /* the dust, drawn on the 2D canvas only when WebGL is missing (the GL path draws it otherwise) */
@@ -290,16 +283,15 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
         .catch(() => { /* no WebGL: keep the 2D path */ });
     }
 
-    control.current = (v: boolean) => {
-      on = v;
-      if (v) kick();
+    const offPause = subscribePause(() => {
+      on = !still && !isPaused();
+      if (on) kick();
       else if (!introRef.current) { tCaf(raf); raf = 0; last = 0; }
-    };
+    });
     // the hero's shipments run only while the hero is on screen (the stage is behind the sections, so it is covered)
     const heroEl = document.getElementById("top") ?? el;
     const io = new IntersectionObserver(([e]) => {
       visible = e!.isIntersecting;
-      uiEl?.classList.toggle("is-hero", e!.isIntersecting);
       if (!visible && drawnFade > 0) draw();   // the hero left in one step: clear its shipments before the loop stops
       kick();
     }, { threshold: 0 });
@@ -316,7 +308,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     draw(); kick();
     return () => {
       done = true;
-      tCaf(raf); io.disconnect(); control.current = null; kickRef.current = () => {};
+      tCaf(raf); io.disconnect(); offPause(); kickRef.current = () => {};
       document.removeEventListener("visibilitychange", onVis); window.removeEventListener("resize", onResize); window.removeEventListener("scroll", onScroll);
       unsubTheme();
       const g = gl.current;
@@ -325,29 +317,12 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     };
   }, [still]);
 
-  const toggle = () => {
-    const next = !playing;
-    pausedRef.current = !next;
-    setPaused(!next);   // r17: the one pause control also freezes the ink guide
-    setPlaying(next);
-    control.current?.(next);
-  };
   return (
-    <>
-      <div className="stage" aria-hidden="true">
-        <div ref={cam} className="stage-cam">
-          <canvas ref={canvas} className="scene-canvas" />
-        </div>
+    <div className="stage" aria-hidden="true">
+      <div ref={cam} className="stage-cam">
+        <canvas ref={canvas} className="scene-canvas" />
       </div>
-      <div ref={ui} className="stage-ui">
-        <p className="scene-label">Illustration: shipments to EU ports on a map. Not live data.</p>
-        {!still && (
-          <button type="button" className="btn btn-ghost scene-btn" aria-pressed={!playing} onClick={toggle}>
-            {playing ? hero.pause : hero.play}
-          </button>
-        )}
-      </div>
-    </>
+    </div>
   );
 }
 

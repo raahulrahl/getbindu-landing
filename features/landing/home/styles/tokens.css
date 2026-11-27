@@ -2,8 +2,7 @@
    Token NAMES are the old ones (hundreds of rules use them); only the values changed. Neutrals, type, radii and spacing are
    Ollama's. The two accents Austin kept are yellow (Book a demo, Live chip, proof and ship dots, the finale i, map shipments)
    and cobalt (route lines, progress, active markers, inline links, active nav and tabs, focus ring). Nothing else is coloured.
-   Fonts (adaptation 1): r65-18, one font everywhere: Work Sans (OFL, variable, via next/font), replacing r65-1's Newsreader,
-   for headings, body and UI (Austin: "the whole site must have the same font"); code ui-monospace. IBM Plex Mono is retired. */
+   Typography: Geist for display, Inter for body and UI, JetBrains Mono for data. */
 
 /* ---------- colour channels (round 13) ----------
    Every colour in the site is a token or one of these RGB channel triplets. The dark values below are the 5182 values;
@@ -44,10 +43,6 @@
   --hairline-strong: rgb(255 255 255 / 0.25);  /* the file hairline-strong, on dark */
   --line-white-25: rgb(var(--fg-rgb) / 0.25);
   --line-white-12: rgb(var(--fg-rgb) / 0.12);
-  --on-photo: #FFFFFF;              /* text on the finale photo (both themes) */
-  --on-photo-body: rgb(255 255 255 / 0.86);
-  --on-photo-mute: rgb(255 255 255 / 0.74);
-  --on-photo-line: rgb(255 255 255 / 0.22);
   --on-dark: #F2F2F2;               /* r65-2: every text colour is the one ink */
   --on-dark-body: #F2F2F2;
   --on-dark-mute: #F2F2F2;   /* on-dark-mute */
@@ -72,19 +67,19 @@
   --build-line-light: rgb(var(--ink-rgb) / 0.35);
 
   /* ---------- type ---------- */
-  --font-sans: var(--font-work-sans), "Work Sans", ui-sans-serif, system-ui, sans-serif;   /* r65-18: body and UI, Work Sans */
-  --font-display: var(--font-work-sans), "Work Sans", ui-sans-serif, system-ui, sans-serif;   /* r65-18: headings, the same face */
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: var(--font-inter, "Inter"), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--home-font-display, "Geist"), var(--font-sans);
+  --font-mono: var(--home-font-mono, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* the file's hierarchy table: display-xl 36/500/1.11, display-lg 30/500/1.2, heading-lg 24/600/1.33, heading-md 20, heading-sm 18, body 16/1.5, body-sm 14, caption 12; letter-spacing 0 */
-  --hero-h-size: clamp(48px, 8vw, 120px);          /* r56-1 (DESIGN.md adaptation 8): the hero title only; every other title keeps the file sizes */
+  --hero-h-size: clamp(44px, 4.65vw, 72px);
   --display-xl: var(--hero-h-size);
   --display-lg: 36px;                            /* section titles (r56: 30 -> 36, Austin: type should make a statement) */
   --display-md: 28px;                            /* heading-lg, +4 */
   --display-sm: 22px;                            /* heading-md, +2 */
   --display-xs: 20px;                            /* heading-sm, +2 */
-  --track-xl: 0; --track-lg: 0; --track-md: 0; --track-sm: 0;
-  --display-weight: 500;
+  --track-xl: -0.045em; --track-lg: -0.035em; --track-md: -0.025em; --track-sm: -0.02em;
+  --display-weight: 600;
   --lh-display: 1.11; --lh-display-lg: 1.2; --lh-display-sm: 1.4;
   --body-lg: 20px;  /* the lead (r56: 16 -> 20) */  --lh-body-lg: 1.5;
   --body: 18px;     /* body-md (r56: 16 -> 18) */  --lh-body: 1.5;
@@ -100,6 +95,10 @@
   --section-y: 48px;                       /* the file: 88px desktop, 64px tablet, 48px mobile (below) */
   --lead-gap: 32px;                        /* head to content: 32px (spacing.xxl) */
   --container: 1200px;
+  /* the reference's frame: its content box is 1456px (main max-width 1600, less 48px
+     page padding and 24px section padding each side). max-width here is border-box and
+     carries the 32px gutter, so 1456 + 64 lands the same content width. */
+  --editorial-container: 1520px;
   --gutter: clamp(16px, 4vw, 32px);
 
   /* ---------- shape ---------- */
@@ -181,14 +180,14 @@
   --key-num: var(--on-dark);
   --link-wipe: var(--brand-cobalt);
   --plot-bg: #FAFAFA;
-  --canvas: #FFFFFF;
-  --canvas-soft: #FAFAFA;           /* surface-soft */
-  --canvas-mid: #FAFAFA;
-  --hairline-dark: #E5E5E5;
-  --hairline-strong: #D4D4D4;
-  --on-dark: #111111;               /* r65-2: all text is the one ink */
-  --on-dark-body: #111111;
-  --on-dark-mute: #111111;
+  --canvas: rgb(var(--canvas-rgb));
+  --canvas-soft: #F3F1EC;
+  --canvas-mid: #EFEDE7;
+  --hairline-dark: #E0DDD5;
+  --hairline-strong: #CBC7BD;
+  --on-dark: #171A1D;
+  --on-dark-body: #393F47;
+  --on-dark-mute: #555C63;
   --ship-outline: transparent;
   --ship-fill: #1F55C4;
   --yellow-outline: #08327A;

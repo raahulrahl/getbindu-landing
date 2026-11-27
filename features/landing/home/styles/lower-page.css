@@ -1,0 +1,710 @@
+.bindu-home :is(.bl-layout, .connections-layout, .faq, .vx > .container, .foot-layout) {
+  max-width: var(--editorial-container);
+}
+
+.bindu-home :is(.bl-layout, .connections-layout, .faq) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+
+.bindu-home :is(.bl-layout, .connections-layout) h2 {
+  font-size: clamp(27px, 3vw, 38px);
+  text-wrap: pretty;
+}
+
+.bindu-home .scroll-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--row-card-width);
+  gap: var(--row-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.bindu-home .scroll-row > li {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.bindu-home .row-controls {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.bindu-home .row-controls .row-button {
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+}
+
+.bindu-home .row-controls .row-button:disabled { cursor: default; }
+
+.bindu-home .sec.bl { padding-block: clamp(36px, 6vw, 76px); }
+
+.bindu-home .bl-head {
+  padding-top: 10px;
+  border-block-start: 1px solid var(--hairline-dark);
+}
+
+.bindu-home .bl-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  color: var(--on-dark-body);
+  font: 500 13px/1.4 var(--font-mono);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bindu-home .bl-list .row-controls {
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.bindu-home .bl-row {
+  --row-gap: 1px;
+  --row-card-width: calc((100% - 2px) / 3);
+  background: var(--hairline-dark);
+  border: 1px solid var(--hairline-dark);
+  background-clip: padding-box;
+}
+
+.bindu-home .bl-card { background: var(--canvas); }
+
+.bindu-home .bl-link {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 126px;
+  height: 100%;
+  padding: 15px clamp(12px, 1.5vw, 22px);
+  color: var(--on-dark);
+  text-decoration: none;
+}
+
+.bindu-home .bl-link h3 {
+  margin: 0;
+  font: 550 16px/1.32 var(--font-display);
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.bindu-home .bl-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 10px;
+  color: var(--on-dark-mute);
+  font: 400 11px/1.45 var(--font-mono);
+}
+
+.bindu-home .bl-meta time { white-space: nowrap; }
+
+.bindu-home .bl-link:focus-visible,
+.bindu-home .vx-row:focus-visible {
+  outline: var(--focus-ring-dark);
+  outline-offset: -3px;
+}
+
+@media (hover: hover) {
+  .bindu-home .bl-link:hover { background: var(--canvas-soft); }
+  .bindu-home .bl-link:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
+}
+
+.bindu-home .sec.vx {
+  --vx-rail-gutter: calc(var(--gutter) / 2);
+  --vx-track-top: 4px;
+  --vx-shadow-space: clamp(30px, 4vw, 54px);
+  padding-block: clamp(48px, 6vw, 92px) clamp(24px, 3vw, 44px);
+}
+
+.bindu-home :is(.vx-head, .vx-carousel) {
+  position: relative;
+}
+
+.bindu-home :is(.vx-head, .vx-carousel)::before,
+.bindu-home :is(.vx-head, .vx-carousel)::after {
+  content: "";
+  position: absolute;
+  inset-block: var(--vx-rail-top, 0px) var(--vx-rail-bottom, 0px);
+  width: 1px;
+  background: var(--hairline-strong);
+  pointer-events: none;
+}
+
+.bindu-home :is(.vx-head, .vx-carousel)::before { inset-inline-start: var(--vx-rail-inset); }
+.bindu-home :is(.vx-head, .vx-carousel)::after { inset-inline-end: var(--vx-rail-inset); }
+
+.bindu-home .vx-head {
+  --vx-rail-inset: var(--vx-rail-gutter);
+  display: grid;
+  grid-template: "title controls" auto "actions controls" auto / minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px 16px;
+  margin-bottom: clamp(26px, 3.55vw, 50px);
+}
+
+.bindu-home .vx-carousel {
+  --vx-rail-inset: max(var(--vx-rail-gutter), calc((100% - var(--editorial-container)) / 2 + var(--vx-rail-gutter)));
+  --vx-rail-top: var(--vx-track-top);
+  --vx-rail-bottom: var(--vx-shadow-space);
+  isolation: isolate;
+}
+
+.bindu-home .vx-carousel::before,
+.bindu-home .vx-carousel::after { z-index: -1; }
+
+.bindu-home .vx-head h2 {
+  grid-area: title;
+  font-size: clamp(27px, 2.55vw, 36px);
+  text-wrap: pretty;
+}
+
+.bindu-home .vx-head .row-controls { grid-area: controls; }
+
+.bindu-home .vx-actions {
+  grid-area: actions;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.bindu-home .vx-actions .vx-cta {
+  font: 500 12px/1.35 var(--font-mono);
+  white-space: normal;
+}
+
+.bindu-home .vx-note {
+  margin: 0;
+  color: var(--on-dark-body);
+  font: 400 12px/1.5 var(--font-mono);
+}
+
+.bindu-home .vx-row {
+  --row-gap: clamp(16px, 1.65vw, 24px);
+  --row-card-width: calc((100% - 2 * var(--row-gap) - 30px) / 3);
+  --row-inset: max(var(--gutter), calc((100% - var(--editorial-container)) / 2 + var(--gutter)));
+  padding: var(--vx-track-top) var(--row-inset) var(--vx-shadow-space);
+  scroll-padding-inline: var(--row-inset);
+}
+
+.bindu-home .vx-card {
+  --quote-paper: #e3e2d6;
+  --quote-ink: #1e292e;
+  --quote-accent: #45574f;
+  --quote-rule: color-mix(in srgb, var(--quote-ink) 24%, transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 42px;
+  min-height: clamp(440px, 38vw, 520px);
+  padding: clamp(25px, 2.5vw, 38px);
+  border: 1px solid var(--quote-rule);
+  border-radius: var(--r-control);
+  background-color: var(--quote-paper);
+  background-image:
+    radial-gradient(circle, rgb(30 41 46 / 0.15) 1px, transparent 1.5px),
+    repeating-linear-gradient(90deg, transparent 0 31px, rgb(30 41 46 / 0.08) 31px 32px),
+    linear-gradient(155deg, rgb(255 255 255 / 0.22), transparent 56%, rgb(30 41 46 / 0.045));
+  background-size: 32px 32px, auto, auto;
+  background-position: 0 0, 16px 0, 0 0;
+  box-shadow: 0 15px 28px -12px rgb(7 23 37 / 0.34);
+  color: var(--quote-ink);
+}
+
+.bindu-home .vx-card:nth-child(5n + 2) { --quote-paper: #c8e0f2; --quote-accent: #315578; }
+.bindu-home .vx-card:nth-child(5n + 3) { --quote-paper: #f6cbb4; --quote-accent: #7a3b29; }
+.bindu-home .vx-card:nth-child(5n + 4) { --quote-paper: #cbe5d5; --quote-accent: #2c5b47; }
+.bindu-home .vx-card:nth-child(5n + 5) { --quote-paper: #e3d8f0; --quote-accent: #554370; }
+
+.bindu-home .vx-card figure {
+  margin: 0;
+  padding-inline-start: 16px;
+  border-inline-start: 2px solid var(--quote-accent);
+}
+
+.bindu-home .vx-card blockquote {
+  margin: 0;
+  font: 500 clamp(19px, 1.55vw, 22px)/1.46 var(--font-display);
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+.bindu-home .vx-card figcaption {
+  display: grid;
+  gap: 2px;
+  margin-top: 18px;
+  color: var(--quote-accent);
+  font: 400 13px/1.45 var(--font-sans);
+}
+
+.bindu-home .vx-card figcaption strong { color: var(--quote-ink); font-weight: 650; }
+
+.bindu-home .vx-card-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding-top: 13px;
+  border-block-start: 1px solid var(--quote-rule);
+}
+
+.bindu-home .vx-company,
+.bindu-home .vx-guide {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.bindu-home .vx-company {
+  min-height: 30px;
+  font: 600 17px/1.22 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.bindu-home .vx-company svg { color: var(--quote-accent); flex: none; }
+
+.bindu-home .vx-guide {
+  min-height: 30px;
+  color: var(--quote-ink);
+  font: 500 12px/1.3 var(--font-sans);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bindu-home .vx-guide svg { flex: none; }
+.bindu-home .vx-guide:focus-visible { outline-color: var(--quote-accent); }
+
+.bindu-home #trust.sec {
+  padding-block: clamp(60px, 8vw, 110px) clamp(56px, 6vw, 88px);
+}
+
+.bindu-home .trust-layout {
+  position: relative;
+  max-width: var(--editorial-container);
+}
+
+.bindu-home .trust-intro { max-width: 730px; }
+.bindu-home .trust-marks-row { margin-top: clamp(36px, 4.8vw, 65px); }
+
+.bindu-home .trust-eyebrow {
+  margin: 0 0 14px;
+  color: var(--on-dark-mute);
+  font: 500 12px/1.45 var(--font-mono);
+}
+
+.bindu-home .trust-intro h2 {
+  font-size: clamp(28px, 2.5vw, 35px);
+  text-wrap: pretty;
+}
+
+.bindu-home .trust-lead {
+  max-width: 71ch;
+  margin: 14px 0 0;
+  color: var(--on-dark-body);
+  font-size: 15px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.bindu-home .trust-lead a { color: var(--link-wipe); text-underline-offset: 3px; }
+
+.bindu-home .trust-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bindu-home .trust-list li { flex: 0 1 calc((100% - 48px) / 5); }
+
+.bindu-home .trust-list a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+  min-width: 0;
+  padding: 4px;
+  color: var(--on-dark-mute);
+  font: 500 12px/1.45 var(--font-mono);
+  text-align: center;
+  text-decoration: none;
+}
+
+.bindu-home .trust-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 60px;
+  color: color-mix(in srgb, var(--on-dark-mute) 80%, var(--on-dark));
+}
+
+.bindu-home .trust-mark svg { flex: none; }
+
+.bindu-home .trust-mark-type {
+  font: 720 31px/1 var(--font-display);
+  letter-spacing: -0.075em;
+}
+
+.bindu-home .trust-evidence-mark {
+  position: relative;
+  display: block;
+  padding-inline-end: 8px;
+}
+
+.bindu-home .trust-evidence-mark svg:last-child {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-end: 1px;
+  border-radius: 4px;
+  background: var(--canvas);
+}
+
+.bindu-home .trust-mark-label { max-width: 24ch; text-wrap: balance; }
+
+.bindu-home .connection-rows {
+  display: grid;
+  margin: 0;
+  border-block-end: 1px solid var(--hairline-dark);
+}
+
+.bindu-home .connection-rows > div {
+  display: grid;
+  grid-template-columns: minmax(125px, 1fr) minmax(0, 2fr);
+  min-height: 70px;
+  border-block-start: 1px solid var(--hairline-dark);
+}
+
+.bindu-home .connection-rows dt {
+  align-self: center;
+  padding: 10px 12px 10px 0;
+  color: var(--on-dark-body);
+  font: 400 12px/1.45 var(--font-mono);
+}
+
+.bindu-home .connection-rows dd {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px clamp(16px, 3.5vw, 48px);
+  margin: 0;
+  padding: 7px 0 7px clamp(12px, 2.2vw, 30px);
+  border-inline-start: 1px solid var(--hairline-dark);
+}
+
+.bindu-home .connection-rows dd > * {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  color: var(--on-dark);
+  font: 560 16px/1.35 var(--font-display);
+  text-decoration: none;
+}
+
+.bindu-home .connection-rows svg { color: var(--link-wipe); flex: none; }
+
+.bindu-home .faq .sec-head {
+  justify-items: start;
+  margin: 0;
+  text-align: left;
+}
+
+.bindu-home .faq .sec-head h2 {
+  color: var(--on-dark);
+  font-size: 25px;
+  letter-spacing: -0.02em;
+}
+
+.bindu-home .faq-list {
+  display: grid;
+  gap: 12px;
+}
+
+.bindu-home .faq-item {
+  padding-inline-start: clamp(14px, 2vw, 26px);
+  border-inline-start: 1px solid var(--hairline-strong);
+}
+
+.bindu-home .faq-item[open] { border-inline-start-color: var(--link-wipe); }
+
+.bindu-home .faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  min-height: 44px;
+  padding: 8px 4px 8px 0;
+  color: var(--on-dark);
+  font: 560 17px/1.45 var(--font-display);
+  cursor: pointer;
+  list-style: none;
+}
+
+.bindu-home .faq-item summary::-webkit-details-marker { display: none; }
+.bindu-home .faq-ico { display: flex; flex: none; color: var(--on-dark-mute); }
+.bindu-home .faq-item[open] .faq-ico-v { visibility: hidden; }
+
+.bindu-home .faq-a {
+  max-width: 69ch;
+  margin: 0;
+  padding-bottom: 12px;
+  color: var(--on-dark-body);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.bindu-home :is(.bl-all, .trust-list a, .connection-rows a, .faq-item summary, .foot-mark):focus-visible {
+  outline: var(--focus-ring-dark);
+  outline-offset: 2px;
+}
+
+/* The footer follows fabric.vc: one surface, a four-column directory closed by hairlines, and a
+   bottom bar on the same rhythm. The two frame rules are the hero's (editorial.css), so the
+   footer's outer edges land on the same pair of lines the hero and the nav sit between. */
+.bindu-home .foot {
+  /* --on-dark-mute is the same ink as the body on dark (tokens.css r65-2), so the footer
+     carries its own grey, as the hero does. Hierarchy here is colour, not size. */
+  --foot-mute: #8A8A8A;
+  --foot-inset: clamp(18px, 1.9vw, 28px);
+  border-block-start: 1px solid var(--hairline-dark);
+  background: var(--canvas);
+  color: var(--on-dark);
+  text-align: left;
+}
+.bindu-home[data-theme="light"] .foot { --foot-mute: #858483; }
+
+.bindu-home .foot-layout { position: relative; }
+
+/* the three rows reach out to the frame rules, half a gutter outside the content box, and draw
+   their inner rules by letting the 1px grid gap show the row's own background */
+.bindu-home :is(.foot-in, .foot-mid, .foot-end) {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin-inline: calc(var(--gutter) / -2);
+  background: var(--hairline-strong);
+  background-clip: padding-box;
+}
+/* only the directory row is ruled between its columns; the two below it run open, so their
+   quieter text and their empty cells do not read as boxes. Their rows still divide. */
+.bindu-home :is(.foot-mid, .foot-end) {
+  gap: 0;
+  background: none;
+}
+
+.bindu-home :is(.foot-in, .foot-mid, .foot-end) > * {
+  min-width: 0;
+  padding-inline: var(--foot-inset);
+  background: var(--canvas);
+}
+
+/* the first and last cells align their text with the content frame the hero writes on */
+.bindu-home :is(.foot-brand, .foot-office, .foot-made) { padding-inline-start: calc(var(--gutter) / 2); }
+.bindu-home :is(.foot-col:last-child, .foot-mid > :last-child, .foot-copyright) { padding-inline-end: calc(var(--gutter) / 2); }
+
+.bindu-home .foot-in > * {
+  min-height: clamp(240px, 20vw, 320px);
+  padding-block: clamp(28px, 3.4vw, 52px);
+}
+
+.bindu-home .foot-brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 48px;
+}
+
+.bindu-home .foot-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: inherit;
+  font: 650 clamp(28px, 2.3vw, 36px)/1 var(--font-display);
+  letter-spacing: -0.055em;
+  text-decoration: none;
+}
+
+.bindu-home .foot-heading {
+  margin: 0 0 18px;
+  color: var(--foot-mute);
+  font: 500 11px/1.4 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bindu-home .foot-col ul {
+  display: grid;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* the reference splits its last column into two groups with a gap and no second heading */
+.bindu-home .foot-col ul + ul { margin-top: 32px; }
+
+.bindu-home .foot-col a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 2px 0;
+  color: var(--foot-mute);
+  font-size: 15px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+/* the lead column carries the large, generously leaded links of the reference */
+.bindu-home .foot-col-lead a {
+  min-height: 36px;
+  color: var(--on-dark);
+  font: 450 clamp(20px, 1.5vw, 24px)/1.3 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* the middle row: the office on the left, the fine print beside it, then two spacers that hold
+   the four columns open where the reference has its newsletter and its partner note */
+.bindu-home .foot-mid {
+  border-block-start: 1px solid var(--hairline-strong);
+}
+.bindu-home .foot-mid > * {
+  margin: 0;
+  padding-block: clamp(32px, 3vw, 48px);
+}
+.bindu-home .foot-office {
+  display: grid;
+  /* the cell is taller than the address, and auto rows would stretch to fill it */
+  align-content: start;
+  color: var(--foot-mute);
+  font-size: 15px;
+  font-style: normal;
+  line-height: 1.65;
+}
+.bindu-home .foot-office > span:first-child { color: var(--on-dark); }
+/* the reference sets this block justified and small; the size is the bottom bar's */
+.bindu-home :is(.foot-fine, .foot-residency) {
+  color: var(--foot-mute);
+  font-size: 13px;
+  line-height: 1.55;
+  /* justified like the reference, and unhyphenated: auto hyphenation breaks the domains */
+  text-align: justify;
+}
+.bindu-home .foot-residency { text-align: left; }
+.bindu-home .foot-fine a { color: var(--on-dark); text-decoration: underline; text-underline-offset: 3px; }
+
+.bindu-home .foot-end {
+  border-block-start: 1px solid var(--hairline-strong);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.bindu-home .foot-end > * {
+  margin: 0;
+  padding-block: 20px 28px;
+  color: var(--foot-mute);
+}
+
+/* the bottom bar's four cells are the reference's, minus its company line: the made line, two
+   spacers, then the year on its own at the frame. The company, the registration and the EU
+   hosting are all in the row above, so repeating them here only stretched the bar. */
+.bindu-home .foot-copyright { text-align: right; }
+/* the owner's line, set on two lines beside the year */
+.bindu-home .foot-motto {
+  display: grid;
+  align-content: start;
+  color: var(--foot-mute);
+}
+
+@media (hover: hover) {
+  .bindu-home :is(.trust-list a:hover .trust-mark-label, .connection-rows a:hover) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .bindu-home .bl-row { --row-card-width: calc((100% - 1px) / 2); }
+  .bindu-home .vx-row { --row-card-width: calc((100% - var(--row-gap) - 28px) / 2); }
+}
+
+@media (max-width: 760px) {
+  .bindu-home :is(.bl-layout, .connections-layout, .faq) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .bindu-home .bl-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .bindu-home .bl-all { white-space: nowrap; }
+  .bindu-home .trust-list li { flex-basis: calc((100% - 24px) / 3); }
+}
+
+@media (max-width: 540px) {
+  .bindu-home .bl-row { --row-card-width: 86%; }
+  .bindu-home .vx-head { grid-template-areas: "title title" "cta controls" "note note"; }
+  .bindu-home .vx-actions { display: contents; }
+  .bindu-home .vx-cta { grid-area: cta; justify-self: start; }
+  .bindu-home .vx-note { grid-area: note; }
+  .bindu-home .vx-row { --row-card-width: 88%; --row-gap: 12px; }
+  .bindu-home .vx-card { min-height: 385px; gap: 32px; }
+  .bindu-home :is(.vx-company, .vx-guide) { min-height: 44px; }
+  .bindu-home .row-controls .row-button { width: 44px; min-height: 44px; }
+  .bindu-home .trust-list li { flex-basis: calc((100% - 12px) / 2); }
+}
+
+/* the footer keeps the hero's breakpoints: four columns, then two, then one */
+@media (max-width: 860px) {
+  .bindu-home :is(.foot-in, .foot-mid, .foot-end) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* the bar's spacers go: its two lines sit side by side, the year keeping the right edge */
+  .bindu-home .foot-end .foot-spacer { display: none; }
+  .bindu-home .foot-made { grid-area: 1 / 1; }
+  .bindu-home .foot-copyright { grid-area: 1 / 2; }
+  .bindu-home .foot-motto { grid-area: 2 / 1 / 3 / -1; padding-inline: calc(var(--gutter) / 2); }
+  .bindu-home .foot-mid > :nth-child(odd) { padding-inline: calc(var(--gutter) / 2) var(--foot-inset); }
+  .bindu-home .foot-mid > :nth-child(even) { padding-inline: var(--foot-inset) calc(var(--gutter) / 2); }
+  .bindu-home .foot-in > * { min-height: 0; }
+  .bindu-home .foot-brand { gap: 32px; }
+  .bindu-home .foot-col a { min-height: 40px; }
+  /* two columns: the left pair opens on the frame, the right pair closes on it */
+  .bindu-home .foot-in > :nth-child(odd) { padding-inline: calc(var(--gutter) / 2) var(--foot-inset); }
+  .bindu-home .foot-in > :nth-child(even) { padding-inline: var(--foot-inset) calc(var(--gutter) / 2); }
+}
+
+@media (max-width: 520px) {
+  .bindu-home :is(.foot-in, .foot-mid, .foot-end) { grid-template-columns: minmax(0, 1fr); }
+  .bindu-home .foot-spacer { display: none; }
+  .bindu-home :is(.foot-brand, .foot-col, .foot-col:last-child, .foot-office, .foot-fine, .foot-residency, .foot-made, .foot-motto, .foot-copyright) {
+    padding-inline: calc(var(--gutter) / 2);
+  }
+  .bindu-home .foot-mid > * { padding-block: 24px; }
+  .bindu-home .foot-fine { text-align: left; }
+  .bindu-home .foot-in > * { padding-block: 28px; }
+  .bindu-home .foot-brand { gap: 20px; }
+  .bindu-home :is(.foot-made, .foot-motto, .foot-copyright) { grid-area: auto; text-align: left; }
+  .bindu-home .foot-made { padding-block: 24px 4px; }
+  .bindu-home .foot-motto { padding-block: 0 4px; }
+  .bindu-home .foot-copyright { padding-block: 0 28px; }
+}

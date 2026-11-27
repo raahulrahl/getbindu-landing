@@ -2,6 +2,7 @@ import { tRaf, tCaf } from "../lib/loop";
 import { track, viewH } from "../lib/pos";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { gsap, useReducedMotion } from "../lib/motion";
+import { shipmentExamples as ROWS, type Row } from "../shipment-examples";
 
 /* Round 21, item 4 (r31-1 reworked): "What the rules let through, and what they stop." as a split-flap departures board. Eight rows adapted
    from getbindu.com's worked examples (the wording is theirs). The section pins and each scroll step reveals ONE row: it flaps in, settles
@@ -10,17 +11,6 @@ import { gsap, useReducedMotion } from "../lib/motion";
    story. The board is a real table; the flap characters are aria-hidden. Reduced motion: no pin, every row settled, every story listed.
    Illustrations, not customer filings. Battery passports are In build, so those stories say so. */
 
-type Row = { route: string; goods: string; rule: string; verdict: "pass" | "stop"; head: string; story: string; build?: boolean };
-const ROWS: Row[] = [
-  { route: "Chikkamagaluru → Rotterdam", goods: "Coffee", rule: "EUDR", verdict: "pass", head: "Draw the map once.", story: "An estate maps its plots before harvest. The coordinates sit outside the forest cover cleared after 2020, so the dossier can carry the plot file, the operator's risk assessment and the statement reference the buyer needs." },
-  { route: "Chikkamagaluru → Hamburg", goods: "Coffee", rule: "EUDR", verdict: "stop", head: "Papers lie. Maps don't.", story: "Good beans, but one field sits on land the paperwork never covered. With no plot the estate can stand behind, there is nothing to put in the statement, and the buyer goes to the estate next door." },
-  { route: "Kanchipuram → Paris", goods: "Silk", rule: "DPP", verdict: "pass", head: "Weave the proof in.", story: "A sari carries its GI certificate in the product record: the co-op, the loom, the zari. A boutique in Paris scans the code and reads the file the weaver filled in." },
-  { route: "Unknown mill → delisted", goods: "Textiles", rule: "DPP", verdict: "stop", head: "Cheap needs an alibi.", story: "A “pashmina” lot with no passport and no trail. The lab finds polyester, and the marketplace has nothing to put behind the listing." },
-  { route: "Sumatra → Antwerp", goods: "Rubber", rule: "EUDR", verdict: "stop", head: "The satellite has a long memory.", story: "One plot overlaps forest cleared after 2020. The images are dated and the boundary is not in dispute, so that lot cannot go into the dossier." },
-  { route: "Srinagar → Milan", goods: "Pashmina", rule: "DPP", verdict: "pass", head: "One scan settles it.", story: "A shawl with its GI certificate inside the passport. A thousand lookalikes hang in the same street, and one of them can show where the wool came from." },
-  { route: "Ulsan → Bratislava", goods: "EV", rule: "Battery", verdict: "pass", build: true, head: "Cells that carry their own file.", story: "Cells leave the plant with their chemistry, carbon footprint and recycled content already recorded. The line downstream reads the file instead of emailing for it." },
-  { route: "No QR → held at customs", goods: "Pack", rule: "Battery", verdict: "stop", build: true, head: "2027 doesn't negotiate.", story: "A pack with no code, no chemistry and no carbon number. From 18 February 2027 the passport is what lets it on the EU market, so it waits in the warehouse." },
-];
 const COLS = ["route", "goods", "rule", "verdict"] as const;
 const label = (r: Row, c: (typeof COLS)[number]) => (c === "verdict" ? (r.verdict === "pass" ? "Let through" : "Stopped") : r[c]);
 const FLAP = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

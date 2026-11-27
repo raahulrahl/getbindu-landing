@@ -4,13 +4,6 @@
 .bindu-home .hero-sub { margin-bottom: var(--s-6); }
 
 
-/* estimate-before-book: nav pair (both outline; the nav never adds a filled pill) */
-.bindu-home .nav-drawer-book { display: none; }
-@media (max-width: 860px) { .bindu-home .theme-toggle { margin-left: auto; } }
-@media (max-width: 520px) {
-  .bindu-home .nav-drawer-book { display: block; }
-}
-
 /* estimate-before-book: the popup's closing Book button (the only filled pill inside the popup) */
 .bindu-home .calc-book { justify-self: start; }
 

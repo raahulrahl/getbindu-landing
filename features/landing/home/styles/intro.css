@@ -8,21 +8,15 @@
 .bindu-home .stage-cam canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .bindu-home .intro-gl { pointer-events: none; transition: opacity 1000ms var(--ease-in-out); }
 .bindu-home .intro-gl.is-out { opacity: 0; }
-/* the hero's caption and pause control: fixed, shown only while the hero is on screen */
-.bindu-home .stage-ui { position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity var(--t-base) var(--ease-out), visibility var(--t-base); }
-.bindu-home .stage-ui .scene-label { bottom: 46px; }
-.bindu-home .stage-ui .scene-btn { bottom: 40px; }
 .bindu-home[data-intro="on"] .stage-cam { transform: scale(1.04); }          /* the camera starts slightly pushed in */
-.bindu-home[data-intro="off"] .stage-ui.is-hero { opacity: 1; visibility: visible; }
 @media (max-width: 860px) {
   .bindu-home[data-intro="off"] .stage-cam { opacity: 0.42; }                  /* the hero's dimmed map on phones */
-  .bindu-home .stage-ui .scene-label { max-width: 48%; }
 }
 
 /* ---- hero: transparent, so the stage shows through. Its headline, sub-line, buttons and the nav wait for the intro ---- */
 .bindu-home .hero.band-dark { background: transparent; }
 .bindu-home .hero-h:focus { outline: none; }
-/* r54: the headline, sub-line and CTA are revealed by GSAP (components/Hero.tsx, the 30px fade-up); no hidden states here */
+.bindu-home[data-intro="on"] .hero { visibility: hidden; }
 .bindu-home .nav { transition: background-color var(--t-base) var(--ease-out), border-color var(--t-base) var(--ease-out), transform 450ms var(--ease-out) 540ms, opacity 450ms var(--ease-out) 540ms; }
 .bindu-home[data-intro="on"] .nav { opacity: 0; transform: translateY(-100%); }
 
@@ -38,7 +32,7 @@
 
 
 @media (prefers-reduced-motion: reduce) {
-  .bindu-home .stage-cam, .bindu-home .stage-ui, .bindu-home .intro-gl, .bindu-home .intro > *, .bindu-home .nav { transition: none; }
+  .bindu-home .stage-cam, .bindu-home .intro-gl, .bindu-home .intro > *, .bindu-home .nav { transition: none; }
 }
 
 

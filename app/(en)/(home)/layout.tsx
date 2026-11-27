@@ -2,22 +2,25 @@
  * Layout for the homepage only. The homepage has its own nav and footer, so it
  * is served outside app/(en)/(landing) and never gets LandingChrome. The
  * wrapper's class scopes every homepage style; the head script sets the theme
- * and the intro state on the wrapper before first paint, so nothing flashes.
+ * on the wrapper before first paint.
  */
 
-import { Work_Sans } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
 import { LandingJsonLd } from "../../landing-chrome";
 
-// r65-18: one font for the whole homepage, Work Sans (SIL OFL, variable weight), chosen by Austin from the font trial; replaces Newsreader.
-const workSans = Work_Sans({
+const display = Geist({
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  variable: "--font-work-sans",
-  display: "swap",
+  variable: "--home-font-display",
 });
 
-// Light unless the reader chose dark; the intro plays unless reduced motion is on or the screen is a phone (under 768px), where the hero paints at once.
-const PRE_PAINT = `(function(){var r=document.currentScript.parentElement;try{r.dataset.theme=localStorage.getItem("bindu-theme")==="dark"?"dark":"light"}catch(e){}if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){r.setAttribute("data-rm","")}else if(window.innerWidth<768){r.dataset.intro="off"}else{r.dataset.intro="on"}})()`;
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--home-font-mono",
+  preload: false,
+});
+
+// Use the saved theme before the page paints.
+const PRE_PAINT = `(function(){var r=document.currentScript.parentElement;try{r.dataset.theme=localStorage.getItem("bindu-theme")==="dark"?"dark":"light"}catch(e){}})()`;
 
 export default function HomeLayout({
   children,
@@ -28,8 +31,9 @@ export default function HomeLayout({
     <>
       <LandingJsonLd />
       <div
-        className={`bindu-home ${workSans.variable}`}
+        className={`bindu-home ${display.variable} ${mono.variable}`}
         data-theme="light"
+        data-rm=""
         suppressHydrationWarning
       >
         <script dangerouslySetInnerHTML={{ __html: PRE_PAINT }} />

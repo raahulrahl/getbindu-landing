@@ -3,9 +3,9 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { gsap, ScrollTrigger, useReducedMotion, SCRUB_SOFT } from "../lib/motion";
 import { track } from "../lib/pos";
 import { isPaused, subscribePause } from "../lib/pause";
-import { cdnAsset } from "@/lib/cdn";
+import { loadPortVideo, PORT_POSTER } from "../lib/port-video";
 import { fin, FIN, FINP, landed, sunSlot, NDOT, SUN_DOT, shipHome } from "../lib/shiphome";
-import { faq, finaleWordmark } from "../content";
+import { faq, finaleWordmark, publishedFaqItems } from "../content";
 import { Footer } from "./Footer";
 import { MASK } from "../lib/maskdata";
 import "../styles/r3-qa.css";
@@ -15,18 +15,15 @@ export function Faq() {
     <section className="band-dark sec" id="faq" aria-labelledby="faq-h" data-guide-anchor="faq" data-guide-side="l">
       <div className="container faq">
         <div className="sec-head">
-          <h2 id="faq-h" className="t-display-lg" suppressHydrationWarning>{faq.title}</h2>
+          <h2 id="faq-h" className="t-display-lg">{faq.title}</h2>
         </div>
-        <div className="faq-list v3-panel v3-panel-wide">
-          {faq.items.map((f) => (
-            <details key={f.q} className="faq-item">
-              <summary><span className="t-display-sm">{f.q}</span>
+        <div className="faq-list">
+          {publishedFaqItems.map((item, index) => (
+            <details key={item.q} name="homepage-faq" className="faq-item" open={index === 0}>
+              <summary><span>{item.q}</span>
                 <span className="faq-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M5 12h14" /><path className="faq-ico-v" d="M12 5v14" /></svg></span>
               </summary>
-              <div className="faq-a">
-                {f.a && <p className="t-body t-soft">{f.a}</p>}
-                {f.pending && <p className="faq-pending"><span className="chip chip-build">{faq.raahul}</span></p>}
-              </div>
+              <p className="faq-a">{item.a}</p>
             </details>
           ))}
         </div>
@@ -39,9 +36,9 @@ export function Faq() {
    the cargo photo (cover, never moving) and whose CSS mask-image is an SVG of the letters "bindu" only, no frame (lib/maskdata.ts, r29-1: about 55vw wide, max 900px, 80vw on phones). The yellow dot of the i is
    not in the mask: it is a separate circle that the guide ship's dots build, and that rides the same transform. Before the zoom the masked wordmark sits on the page canvas.
    Scrolling animates only mask-size and mask-position (scrubbed, SCRUB_SOFT) around a point inside the stroke of the bowl of the d until the photo fills the screen; then the
-   mask is removed. The footer sits on the photo (a dark gradient under it); the final view is the photo and the footer only. The ship's part is unchanged from 2c: the course
+   mask is removed. The footer follows on a solid surface. The ship's part is unchanged from 2c: the course
    line curves from the gutter into the page and ends above the i; the ship sails there at its normal size, splits into dots and they form the dot (fin.t, time-based,
-   queued, reversible; drawn by the Guide canvas). Reduced motion: the masked wordmark with its dot, then the photo section with the content; no zoom. */
+   queued, reversible; drawn by the Guide canvas). Reduced motion: the masked wordmark with its dot, then the photo and footer. */
 const c01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const smooth = (x: number) => { const t = c01(x); return t * t * (3 - 2 * t); };
 /* r65-11 (Austin): the i has no dot of its own in the mask again (r62-2's ellipse is gone): its dot is only the sunflower the bindus build. The zoom dives into a letter
@@ -74,7 +71,6 @@ const setMask = (el: HTMLElement, v: string, size: string, pos: string) => {
    During the first quarter of the zoom it grows to the cover size of the full-bleed view (pinned PX, PY), so it always covers whatever the growing letters show.
    The poster is the layer's background (background-size/-position); the clip sits on top as a <video> of its own size moved only by transform (translate + scale). */
 const IW = 1280, IH = 676, SHOW = 0.65, FX = 0.62, FY = 0.5, PX = 0.5, PY = 0.5, PHOTO_Q = 0.25, STEPS = 1500;
-const POSTER = "/home/images/port-poster.webp";
 type Row = { ms: string; mp: string; bs: string; bp: string; v: string; dot: string; g: string };
 /* r29-5: everything the zoom needs, worked out once per measure (no arithmetic or string building while scrolling): the row for each of STEPS + 1 points of q */
 function table(L: Lay): Row[] {
@@ -114,14 +110,11 @@ export function Finale() {
     let loaded = false, onScreen = false;
     const sync = () => { if (!loaded) return; if (onScreen && !isPaused()) void video.play().catch(() => undefined); else video.pause(); };
     const load = () => {
-      for (const [path, type] of [["/videos/rotterdam-port-hero.av1.webm", 'video/webm; codecs="av01.0.05M.08"'], ["/videos/rotterdam-port-hero.webm", 'video/webm; codecs="vp9"']] as const) {
-        const source = document.createElement("source"); source.src = cdnAsset(path); source.type = type; video.appendChild(source);
-      }
-      video.muted = true; video.preload = "auto"; video.hidden = false; video.load(); loaded = true;
+      video.hidden = false; loadPortVideo(video); loaded = true;
       video.addEventListener("canplay", sync, { once: true });
     };
     // r42: the picture is fetched only when the finale is about 2 viewports away
-    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { sec.style.setProperty("--photo", `url(${cdnAsset(POSTER)})`); if (useClip) load(); io.disconnect(); } }, { rootMargin: "200% 0px 200% 0px" });
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { sec.style.setProperty("--photo", `url(${PORT_POSTER})`); if (useClip) load(); io.disconnect(); } }, { rootMargin: "200% 0px 200% 0px" });
     io.observe(sec);
     const vis = new IntersectionObserver((es) => { onScreen = es.some((e) => e.isIntersecting); sync(); }, { rootMargin: "100% 0px 0px 0px" });
     vis.observe(sec);   // r62-3: playing (so decoded) from one viewport before the finale
@@ -205,7 +198,7 @@ export function Finale() {
       <h2 id="finale-h" className="sr">{finaleWordmark.label}</h2>
       <div ref={ph} className="fz-photo" aria-hidden="true">
         {/* r52-2: no <source> in the server HTML; the effect attaches them only where the clip runs (see above), so phones, reduced motion and no-JS keep the poster */}
-        <video ref={vid} className="fz-video" muted loop playsInline preload="none" poster={POSTER} hidden tabIndex={-1} />
+        <video ref={vid} className="fz-video" muted loop playsInline preload="none" poster={PORT_POSTER} hidden tabIndex={-1} />
       </div>
       <i ref={dotEl} className="fz-dot" aria-hidden="true">
         <svg viewBox="-1 -1 2 2" width="100%" height="100%" focusable="false">

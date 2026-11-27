@@ -7,12 +7,14 @@ import { useSyncExternalStore } from "react";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export const reduceMotion = (): boolean =>
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  typeof window !== "undefined" && (
+    document.querySelector(".bindu-home[data-rm]") !== null ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 
-/* For render. Server and first client render say false, so the markup always hydrates cleanly; a reduced-motion reader
-   then gets true on the next render. Use this in markup and state; reduceMotion() stays for effects and handlers. */
+// The homepage renders static content before hydration.
 const noop = () => () => {};
-export const useReducedMotion = (): boolean => useSyncExternalStore(noop, reduceMotion, () => false);
+export const useReducedMotion = (): boolean => useSyncExternalStore(noop, reduceMotion, () => true);
 
 /* r61-6: the two scrub smoothings every scrubbed scene uses (seconds the playhead takes to catch up with the scroll). TIGHT for scenes that
    must track the finger (Flow); SOFT for the slower, cinematic ones (Story light, finale fill and zoom). Theatre keeps its own damped time (TAU). */

@@ -34,8 +34,9 @@ export const intro = {
 };
 
 export const hero = {
+  eyebrow: "Trade compliance for EU importers",
   title: ["Ship it.", "Trace it.", "Bindu."],   /* r65-5: Austin's words */
-  sub: "Bindu works out which EU rules apply to your goods, gathers the proof from your suppliers and files it. Every line traces back to the supplier document behind it.",
+  sub: "Check the rules, gather the proof and file it, for every EU shipment.",
   mono: "Six containers a year or six hundred.",
   artLabel: "Illustration: every proof is a dot. Together they make the filing.",
   pause: "Pause animation",
@@ -159,24 +160,23 @@ export const journey = {
   ],
 };
 
-/* Round 6, item 1: minimal pricing. Only EUDR has a published price; the other tabs show "Pricing on request".
-   `tag` is the tab's title and `desc` the one-line description (the copy the module strip used). Prices exactly as published. */
+export const eudrRates = { filing: 199, keepFive: 50, keepTen: 100, workspaceMonthly: 20 };
+
 export const pricing = {
   eyebrow: "Pricing",
-  title: "What each filing costs.",
-  lead: "Per filing. Not per seat.",
+  title: "Pay per filing",
+  lead: "Your EUDR estimate includes filing, record retention, and a monthly workspace fee.",
   tabs: [
     {
       id: "eudr", label: "EUDR", tag: "Deforestation-free goods", status: "live",
       price: {
-        amount: "€249", unit: "per EUDR dossier",
+        amount: `€${eudrRates.filing + eudrRates.keepFive}`, unit: "per EUDR dossier",
         rows: [
-          { k: "File the statement to TRACES", v: "€199" },
-          { k: "Keep records for 5 years", v: "€50" },
-          { k: "Keep records for 10 years (option)", v: "€100" },
-          { k: "Workspace", v: "€20 / month" },
+          { k: "File the statement to TRACES", v: `€${eudrRates.filing}` },
+          { k: "Keep records for 5 years", v: `€${eudrRates.keepFive}` },
+          { k: "Keep records for 10 years (option)", v: `€${eudrRates.keepTen}` },
+          { k: "Workspace", v: `€${eudrRates.workspaceMonthly} / month` },
         ],
-        line: "No seats. No annual licence. EU-hosted. Prices excl. VAT.",
       },
     },
     { id: "hs", label: "HS Code", tag: "Product classification", desc: "The customs code for each product, so the right rules and duties are checked.", status: "build" },
@@ -193,30 +193,13 @@ export const pricing = {
     { id: "ppwr", label: "PPWR", tag: "Packaging", desc: "What your packaging is made of and whether it can be recycled.", status: "build" },
     { id: "reach", label: "REACH", tag: "Chemicals", desc: "Which chemicals are in your products, checked against the EU's restricted list.", status: "build" },
   ],
-  /* round 13, item 7: the right side of the section. Copy from getbindu.com (before.html), not invented. */
-  side: {
-    covers: {
-      eyebrow: "What each EUDR filing covers",
-      items: [
-        { p: "€199", t: "files the statement to TRACES and returns the reference customs asks for." },
-        { p: "€50", t: "keeps the dossier for the five years the law requires." },
-        { p: "€100", t: "keeps it the full ten years." },
-        { p: "€20 a month", t: "keeps your workspace live to file." },
-      ],
-    },
-    billing: {
-      eyebrow: "How billing works",
-      lines: ["You pay per filing, not per seat or per year.", "No seats, no annual licence."],
-    },
-    notes: ["One platform for EUDR, CBAM, battery and textile passports.", "EU-hosted and GDPR compliant. Prices exclude VAT."],
-  },
   calc: {
     title: "Your year with Bindu",
-    label: "An estimate from the published prices, not a quote.",
+    label: "Estimate based on published EUDR rates.",
     filings: "Filings a year",
     keep: "How long to keep records",
-    keep5: "Five years (€50)",
-    keep10: "Ten years (€100)",
+    keep5: `Five years (€${eudrRates.keepFive})`,
+    keep10: `Ten years (€${eudrRates.keepTen})`,
     total: "Estimated yearly cost",
     lineFilings: "filings",
     lineWorkspace: "Workspace, 12 months",
@@ -238,27 +221,56 @@ export const roles = {
 };
 
 export const faq = {
-  eyebrow: "FAQ",
-  title: "Questions owners ask.",
-  raahul: "Answer from Raahul",
+  title: "FAQs",
   items: [
+    { q: "What does Bindu do?", a: "Bindu helps EU importers identify relevant rules and collect evidence from suppliers. For EUDR, it links the supplier documents to a shipment, files the due diligence statement in TRACES, and returns the reference number for customs.", pending: false },
     { q: "Am I an operator?", a: "", pending: true },
     { q: "Do I need to file if I buy from an EU importer?", a: "", pending: true },
     { q: "Is the simplified declaration enough?", a: "", pending: true },
     { q: "What if a supplier won't share data?", a: "Bindu asks them on WhatsApp or by email, with no login, and shows you what is still missing. A statement can only be filed once the proof is complete.", pending: true },
     { q: "Do my suppliers need an account?", a: "No. Bindu asks them on WhatsApp or by email, with no login for them. Before anything leaves, they see exactly what you will learn, and they can say no. Each line of your record then points back to the document they sent.", pending: false },
     { q: "Is my data shared with other companies?", a: "No. Every workspace is single-tenant and your data stays inside it. Nothing crosses to another company until the exchange layer ships, and that layer is still in build.", pending: false },
+    { q: "Where does my EUDR filing go?", a: "Bindu submits the due diligence statement to the EU’s TRACES system. TRACES returns the reference number for customs and a verification number for the filing record.", pending: false },
     { q: "Who's liable?", a: "", pending: true },
   ],
 };
 
+export const publishedFaqItems = faq.items.filter(({ a, pending }) => a && !pending);
+
+const COPYRIGHT = "© 2026";
+const RIGHTS = "GetBindu · The73 B.V. · KvK 92797911 · Amsterdam, NL · Hosted in the EU · Prices exclude VAT"; // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
+
 export const footer = {
   line: "Describe your shipment once. Bindu finds the rules that apply and files the statement.",
-  cols: [
-    { h: "Product", l: [{ t: "How it works", u: "#story" }, { t: "Pricing", u: "#pricing" }] },
-    { h: "Company", l: [{ t: "GitHub", u: "https://github.com/GetBindu/Bindu" }, { t: "raahul@getbindu.com", u: "mailto:raahul@getbindu.com" }] },
+  explore: [{ t: "How it works", u: "#story" }, { t: "Pricing", u: "#pricing" }, { t: "FAQ", u: "#faq" }],
+  company: [{ t: "GitHub", u: "https://github.com/GetBindu/Bindu" }, { t: "raahul@getbindu.com", u: "mailto:raahul@getbindu.com" }],
+  /* The profiles, in the Company column, where the reference keeps its socials. */
+  social: [
+    { t: "LinkedIn", u: "https://www.linkedin.com/company/getbindu/" },
+    { t: "Instagram", u: "https://www.instagram.com/getbinduofficial/" },
+    { t: "YouTube", u: "https://www.youtube.com/@getbindu" },
+    { t: "Medium", u: "https://medium.com/@raahul_rahl" },
+    { t: "X", u: "https://x.com/raahulrahl" },
   ],
-  legal: "© 2026 GetBindu · The73 B.V. · KvK 92797911 · Amsterdam, NL · Hosted in the EU · Prices exclude VAT", // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
+  /* The footer's middle row, as on fabric.vc: the registered office, then who operates the site.
+     Both are already stated on /privacy and /terms (sections 1 and 12). Keep the three copies
+     identical; they are the same registered details. */
+  office: {
+    entity: "The73 B.V.",
+    lines: ["The Stack - Jacob Bontiusplaats 9", "1018 LL Amsterdam", "The Netherlands", "Chamber of Commerce (KvK) 92797911"],
+  },
+  operator: "The73 B.V. is the company that operates the Bindu service at getbindu.com and app.getbindu.com. The73 B.V. is the data controller.",
+  /* Where the reference carries its funding note: /privacy section 5, "Where your data lives",
+     word for word. A Dutch company, and the data stays in the EU. Keep it identical to that page. */
+  residency: "Bindu is EU-hosted, and we work to keep personal data processed within the European Union. Where a processor operates outside the EU, we rely on an approved transfer mechanism, such as the European Commission's standard contractual clauses.",
+  /* The bottom bar follows fabric.vc's: the made line, the rights line, then the year on its own.
+     `legal` stays the single line the machine page prints, composed from the same two halves. */
+  made: "made around the world ♡",
+  /* The owner's line, beside the year, where the reference puts its company line. */
+  motto: ["Imagine there’s no boundary", "It’s easy if you try"],
+  copyright: COPYRIGHT,
+  rights: RIGHTS,
+  legal: `${COPYRIGHT} ${RIGHTS}`,
 };
 
 /* Round 17 (one story). Statement, before and after, the hero selector. Facts only from the brief; statuses as in the brief. */
@@ -314,23 +326,62 @@ export const story = {
   },
 };
 
-/* Round 44 (r44-5): PLACEHOLDER quotes. They are made up, so the section carries a visible "Placeholder" chip. Replace them with quotes Raahul has approved and remove the chip
-   (go-live item in docs/home/usage-audit.md). No logos, avatars, star ratings or numbers. */
+/* Replace these examples and their visible label once customer quotes are approved. */
 export const TESTIMONIALS_PLACEHOLDER = [
-  { q: "I describe the shipment once, and Bindu tells me which proof each supplier still owes.", name: "Maria V.", role: "Importer", company: "Example Coffee Imports", country: "Netherlands" },
-  { q: "My buyers ask for the same plot data every season. Now I answer once and it goes where it is needed.", name: "Joseph K.", role: "Co-op manager", company: "Example Growers Co-op", country: "Uganda" },
-  { q: "Each client's proof sits on one record per shipment, so I know what is missing before I file.", name: "Anke D.", role: "Customs broker", company: "Example Customs Services", country: "Belgium" },
-  { q: "When a buyer asks for a reference number, I can find it and the document behind it.", name: "Samir R.", role: "Trader", company: "Example Trading", country: "Switzerland" },
-  { q: "Our suppliers answer on WhatsApp. Nobody has to learn a new login.", name: "Lena H.", role: "Sourcing lead", company: "Example Apparel Brand", country: "Germany" },
-];
+  {
+    q: "I describe the shipment once, and Bindu tells me which proof each supplier still owes. When I go to file, I can see what’s missing in one place.",
+    name: "Maria V.",
+    role: "Importer",
+    company: "Example Coffee",
+    country: "Netherlands",
+    mark: "coffee",
+    guide: { href: "/eudr", label: "EUDR workflow" },
+  },
+  {
+    q: "My buyers ask for the same plot data every season. Now I answer once and it goes where it is needed.",
+    name: "Joseph K.",
+    role: "Co-op manager",
+    company: "Example Growers",
+    country: "Uganda",
+    mark: "growers",
+    guide: null,
+  },
+  {
+    q: "Each client’s proof sits on one record per shipment, so I know what is missing before I file. If customs asks for a reference, I know which shipment it belongs to.",
+    name: "Anke D.",
+    role: "Customs broker",
+    company: "Example Customs",
+    country: "Belgium",
+    mark: "customs",
+    guide: { href: "/blog/eudr-traces", label: "TRACES guide" },
+  },
+  {
+    q: "When a buyer asks for a reference number, I can find it and the document behind it.",
+    name: "Samir R.",
+    role: "Trader",
+    company: "Example Trade",
+    country: "Switzerland",
+    mark: "trading",
+    guide: null,
+  },
+  {
+    q: "Our suppliers answer on WhatsApp. Nobody has to learn a new login.",
+    name: "Lena H.",
+    role: "Sourcing lead",
+    company: "Example Apparel",
+    country: "Germany",
+    mark: "apparel",
+    guide: { href: "/dpp/textiles", label: "Textile passports" },
+  },
+] as const;
+
 export const voices = {
-  title: "What buyers say.",
-  label: "Quotes from buyers",
-  placeholder: "Placeholder",
-  note: "Placeholder quotes and names, to be replaced with approved ones.",
+  title: "How trade teams work with Bindu",
+  cta: "See the workflow",
+  label: "Illustrative trade compliance testimonials",
+  placeholder: "Illustrative quotes from fictional customers",
   prev: "Previous quote",
   next: "Next quote",
-  hint: "Drag, use the arrow keys or scroll",
 };
 
 /* Round 44 (r44-6): the rules Bindu covers, one tile each. Statuses exactly as in the brief (docs/home/project-context.md section 2): EUDR Live, textile passports Live, battery
@@ -342,7 +393,7 @@ export const rules = {
   label: "Regulations",
   covers: "Covers",
   source: "Source",
-  note: "Illustration. The clips are from each rule's page on getbindu.com.",
+  note: "Illustrations from Bindu’s regulation guides.",
   /* r65-6: six cards in the parallel.ai shape (Austin). Facts, statuses, regulation numbers and sources as before; the passport card is split
      into textiles (Live) and batteries (In build). `page` is the getbindu.com path the clip comes from; `chip` is the one floating line of the
      record, an illustration with no invented numbers. The battery passport source is the Battery Regulation (EU) 2023/1542 (verify). */
@@ -370,14 +421,13 @@ export const rules = {
   build: "In build",
 };
 
-/* Round 65 (r65-7): the blog row after pricing. Titles, dates and thumbnails come from each post's frontmatter (app/(en)/(home)/page.tsx). */
+/* The homepage writing strip reads its article metadata from the post frontmatter. */
 export const blogRow = {
   title: "From the blog.",   /* r65-7, option a */
   all: "All posts",
-  read: "Read",
   label: "Blog posts",
   prev: "Previous posts",
   next: "Next posts",
   slugs: ["eudr-traces", "cbam-report", "digital-product-passport-textiles", "battery-passport", "reach-compliance", "eudr-timeline"],
 };
-export type BlogRowPost = { slug: string; title: string; date: string; iso: string; image: string; alt: string; category: string };
+export type BlogRowPost = { slug: string; title: string; date: string; iso: string; category: string };

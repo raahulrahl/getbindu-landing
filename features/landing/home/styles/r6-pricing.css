@@ -1,123 +1,196 @@
-/* Round 6, item 1: Pricing, minimal. Round 15 item 8 (revised): a centred head, the regulation tabs as a pill toggle with
-   a sliding indicator (the style of the shipment segmented control), then one card with a 1px border split into two equal
-   halves that start on one top line: the receipt on the left (price, ledger), what is included on the right (checklist,
-   Estimate pill, trust notes). Yellow is the one filled pill (Estimate your cost). Cobalt marks the active tab and the
-   checklist dots. The whole section is one window at 1440x900 and 1920x1080; at 860px and below the halves stack. */
+.bindu-home #pricing.sec { padding-block-start: clamp(24px, 3.5vw, 48px); }
 
-/* r54: the generic section rhythm (site.css .sec) applies; the card is the v3 panel */
-.bindu-home .r6-pricing > .container { max-width: 1080px; width: 100%; }
-
-/* 1. centred head */
-.bindu-home .r6-head { display: grid; justify-items: center; text-align: center; gap: 24px; margin-bottom: var(--lead-gap); }
-.bindu-home .r6-head .t-display-lg { margin: 0; text-wrap: balance; }
-.bindu-home .r6-head .t-body-lg { margin: 0; max-width: 32ch; text-wrap: balance; }
-
-/* 2. the toggle: the shared segmented control (components.css, round 15 item 14) */
-.bindu-home .r6-tabs { margin: 0 auto var(--s-6); max-width: 720px; }
-.bindu-home .r6-card:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
-
-/* 3. one card, two equal halves on one top line */
-.bindu-home .r6-cardwrap { position: relative; border-radius: var(--r-lg); }
-.bindu-home .r6-card {
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start;
-  border: 1px solid var(--r6-card-bg); border-radius: inherit; background: var(--r6-card-bg); color: var(--on-dark); overflow: hidden;
-}
-/* r55-8: the pricing card is the file's ONE inverted surface (pricing-card-dark: #171717, white text, on-dark-mute secondary text). Its tokens are re-pointed inside the
-   card, so every rule below keeps using the normal names. In the dark theme the inversion is a white card with black text. */
-.bindu-home .r6-cardwrap {
-  --r6-card-bg: #171717; --on-dark: #fff; --on-dark-body: rgb(255 255 255 / 0.85); --on-dark-mute: rgb(255 255 255 / 0.7);
-  --hairline-dark: rgb(255 255 255 / 0.12); --hairline-strong: rgb(255 255 255 / 0.25); --line-white-12: rgb(255 255 255 / 0.12);
-  --canvas: #171717; --canvas-soft: #1f1f1f; --brand-cobalt: #3D7BFF; --cobalt-signal: #3D7BFF; --link-wipe: #3D7BFF; --focus-ring-dark: 2px solid #fff;
-}
-.bindu-home:not([data-theme="light"]) .r6-cardwrap {
-  --r6-card-bg: #fff; --on-dark: #000; --on-dark-body: #525252; --on-dark-mute: #737373;
-  --hairline-dark: #e5e5e5; --hairline-strong: #d4d4d4; --line-white-12: #e5e5e5;
-  --canvas: #fff; --canvas-soft: #fafafa; --brand-cobalt: #08327A; --cobalt-signal: #1F55C4; --link-wipe: #08327A; --focus-ring-dark: 2px solid #000;
-}
-/* button-pill-on-dark: a white pill with an ink label on the dark card (in the dark theme the card is white, so the pill is the black primary) */
-.bindu-home .r6-cardwrap .r6-cta .btn { background: #fff; color: #000; border-color: #fff; }
-@media (hover: hover) and (pointer: fine) {
-  .bindu-home .r6-cardwrap .r6-cta .btn:hover { background: #e5e5e5; border-color: #e5e5e5; }
-}
-.bindu-home:not([data-theme="light"]) .r6-cardwrap .r6-cta .btn { background: #000; color: #fff; border-color: #000; }
-@media (hover: hover) and (pointer: fine) {
-  .bindu-home:not([data-theme="light"]) .r6-cardwrap .r6-cta .btn:hover { background: #090909; }
-}
-.bindu-home .r6-left, .bindu-home .r6-right { min-width: 0; padding: var(--s-6) var(--s-7); }
-.bindu-home .r6-right { align-self: stretch; display: flex; flex-direction: column; }
-
-.bindu-home .r6-tag { display: flex; align-items: center; gap: 12px; min-height: 24px; margin: 0 0 var(--s-4); }
-.bindu-home .r6-tag .bh-eyebrow, .bindu-home .r6-inc-h { color: var(--on-dark-mute); margin: 0; }
-.bindu-home .r6-inc-h { display: flex; align-items: center; min-height: 24px; }
-
-.bindu-home .r6-price {
-  margin: 0; font: 500 var(--display-lg)/1.2 var(--font-display); letter-spacing: 0;   /* r55: the price is display-lg in the display face */
-  color: var(--on-dark); font-variant-numeric: tabular-nums;
-}
-.bindu-home .r6-unit { margin: var(--s-2) 0 0; }
-.bindu-home .r6-line { margin: var(--s-1) 0 0; }
-.bindu-home .r6-request { margin: 0; font: 500 var(--display-sm)/1.4 var(--font-display); letter-spacing: 0; color: var(--on-dark); }
-
-/* the ledger: label left, amount right in one column, hairline between rows */
-.bindu-home .r6-rows { margin: var(--s-5) 0 0; border-top: 1px solid var(--line-white-12); }
-.bindu-home .r6-row {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 16px; min-height: 48px;
-  padding: 12px 0; border-bottom: 1px solid var(--line-white-12);
-}
-.bindu-home .r6-row:last-child { border-bottom: 0; }
-.bindu-home .r6-row dt { font: 400 var(--body-sm)/1.45 var(--font-sans); color: var(--on-dark-body); }
-.bindu-home .r6-row dd {
-  margin: 0; font: 400 var(--mono-number)/1.45 var(--font-mono); font-variant-numeric: tabular-nums;
-  color: var(--on-dark); white-space: nowrap; text-align: right;
+.bindu-home .pricing-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(224px, 0.34fr);
+  grid-template-areas: "stage copy";
+  align-items: start;
+  gap: clamp(22px, 3.25vw, 46px);
+  max-width: var(--editorial-container);
 }
 
-/* the right half: a checklist with a small cobalt dot (no icons in circles), the Estimate pill, then the trust notes */
-.bindu-home .r6-inc { list-style: none; margin: var(--s-4) 0 0; padding: 0; }
-.bindu-home .r6-inc li {
-  position: relative; display: flex; justify-content: space-between; align-items: center; gap: 16px;
-  min-height: 48px; padding: 12px 0 12px 22px; border-bottom: 1px solid var(--line-white-12);
-  font: 400 var(--body-sm)/1.45 var(--font-sans); color: var(--on-dark-body);
-}
-.bindu-home .r6-inc li:last-child { border-bottom: 0; }
-.bindu-home .r6-inc li::before { content: ""; position: absolute; left: 0; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--cobalt-signal); }
-/* Live is plain mono text here, not the yellow chip: yellow stays on the one Estimate pill in this section */
-.bindu-home .r6-live { font: 500 14px/1 var(--font-sans); color: var(--on-dark); }
-
-.bindu-home .r6-cta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); margin-top: var(--s-5); }
-.bindu-home .r6-trust {
-  list-style: none; margin: auto 0 0; padding: var(--s-4) 0 0; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4);
-  font: 400 13px/1.6 var(--font-sans); color: var(--on-dark-mute);
+.bindu-home .pricing-copy {
+  grid-area: copy;
+  padding-inline-start: clamp(14px, 1.8vw, 24px);
+  border-inline-start: 1px solid var(--hairline-strong);
 }
 
-/* the EUDR check, under the Estimate pill: a mono audience label, the text link and the source link */
-.bindu-home .r6-check { margin: 0; padding: 0; }
-.bindu-home .r6-check .bh-eyebrow { color: var(--on-dark-mute); margin-bottom: 0; }
-.bindu-home .r6-check-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-5); }
-.bindu-home .link-btn { min-height: 36px; padding: 0; background: none; border: 0; cursor: pointer; font: 400 var(--caption)/1.4 var(--font-sans); }
-.bindu-home .link-btn:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
-.bindu-home .r6-source { min-height: 36px; display: inline-flex; align-items: center; font: 400 var(--caption)/1.4 var(--font-sans); }
-
-/* the card keeps one height across the tabs, so the toggle does not move when the tab changes */
-@media (min-width: 861px) { .bindu-home .r6-card { min-height: 488px; } }
-
-/* narrower screens: the halves stack, receipt first */
-@media (max-width: 860px) {
-  .bindu-home .r6-card { grid-template-columns: minmax(0, 1fr); }
-  .bindu-home .r6-left, .bindu-home .r6-right { padding: var(--s-5); }
-}
-@media (max-width: 600px) {
-  .bindu-home .r6-pricing .container { padding-right: 36px; } /* clears the fixed Mockup tab at the right edge */
-  .bindu-home .r6-price { font-size: 52px; }
-  .bindu-home .r6-left, .bindu-home .r6-right { padding: var(--s-4); }
-  .bindu-home .r6-cta .btn { width: 100%; }
+.bindu-home .pricing-eyebrow {
+  margin: 0 0 10px;
+  color: var(--on-dark-mute);
+  font: 500 12px/1.45 var(--font-mono);
 }
 
-/* r20-4: odometer columns (one digit tall, the strip slides) and the crossfade for tabs without a price */
+.bindu-home .pricing-copy h2 { font-size: clamp(27px, 2.55vw, 36px); text-wrap: pretty; }
+
+.bindu-home .pricing-lead {
+  max-width: 40ch;
+  margin: 12px 0 20px;
+  color: var(--on-dark-body);
+  font-size: 16px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.bindu-home .pricing-copy .btn { font: 500 13px/1.3 var(--font-mono); }
+
+.bindu-home .pricing-stage {
+  grid-area: stage;
+  display: grid;
+  place-items: center;
+  min-height: 414px;
+  padding: clamp(18px, 4.4vw, 60px);
+  border: 1px solid var(--hairline-dark);
+  border-radius: var(--r-control);
+  background-color: var(--canvas);
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 37px, color-mix(in srgb, var(--cobalt-signal) 11%, transparent) 37px 38px),
+    repeating-linear-gradient(0deg, transparent 0 37px, color-mix(in srgb, var(--cobalt-signal) 9%, transparent) 37px 38px),
+    linear-gradient(135deg, color-mix(in srgb, var(--canvas) 93%, var(--cobalt-signal)), var(--canvas) 78%);
+}
+
+.bindu-home .pricing-console {
+  width: min(100%, 620px);
+  min-width: 0;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-control);
+  background: var(--canvas);
+  box-shadow: 0 12px 32px rgb(25 44 76 / 0.08);
+}
+
+.bindu-home .pricing-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 10px;
+  border-block-end: 1px solid var(--hairline-dark);
+}
+
+.bindu-home .pricing-tabs button {
+  min-height: 36px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--on-dark-body);
+  font: 500 12px/1.25 var(--font-mono);
+  cursor: pointer;
+}
+
+.bindu-home .pricing-tabs button:hover { background: var(--canvas-soft); }
+
+.bindu-home .pricing-tabs button[aria-selected="true"] {
+  border-color: var(--hairline-dark);
+  background: var(--canvas-soft);
+  color: var(--on-dark);
+}
+
+.bindu-home .pricing-panel { min-height: 265px; padding: clamp(14px, 2vw, 24px); }
+.bindu-home .pricing-panel:focus-visible { outline-offset: -3px; }
+
+.bindu-home .pricing-tag {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 16px;
+}
+
+.bindu-home .pricing-tag h3 {
+  margin: 0;
+  font: 600 19px/1.3 var(--font-display);
+  letter-spacing: -0.025em;
+}
+
+.bindu-home .calc-compact { gap: 5px; }
+.bindu-home .calc-compact .calc-n { color: var(--link-wipe); }
+
+.bindu-home .calc-basis {
+  margin: 0 0 8px;
+  color: var(--on-dark-body);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.bindu-home .calc-compact .calc-total {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  padding-inline: 12px;
+}
+
+.bindu-home .calc-compact .calc-total .calc-sum { font-size: clamp(23px, 2.5vw, 32px); }
+.bindu-home .calc-compact .calc-total .t-caption { grid-column: 1 / -1; font-size: 12px; }
+
+.bindu-home .pricing-breakdown { margin-top: 12px; font-size: 13px; }
+
+.bindu-home .pricing-breakdown summary {
+  min-height: 38px;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.bindu-home .pricing-breakdown summary span {
+  margin-inline-start: 6px;
+  color: var(--link-wipe);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bindu-home .pricing-breakdown dl { display: grid; margin: 0; }
+
+.bindu-home .pricing-breakdown dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px 12px;
+  padding: 8px 0;
+  border-block-start: 1px solid var(--hairline-dark);
+}
+
+.bindu-home .pricing-breakdown dd {
+  flex-shrink: 0;
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.bindu-home .pricing-request { margin: 0 0 10px; font-size: 17px; font-weight: 550; }
+.bindu-home .pricing-description { margin: 0; color: var(--on-dark-body); font-size: 15px; }
+
+.bindu-home .pricing-status-list { display: grid; margin: 0; padding: 0; list-style: none; }
+
+.bindu-home .pricing-status-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-block-start: 1px solid var(--hairline-dark);
+  font-size: 14px;
+}
+
+.bindu-home .r6-check { margin-top: 20px; }
+.bindu-home .r6-check .bh-eyebrow { color: var(--on-dark-body); font-size: 13px; }
+.bindu-home .r6-check-row { display: flex; flex-wrap: wrap; gap: 0 12px; }
+.bindu-home .link-btn { min-height: 36px; padding: 0; background: none; border: 0; cursor: pointer; font: 400 13px/1.4 var(--font-sans); }
+.bindu-home .r6-source { min-height: 36px; font: 400 13px/1.4 var(--font-sans); }
+
+@media (max-width: 800px) {
+  .bindu-home .pricing-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "copy" "stage"; }
+  .bindu-home .pricing-stage { min-height: 0; }
+}
+
+@media (max-width: 480px) {
+  .bindu-home .pricing-stage { padding: 10px; }
+  .bindu-home .pricing-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 6px;
+  }
+  .bindu-home .pricing-tabs button { min-height: 44px; }
+  .bindu-home .calc-compact .calc-total { gap: 4px 10px; }
+  .bindu-home .calc-compact .calc-total .bh-eyebrow { font-size: 13px; }
+}
+
 .bindu-home .od { display: inline-flex; }
-/* r55-8: the clip box is one full line (1.2em) tall plus a little room, and every digit in the strip is exactly that tall, so no digit is ever cut */
 .bindu-home .od-col { display: inline-block; height: 1.2em; line-height: 1.2; overflow: hidden; vertical-align: top; }
 .bindu-home .od-strip { display: grid; will-change: transform; }
 .bindu-home .od-strip > span { display: block; height: 1.2em; line-height: 1.2; }
-.bindu-home .r6-fade { animation: r6-fade 400ms var(--ease-out) both; }
-@keyframes r6-fade { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .bindu-home .r6-fade { animation: none; } }

@@ -1,7 +1,4 @@
-/* Round 65 (r65-6, r65-7): the parallel.ai card, rebuilt in our own CSS (measured on parallel.ai in Chrome, 25 Nov 2026; no code, assets or
-   fonts copied). Used by the rules grid (#rules) and the blog row (#blog). A warm-grey container (4px), an inner tray with a soft inset, a white
-   window set low and left that bleeds off the right and bottom edges, one white chip with a long soft shadow, then the text under the box.
-   These two windows and chips are the only shadows on the page (Austin's brief for this round). */
+/* Rules grid cards: an inset tray holds a cropped preview and a floating status chip. */
 /* r65-8 (Austin): the two "Bindu" moments keep the brand yellow: the statement's Bindu chip and the finale's ı sunflower. Nothing else is yellow. */
 .bindu-home { --bindu-yellow: #FFD400; --bindu-yellow-edge: #FFD400; }
 .bindu-home[data-theme="light"] { --bindu-yellow-edge: #B38F00; }
@@ -53,62 +50,6 @@
 .bindu-home .pc-note { margin: 32px 0 0; font: 400 14px/1.4 var(--font-sans); color: var(--on-dark); text-align: center; }
 .bindu-home .sec.rg { overflow-x: clip; }
 
-/* r65-7: the blog row */
-.bindu-home .bl-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: var(--s-6); }
-.bindu-home .bl-head h2 { margin: 0; }
-.bindu-home .bl-ctl { display: flex; align-items: center; gap: 8px; flex: none; }
-.bindu-home .bl-all { margin-right: 8px; font: 500 15px/1 var(--font-sans); color: var(--link-wipe); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-.bindu-home .bl-arrow { width: 36px; height: 36px; padding: 0; display: inline-grid; place-items: center; border-radius: var(--r-control); }
-.bindu-home .bl-arrow:disabled { opacity: var(--disabled-dim); cursor: default; }
-.bindu-home .bl-row { list-style: none; margin: 0; padding: 0 0 8px; display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 48px) / 3); gap: 24px;
-  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
-.bindu-home .bl-row::-webkit-scrollbar { display: none; }
-.bindu-home .bl-card { scroll-snap-align: start; position: relative; }
-@media (max-width: 1023px) { .bindu-home .bl-row { grid-auto-columns: calc((100% - 24px) / 2); } }
-@media (max-width: 639px) { .bindu-home .bl-row { grid-auto-columns: 86%; gap: 16px; } .bindu-home .bl-arrow { width: 44px; height: 44px; } .bindu-home .bl-all { display: none; } }
-.bindu-home .bl-img { object-fit: cover; object-position: center; background: var(--pc-win); }
-.bindu-home .bl-t { display: block; font-size: 18px; line-height: 1.35; text-wrap: balance; }
-.bindu-home .bl-link { color: inherit; text-decoration: none; }
-.bindu-home .bl-link::after { content: ""; position: absolute; inset: 0; }
-.bindu-home .bl-link:focus-visible { outline: none; }
-.bindu-home .bl-card:has(.bl-link:focus-visible) .pc-box { outline: var(--focus-ring-light); outline-offset: 3px; }
-.bindu-home:not([data-theme="light"]) .bl-card:has(.bl-link:focus-visible) .pc-box { outline: var(--focus-ring-dark); }
-@media (hover: hover) { .bindu-home .bl-card:hover .bl-link { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } }
-.bindu-home .bl-meta { margin: 0; display: flex; gap: 16px; font: 400 14px/1.4 var(--font-sans); color: var(--on-dark); }
-.bindu-home .bl-read { color: var(--link-wipe); font-weight: 500; }
-
-/* r65-9 (Austin): rectangular controls with a proper finish. Every control uses --r-control (6px). The nav's secondary controls (theme toggle,
-   GitHub, Docs, Sign in) are outlined: a 1px hairline on the canvas, no grey fill, so they read as crisp keys next to the cobalt Book a demo. */
-.bindu-home .nav .theme-toggle, .bindu-home .nav .nav-act { width: auto; min-width: 36px; height: 36px; background: transparent; border: 1px solid var(--hairline-dark); }
-.bindu-home .nav .theme-toggle { width: 36px; padding: 0; }
-@media (hover: hover) { .bindu-home .nav .theme-toggle:hover, .bindu-home .nav .nav-act:hover { background: var(--canvas-soft); border-color: var(--hairline-strong); } }
-
-/* r65-12: What buyers say, Legora-style endless row. GSAP sets each card's x and width and its box height; nothing is hidden by CSS before JS (the server row
-   shows the cards stacked at the start; the first layout runs before paint). */
-.bindu-home .sec.vx { overflow-x: clip; }
-.bindu-home .vx-head { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: var(--s-6); }
-.bindu-home .vx-row { position: relative; height: calc(var(--vx-h, 400px) + 230px); outline: none; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
-.bindu-home .vx-row:focus-visible { outline: var(--focus-ring-light); outline-offset: 8px; }
-.bindu-home .vx-track { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
-.bindu-home .vx-card { position: absolute; left: 0; top: 0; width: 260px; gap: 20px; cursor: pointer; }
-.bindu-home .vx-card .pc-box { aspect-ratio: auto; height: 220px; }
-/* before the section hydrates (late): a plain centred row, so the cards never pile up */
-.bindu-home .vx-row:not(.is-live) .vx-track { display: flex; justify-content: center; gap: 40px; }
-.bindu-home .vx-row:not(.is-live) .vx-card { position: relative; flex: none; }
-.bindu-home .vx-row:not(.is-live) .vx-card:not(:first-child) .vx-text { visibility: hidden; }
-.bindu-home .vx-img { object-fit: cover; object-position: left top; background: var(--pc-win); pointer-events: none; }
-.bindu-home .vx-text { display: grid; gap: 12px; max-width: 520px; }
-.bindu-home .vx-mark { font: 500 36px/0.6 var(--font-display); color: var(--on-dark); height: 18px; }
-.bindu-home .vx-q { margin: 0; font: 400 22px/1.4 var(--font-display); color: var(--on-dark); text-wrap: pretty; }
-.bindu-home .vx-who { margin: 0; display: grid; gap: 2px; font: 400 15px/1.4 var(--font-sans); color: var(--on-dark); }
-.bindu-home .vx-who b { font-weight: 500; }
-.bindu-home .vx-ctl { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 8px; }
-.bindu-home .vx-arrow { width: 40px; height: 40px; }
-.bindu-home .vx-dots { list-style: none; margin: 0; padding: 8px 12px; display: flex; align-items: center; gap: 6px; border-radius: var(--r-control); background: var(--canvas-soft); box-shadow: 0 0 0 1px var(--hairline-dark); }
-.bindu-home .vx-dot { display: block; width: 6px; height: 6px; padding: 0; border: 0; border-radius: 3px; background: rgb(var(--fg-rgb) / 0.3); cursor: pointer; transition: width 300ms var(--ease-ui), background-color 300ms var(--ease-ui); }
-.bindu-home .vx-dot.is-on { width: 24px; background: var(--on-dark); }
-@media (max-width: 639px) { .bindu-home .vx-q { font-size: 19px; } .bindu-home .vx-row { height: calc(var(--vx-h, 280px) + 270px); } .bindu-home .vx-dot { position: relative; } .bindu-home .vx-dot::after { content: ""; position: absolute; inset: -19px -6px; } }
-
 /* r65-17: the three pinned sections after the statement (what Bindu does, the shipment map, the departures board) put their title the same short
    distance under the collapsed nav (8px of stage padding under the 64px sticky line), instead of centring the stage, which left 18 to 33px. Desktop
    pinned only; phones and the static fallbacks keep their own spacing. */
@@ -116,18 +57,4 @@
   .bindu-home .fl-pin:not(.is-static) .fl-win { padding-top: 8px; }
   .bindu-home .ship-pin:not(.is-static) .ship-stage { justify-content: flex-start; padding-top: 8px; }
   .bindu-home .ex-pin:not(.is-static) .ex-stage { align-content: start; padding-top: 8px; }
-}
-
-/* r65-20: What buyers say as one scroll-driven scene. JS writes each card's transform and opacity from one number (Voices.tsx); the cards keep one size
-   (the big card's) and scale down at the sides from their top centre, so the boxes stay top-aligned. Desktop with motion allowed: the section is a
-   sticky stage (the same media query as PIN_MQ in Voices.tsx) and four steps of scroll move through the five quotes. */
-.bindu-home .vx-row.is-live .vx-card { width: var(--vx-big, 560px); transform-origin: 50% 0; will-change: transform, opacity; }
-.bindu-home .vx-row.is-live .vx-card .pc-box { height: var(--vx-h, 336px); }
-.bindu-home .vx-row.is-live .vx-text { will-change: transform, opacity; }
-.bindu-home .vx-card .pc-win { overflow: hidden; }
-@media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
-  .bindu-home .sec.vx { padding-block: 0; }
-  .bindu-home .vx-pin { height: calc(100vh + 280vh); height: calc(100svh + 280svh); }
-  .bindu-home .vx-stage { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); display: flex; flex-direction: column; justify-content: center; }
-  .bindu-home .vx-stage .vx-head { margin-bottom: var(--s-5); }
 }

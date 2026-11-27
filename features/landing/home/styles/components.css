@@ -12,7 +12,6 @@
 .bindu-home .t-display-xl, .bindu-home .t-display-lg, .bindu-home .t-display-md, .bindu-home .t-display-sm { font-family: var(--font-display); font-weight: var(--display-weight); margin: 0; text-wrap: balance; }
 .bindu-home .t-display-xl { font-size: var(--display-xl); letter-spacing: var(--track-xl); line-height: var(--lh-display); }
 .bindu-home .t-display-lg { font-size: var(--display-lg); letter-spacing: var(--track-lg); line-height: var(--lh-display-lg); }
-.bindu-home h2.t-display-lg { font-weight: 500; }   /* r65-1: 500 in Newsreader; was r60 follow-up: every section title is 600, as the hero (r59 spec) */
 .bindu-home .t-display-md { font-size: var(--display-md); font-weight: 500; letter-spacing: var(--track-md); line-height: 1.33; }
 .bindu-home .t-display-sm { font-size: var(--display-sm); letter-spacing: var(--track-sm); line-height: var(--lh-display-sm); }
 /* r55: the lead is body-md in the body grey; t-soft on a lead does not make it brighter */

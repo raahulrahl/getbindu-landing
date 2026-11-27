@@ -1,3 +1,0 @@
-/* Round 13, item 9: the demo is the one highlighted CTA. In the drawer (phones) it is the btn-primary, not a list row.
-   r52: only its place is set here; size and type come from the one .btn set in components.css. */
-.bindu-home .nav-drawer a.nav-drawer-book { display: flex; margin-top: var(--s-5); }

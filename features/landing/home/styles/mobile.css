@@ -7,9 +7,7 @@
 
   /* nav and drawer: safe areas, 44px targets, the drawer scrolls if the screen is short */
   .bindu-home .nav-in { padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
-  .bindu-home .nav .theme-toggle { width: 44px; height: 44px; }
-  .bindu-home .nav-drawer { max-height: calc(100svh - 56px); overflow-y: auto; overscroll-behavior: contain; padding-bottom: max(20px, env(safe-area-inset-bottom)); padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
-  .bindu-home .foot-col a { padding: 12px 0; overflow-wrap: anywhere; }
+  .bindu-home .nav-drawer { padding-bottom: max(20px, env(safe-area-inset-bottom)); padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
   .bindu-home .seg-opt { min-height: 44px; }
 
   /* type: the hero headline in at most three lines; the sections' headings come from the smaller tokens above */

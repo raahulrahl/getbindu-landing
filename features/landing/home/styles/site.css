@@ -21,42 +21,178 @@
 .bindu-home .sec-head p { margin: 0; max-width: 52ch; text-wrap: balance; }
 
 /* ---------- nav ---------- */
-.bindu-home .nav { position: fixed; inset: 0 0 auto 0; z-index: 100; transition: background-color var(--t-base) var(--ease-out); }
-.bindu-home .nav-in { max-width: 1320px; margin: 0 auto; height: 56px; padding: 0 var(--gutter); display: flex; align-items: center; gap: var(--s-5); }
-.bindu-home .nav-brand { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font: 600 18px/1 var(--font-display); letter-spacing: 0; min-height: 44px; }
-/* r38-1: nav type per DESIGN.md: sans, sentence case, body-sm, 500, muted; full contrast on hover and while open. No mono, caps or tracking. */
-.bindu-home .nav-links { display: flex; align-items: center; gap: var(--s-5); margin-left: auto; font: 500 var(--body-sm)/1 var(--font-sans); letter-spacing: 0; text-transform: none; }   /* r55: body-sm-strong 14px 500 */
-.bindu-home .nav-links a, .bindu-home .nav-reg-btn { text-decoration: none; color: var(--on-dark-mute); padding: 12px 2px; }
+.bindu-home .nav {
+  --nav-height: 66px;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  background: var(--canvas);
+  border-bottom: 1px solid transparent;
+}
+.bindu-home .nav.is-scrolled { border-bottom-color: var(--hairline-dark); }
+
+.bindu-home .nav-in {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 30px);
+  max-width: var(--editorial-container);
+  min-height: var(--nav-height);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.bindu-home .nav-brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+  min-height: 44px;
+  font: 700 20px/1 var(--font-display);
+  letter-spacing: -0.035em;
+  text-decoration: none;
+}
+.bindu-home .logo { display: block; border-radius: 50%; }
+
+.bindu-home .nav-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.55vw, 24px);
+  margin-inline-start: auto;
+  font: 400 13px/1.2 var(--font-mono);
+  white-space: nowrap;
+}
+.bindu-home .nav-links a, .bindu-home .nav-reg-btn {
+  color: var(--on-dark-mute);
+  text-decoration: none;
+}
+.bindu-home .nav-links > a, .bindu-home .nav-reg-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.bindu-home .nav-links a[aria-current="location"] {
+  color: var(--on-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--cobalt-signal);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
 .bindu-home .nav-reg.is-open .nav-reg-btn { color: var(--on-dark); }
 @media (hover: hover) and (pointer: fine) {
   .bindu-home .nav-links a:hover, .bindu-home .nav-reg-btn:hover { color: var(--on-dark); }
 }
 .bindu-home .nav-reg { position: relative; }
-.bindu-home .nav-reg-btn { display: inline-flex; align-items: center; gap: 6px; font: inherit; letter-spacing: inherit; background: none; border: 0; cursor: pointer; white-space: nowrap; transition: color var(--t-fast) var(--ease-out); }
+.bindu-home .nav-reg-btn {
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
 .bindu-home .nav-reg-btn svg { transition: transform 200ms var(--ease-ui); }
 .bindu-home .nav-reg.is-open .nav-reg-btn svg { transform: rotate(180deg); }
-.bindu-home .nav-reg-btn:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
-.bindu-home .nav-reg-panel { position: absolute; top: calc(100% + 2px); left: -12px; min-width: 176px; padding: var(--s-2); display: grid; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); }
-.bindu-home .nav-reg-panel[hidden] { display: none; }
-.bindu-home .nav-links .nav-reg-panel a { display: flex; align-items: center; min-height: 44px; padding: 0 var(--s-3); border-radius: var(--r-control); text-decoration: none; }
-.bindu-home .nav-links .nav-reg-panel a:focus-visible { color: var(--on-dark); text-decoration: none; background: var(--canvas-mid); }
+.bindu-home .nav-reg-panel {
+  position: absolute;
+  top: 100%;
+  inset-inline-start: -12px;
+  display: grid;
+  min-width: 176px;
+  padding: var(--s-2);
+  border: 1px solid var(--hairline-dark);
+  border-radius: var(--r-control);
+  background: var(--canvas);
+}
+.bindu-home .nav-links .nav-reg-panel a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-control);
+}
+.bindu-home .nav-links .nav-reg-panel a:focus-visible { color: var(--on-dark); background: var(--canvas-soft); }
 @media (hover: hover) and (pointer: fine) {
-  .bindu-home .nav-links .nav-reg-panel a:hover { color: var(--on-dark); text-decoration: none; background: var(--canvas-mid); }
+  .bindu-home .nav-links .nav-reg-panel a:hover { background: var(--canvas-soft); }
 }
 @media (prefers-reduced-motion: reduce) { .bindu-home .nav-reg-btn svg { transition: none; } }
-/* r36-3: a shorter bar (56px, like parallel.ai's ~60): the theme toggle is 36px on desktop; phones keep 44px (mobile.css) */
-.bindu-home .nav .theme-toggle { width: 36px; height: 36px; }
-.bindu-home .logo { display: block; border-radius: 50%; }
-.bindu-home .nav-menu { display: none; }
-.bindu-home[data-theme="light"] .theme-toggle .ic-sun, .bindu-home[data-theme="dark"] .theme-toggle .ic-moon { opacity: 0; }
-.bindu-home .nav-drawer { background: var(--canvas); padding: 8px var(--gutter) 20px; display: grid; }
-.bindu-home .nav-drawer a:not(.btn) { padding: 14px 0; text-decoration: none; font-size: 18px; }
-.bindu-home .nav-drawer[hidden] { display: none; }
-.bindu-home .nav-drawer-head { margin: 0; padding: 14px 0 4px; font: 500 var(--body-sm)/1.2 var(--font-sans); color: var(--on-dark-mute); }
-.bindu-home .nav-drawer-group { display: grid; }
-.bindu-home .nav-drawer-group a { padding-left: var(--s-4); }
-@media (max-width: 860px) { .bindu-home .nav-links { display: none; } .bindu-home .nav-menu { display: inline-flex; } }
-@media (max-width: 420px) { .bindu-home .nav .nav-brand > span:last-child { display: none; } .bindu-home .nav-in { gap: 10px; } }
+
+.bindu-home .nav-actions {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+}
+.bindu-home .nav-actions .btn, .bindu-home .nav .nav-drawer-book {
+  min-height: 36px;
+  padding-inline: 12px;
+  font: 500 13px/1.2 var(--font-mono);
+}
+.bindu-home .nav .theme-toggle {
+  width: 36px;
+  height: 36px;
+  padding-inline: 0;
+  border: 1px solid var(--hairline-dark);
+  background: transparent;
+}
+.bindu-home[data-theme="light"] .theme-toggle .ic-sun,
+.bindu-home[data-theme="dark"] .theme-toggle .ic-moon { opacity: 0; }
+.bindu-home .nav .nav-gh {
+  display: none;
+  gap: 6px;
+  color: var(--on-dark-mute);
+}
+.bindu-home .nav-gh-mark { width: 16px; height: 16px; flex: none; }
+.bindu-home .nav-gh-star { font-size: 12px; }
+.bindu-home .nav-drawer-gh { display: inline-flex; align-items: center; gap: 8px; }
+.bindu-home .nav .nav-menu { display: none; }
+
+.bindu-home .nav-drawer {
+  display: grid;
+  max-height: calc(100svh - var(--nav-height));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px var(--gutter) 20px;
+  border-top: 1px solid var(--hairline-dark);
+  background: var(--canvas);
+}
+.bindu-home .nav-drawer a:not(.btn) {
+  padding-block: 12px;
+  font: 500 14px/1.45 var(--font-mono);
+  text-decoration: none;
+}
+.bindu-home .nav-drawer[hidden],
+.bindu-home .nav-reg-panel[hidden],
+.bindu-home .nav .nav-drawer-book { display: none; }
+.bindu-home .nav-drawer-head {
+  margin: 0;
+  padding: 12px 0 4px;
+  color: var(--on-dark-mute);
+  font: 400 13px/1.2 var(--font-mono);
+}
+.bindu-home .nav-drawer-group {
+  display: grid;
+  padding-inline-start: 12px;
+  border-inline-start: 1px solid var(--hairline-dark);
+}
+
+@media (min-width: 1120px) { .bindu-home .nav .nav-gh { display: inline-flex; } }
+@media (min-width: 960px) { .bindu-home .nav-drawer { display: none; } }
+@media (width < 960px) {
+  .bindu-home .nav-links { display: none; }
+  .bindu-home .nav-actions { margin-inline-start: auto; }
+  .bindu-home .nav .nav-menu { display: inline-flex; }
+}
+@media (max-width: 767px) {
+  .bindu-home .nav { --nav-height: 62px; }
+  .bindu-home .nav-in { gap: 12px; }
+  .bindu-home .nav-actions { gap: 6px; }
+  .bindu-home .nav-actions .btn, .bindu-home .nav .nav-drawer-book { min-height: 44px; padding-inline: 9px; }
+  .bindu-home .nav .theme-toggle { width: 44px; height: 44px; padding-inline: 0; }
+}
+@media (max-width: 599px) {
+  .bindu-home .nav .nav-book { display: none; }
+  .bindu-home .nav .nav-drawer-book { display: flex; margin-top: var(--s-4); }
+}
 
 /* ---------- hero ---------- */
 .bindu-home .hero { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; overflow: hidden; isolation: isolate; padding: 96px 0 72px; }
@@ -115,20 +251,6 @@
 .bindu-home .check-out { min-height: 120px; padding-top: var(--s-4); }
 .bindu-home .check-out p { margin: 0 0 8px; }
 
-/* ---------- footer (restored in r55-3 as at 1ba9176: brand and four link groups on one grid, roles row, legal line under a rule; Ollama type and tokens) ---------- */
-.bindu-home .foot { padding: var(--s-9) 0 var(--s-6); border-top: 1px solid var(--hairline-dark); }
-.bindu-home .foot-in { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(4, minmax(0, 1fr)); gap: var(--s-7) var(--s-6); align-items: start; margin-bottom: var(--s-7); }
-.bindu-home .foot-mark { display: inline-flex; align-items: center; gap: 12px; font: 600 22px/1 var(--font-display); margin-bottom: var(--s-4); }
-.bindu-home .foot-brand p { max-width: 416px; margin: 0; }
-.bindu-home .foot-col ul { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 4px; }
-.bindu-home .foot-col a { text-decoration: none; color: var(--on-dark-mute); display: inline-block; padding: 6px 0; font: 400 var(--body-sm)/1.43 var(--font-sans); letter-spacing: 0; }
-@media (hover: hover) and (pointer: fine) {
-  .bindu-home .foot-col a:hover { color: var(--on-dark); }
-}
-.bindu-home .foot-legal { margin: var(--s-4) 0 0; }
-/* tablet and phone: brand on its own row, the four link groups in a 2 x 2 grid */
-@media (max-width: 1100px) { .bindu-home .foot-in { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bindu-home .foot-brand { grid-column: 1 / -1; } }
-
 /* calculator */
 .bindu-home .calc { display: grid; gap: var(--s-3); }   /* round 15 item 9: the popup fits one window at 1440x900 and 375x667 */
 .bindu-home .calc-row { display: flex; justify-content: space-between; align-items: baseline; }
@@ -185,87 +307,3 @@
 .bindu-home .it-layers .t-caption { flex-basis: 100%; margin: 0; color: var(--on-dark-mute); }
 .bindu-home .ph { font: 500 12px/1.5 var(--font-sans); letter-spacing: 0; color: var(--on-dark-mute); align-self: start; justify-self: start; border: 1px solid var(--hairline-strong); border-radius: var(--r-control); padding: 6px 12px; }
 @keyframes it-in { from { opacity: 0; transform: translateY(-8px); } }
-
-/* ---------- 6 roles, FAQ, finale ---------- */
-
-/* r54 (v3 step 4): a centred head over a centred list (max 768px) in one panel; the rows are separated by space only */
-.bindu-home .faq { display: block; }
-.bindu-home .faq-list { max-width: 720px; margin: 0 auto; padding: 0 24px; }
-@media (min-width: 1024px) { .bindu-home .faq-list.v3-panel-wide { padding: 0 32px; } }
-.bindu-home .faq-item { --faq-q: 18px; border-bottom: 1px solid var(--hairline-dark); }
-.bindu-home .faq-item:last-child { border-bottom: 0; }
-.bindu-home .faq-item summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 16px; padding: var(--s-4) 0; }
-.bindu-home .faq-item summary::-webkit-details-marker { display: none; }
-.bindu-home .faq-item summary:focus-visible { outline: var(--focus-ring-dark); outline-offset: 4px; border-radius: var(--r-control); }
-.bindu-home .faq-item .t-display-sm { font-family: var(--font-sans); font-size: var(--faq-q); font-weight: 500; line-height: 1.56; }
-/* the icon: 18px, the nav's stroke (1.6, round caps), centred on the first line box; minus when open (the bar turns) */
-.bindu-home .faq-ico { flex: none; margin-left: auto; width: 18px; height: calc(var(--faq-q) * var(--lh-display-sm)); display: flex; align-items: center; color: var(--ink); }
-.bindu-home .faq-ico svg { display: block; width: 18px; height: 18px; overflow: visible; }
-.bindu-home .faq-ico-v { transform-box: view-box; transform-origin: 12px 12px; transition: transform 200ms var(--ease-out); }
-.bindu-home .faq-item[open] .faq-ico-v { transform: rotate(90deg); }
-@media (prefers-reduced-motion: reduce) { .bindu-home .faq-ico-v { transition: none; } }
-.bindu-home .faq-a { padding: 0 0 var(--s-4); max-width: 640px; }
-.bindu-home .faq-a p { margin: 0 0 12px; }
-@media (prefers-reduced-motion: no-preference) { .bindu-home .faq-item[open] .faq-a { animation: it-in var(--t-base) var(--ease-out) both; } }
-
-
-/* ---------- motion pass ---------- */
-/* 2 header: the wordmark collapses to the mark once the page scrolls */
-.bindu-home .nav-brand > span:last-child { display: inline-block; max-width: 90px; overflow: hidden; white-space: nowrap; transition: max-width var(--t-slow) var(--ease-out), opacity var(--t-base); }
-.bindu-home .nav.is-scrolled .nav-brand > span:last-child { max-width: 0; opacity: 0; }
-/* 4 sheet lift: the band after the hero slides over it with a rounded top edge */
-.bindu-home .hero .scene-label { bottom: 46px; }
-.bindu-home .hero .scene-btn { bottom: 40px; }
-@media (max-width: 860px) { .bindu-home .hero { padding-bottom: 112px; } .bindu-home .hero .scene-label { bottom: 46px; max-width: 48%; } }
-
-/* round 42: floating instrument bar, section dot, progress rail */
-/* r55 (adaptation 4): the floating bar is the primary-nav: canvas fill, 1px hairline, rounded.full, no shadow, no blur */
-.bindu-home .nav { background: var(--canvas); border: 1px solid var(--hairline-dark); }
-.bindu-home .nav.is-scrolled { background: var(--canvas); }
-.bindu-home .nav-in { position: relative; }
-.bindu-home .nav-links { position: relative; }
-.bindu-home .nav-links a[aria-current="location"] { color: var(--brand-cobalt); }
-.bindu-home:not([data-theme="light"]) .nav-links a[aria-current="location"] { color: var(--cobalt-signal); }
-.bindu-home .nav-dot { position: absolute; left: 0; top: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-yellow); pointer-events: none; }
-@media (min-width: 768px) {
-  .bindu-home .nav { inset: 12px 0 auto 0; margin-inline: auto; width: min(1320px, calc(100% - 2 * var(--gutter))); border-radius: var(--nav-r); }
-  .bindu-home .nav-in { padding: 0 16px; transition: height var(--t-base) var(--ease-out); }
-  .bindu-home .nav.is-scrolled .nav-in { height: 48px; }
-}
-@media (prefers-reduced-motion: reduce) { .bindu-home .nav-in { transition: none; } }
-
-/* round 43: the island. GSAP owns width, the pills and the section label; CSS only lays them out. */
-.bindu-home .nav { --nav-r: 12px; }   /* r65-9: the floating bar is a rounded rectangle */
-.bindu-home .nav-rest { display: contents; }
-@media (min-width: 861px) {
-  .bindu-home .nav-rest { display: flex; align-items: center; gap: var(--s-5); margin-left: auto; flex: none; }
-  .bindu-home .nav.is-island { overflow: clip; }
-  .bindu-home .nav.is-island .nav-in { justify-content: flex-start; }
-  .bindu-home .nav-rest .nav-links { margin-left: 0; }
-  .bindu-home .nav-brand { flex: none; }
-}
-.bindu-home .nav-links > a, .bindu-home .nav-reg { position: relative; z-index: 1; }
-.bindu-home .nav-pill, .bindu-home .nav-hover { position: absolute; left: 0; top: 0; height: 26px; border-radius: var(--r-control); box-sizing: border-box; pointer-events: none; z-index: 0; }
-/* r54: the active section pill is the secondary-button fill (one step darker than the bar, which is itself --canvas-mid), no outline; the hover pill is the quieter 4% fill */
-.bindu-home .nav-pill { height: 28px; background: rgb(var(--cobalt-rgb) / 0.14); border: 0; }   /* the active pill is cobalt (adaptation 2) */
-.bindu-home .nav-hover { height: 28px; background: var(--canvas-soft); border: 0; }
-.bindu-home .nav-dot { z-index: 1; }
-.bindu-home .nav-links { gap: 28px; }
-
-/* round 43: while the island changes size the bar drops its backdrop blur (opaque enough to read the same), so the width tween never repaints a blur over the canvas */
-.bindu-home .nav.is-moving { background: var(--canvas); }
-
-/* r52 (Austin, 25 Nov 2026): Book a demo on the expanded floating bar, at its right end after the theme toggle. It is inside .nav-rest, so the
-   collapsed pill (logo only) fades it with the links. Phones use the drawer's button. From 768 to 860px (no links, a Menu button) it stays last. */
-.bindu-home .nav-book { display: none; }
-@media (min-width: 768px) { .bindu-home .nav .nav-book { display: inline-flex; flex: none; } }
-@media (min-width: 768px) and (max-width: 860px) { .bindu-home .nav .nav-menu { order: 1; } .bindu-home .nav .nav-book { order: 2; } }
-
-/* r65-3: the getbindu.com header actions on the expanded bar (GitHub stars, Docs, Sign in), quiet ghost pills before Book a demo. They sit in
-   .nav-rest, so the collapsed pill hides them with the links. Under 1180px the bar has no room: they move to the drawer only. */
-.bindu-home .nav-act { display: none; }
-@media (min-width: 1180px) { .bindu-home .nav .nav-act { display: inline-flex; flex: none; gap: 6px; padding: 0 12px; } }
-.bindu-home .nav-gh-mark { width: 16px; height: 16px; flex: none; }
-.bindu-home .nav-gh-star { font-size: 12px; }
-.bindu-home .nav-gh span:not(.nav-gh-star) { font-variant-numeric: tabular-nums; }
-.bindu-home .nav-drawer-gh { display: inline-flex; align-items: center; gap: 8px; }

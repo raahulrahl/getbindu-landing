@@ -1,14 +1,5 @@
-import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { rules as c } from "../content";
-import { useReducedMotion } from "../lib/motion";
-import { isPhone } from "../lib/phone";
-
-/* Round 65 (r65-6, Austin): "The rules Bindu covers" (id `rules`) as a static three-column grid of six cards, in the shape of parallel.ai's product
-   grid (measured in Chrome, rebuilt here in our own CSS: styles/r65.css). Each card is a warm-grey container holding a white window that bleeds off
-   its right and bottom edges; the window plays that rule's clip from its getbindu.com page, and one white chip floats over it with a line of the
-   record (an Illustration). Under the container: a small outlined icon, the name, one line of what the rule asks, the status chip and a small
-   "Read about X" link to the page. No drift, no drag, no pin. Clips are muted and looping, load nothing until near the screen (preload none),
-   play only while in view, and never play on phones or with reduced motion (the poster shows). */
 
 type Item = (typeof c.items)[number];
 
@@ -39,9 +30,7 @@ function Card({ r }: { r: Item }) {
         <div className="pc-tray" aria-hidden="true" />
         <div className="pc-win">
           <div className="pc-bar"><span className="pc-url">{r.page}</span></div>
-          <video className="pc-media" muted loop playsInline preload="none" poster={r.poster} aria-hidden="true" tabIndex={-1}>
-            <source src={r.video} type="video/webm" />
-          </video>
+          <Image className="pc-media" src={r.poster} alt="" width={600} height={320} unoptimized />
         </div>
         <p className="pc-chip"><span className="pc-chip-dot" aria-hidden="true" />{r.chip}</p>
       </div>
@@ -62,21 +51,6 @@ function Card({ r }: { r: Item }) {
 }
 
 export function Rules() {
-  const reduced = useReducedMotion();
-  const grid = useRef<HTMLUListElement>(null);
-  /* play a clip only while its card is on screen; phones and reduced motion keep the poster */
-  useEffect(() => {
-    const g = grid.current;
-    if (!g || reduced || isPhone()) return;
-    const vids = Array.from(g.querySelectorAll<HTMLVideoElement>("video"));
-    const io = new IntersectionObserver((es) => es.forEach((e) => {
-      const v = e.target as HTMLVideoElement;
-      if (e.isIntersecting) { if (v.preload !== "auto") { v.preload = "auto"; v.load(); } v.play().catch(() => { /* autoplay refused: the poster stays */ }); }
-      else v.pause();
-    }), { rootMargin: "120px 0px", threshold: 0.2 });
-    vids.forEach((v) => io.observe(v));
-    return () => { io.disconnect(); vids.forEach((v) => v.pause()); };
-  }, [reduced]);
   return (
     <section className="band-dark sec rg" id="rules" aria-labelledby="rl-h">
       <div className="container rl-head">
@@ -84,7 +58,7 @@ export function Rules() {
         <p className="t-body-lg rl-lead">{c.lead}</p>
       </div>
       <div className="container">
-        <ul ref={grid} className="pc-grid" aria-label={c.label}>
+        <ul className="pc-grid" aria-label={c.label}>
           {c.items.map((r) => <Card key={r.id} r={r} />)}
         </ul>
         <p className="pc-note">{c.note}</p>

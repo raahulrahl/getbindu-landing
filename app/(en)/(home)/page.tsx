@@ -3,25 +3,16 @@ import type { Metadata } from "next";
    still at features/landing/home/home-page.tsx: swap this one import back to revert. */
 import { BrandHomePage } from "@/features/landing/home/brand-page";
 import { RedirectIfAuthenticated } from "@/features/landing/chrome/redirect-if-authenticated";
-import { faq } from "@/features/landing/home/content";
+import { publishedFaqItems } from "@/features/landing/home/content";
 
-// Homepage-only schema. Organization and WebSite come from LandingJsonLd in the layout; this adds the
-// FAQ answers shown on the page. No SoftwareApplication node: Google's rich result needs an
-// aggregateRating or review, we have neither and won't fabricate them (see app/landing-chrome.tsx).
-const homeJsonLd = {
+const faqJsonLd = {
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "FAQPage",
-      mainEntity: faq.items
-        .filter((f) => f.a)
-        .map((f) => ({
-          "@type": "Question",
-          name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a },
-        })),
-    },
-  ],
+  "@type": "FAQPage",
+  mainEntity: publishedFaqItems.map(({ q, a }) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  })),
 };
 
 export const metadata: Metadata = {
@@ -53,13 +44,11 @@ export const metadata: Metadata = {
 export default function LandingPage() {
   return (
     <>
+      <RedirectIfAuthenticated />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(homeJsonLd).replace(/</g, "\\u003c"),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
       />
-      <RedirectIfAuthenticated />
       <BrandHomePage />
     </>
   );

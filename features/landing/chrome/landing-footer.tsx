@@ -26,7 +26,6 @@ const COLS: Col[] = [
       { label: "Battery Passport", href: "/dpp/battery" },
       { label: "Textile Passport", href: "/dpp/textiles" },
       { label: "Other product groups", href: "/dpp/others" },
-      { label: "Pricing", href: "/#pricing" },
     ],
   },
   {

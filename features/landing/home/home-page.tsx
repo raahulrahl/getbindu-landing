@@ -11,33 +11,38 @@ import "./styles/r2-cobalt.css";
 import "./styles/r2-hero-cta.css";
 import "./styles/r10-hero.css";
 import "./styles/r13-hero.css";
-import "./styles/r13-cta.css";
-import "./styles/r13-pricing.css";
 import "./styles/guide.css";
 import "./styles/story.css";
 import "./styles/r44.css";
 import "./styles/r47.css";
 import "./styles/r59.css";
 import "./styles/r65.css";
-import { startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
-import { startScenes } from "./lib/scenes";
-import { startHeadings } from "./lib/headings";
 import { useRouteWipe } from "./lib/route";
+import { INTEGRATIONS_ANCHOR } from "./links";
 import { addPending, markReady, gate, guardAnchors, afterSettle } from "./lib/ready";
 import { Nav } from "./components/Nav";
-import { Hero } from "./components/Hero";
-import { Statement } from "./components/Story";
-import { Intro } from "./components/Intro";
-import { Guide } from "./components/Guide";
-import { Rail } from "./components/Rail";
-import { EstimateProvider } from "./components/Estimate";
 import type { BlogRowPost } from "./content";
+import { Blog } from "./components/Blog";
+import { EstimateProvider } from "./components/Estimate";
+import { Faq } from "./components/Closing";
+import { Hero } from "./components/Hero";
+import { Pricing } from "./components/Pricing";
+import { Rules } from "./components/Rules";
+import { Statement } from "./components/Story";
+import { Footer } from "./components/Footer";
+import { ViewSwitch } from "./components/ViewSwitch";
+import { Trust } from "./components/Trust";
+import { WorkflowChannels } from "./components/Connectors";
 import "./styles/subpages.css";
 // last, so the shared states win over the section sheets (equal specificity)
 import "./styles/states.css";
 // round 35: phones only (767px and under), after everything else
 import "./styles/mobile.css";
+import "./styles/editorial.css";
+import "./styles/lower-page.css";
+import "./styles/benchmarks.css";
+import "./styles/connectors.css";
 
 /* Below-the-fold sections hydrate late. Their HTML is in the page from the start (same height, same text), so nothing shifts and the text stays
    crawlable; only their JS and hydration wait, until the section is within 1.5 viewports or the page is idle (lib/ready.ts). */
@@ -60,14 +65,11 @@ function Ready({ id }: { id: string }) {
 const Flow = late("story", typeof window === "undefined" ? (require("./components/Flow") as Record<string, React.ComponentType>).Flow : null, () => import("./components/Flow"), "Flow");
 const ShipmentJourney = late("shipment", typeof window === "undefined" ? (require("./components/ShipmentJourney") as Record<string, React.ComponentType>).ShipmentJourney : null, () => import("./components/ShipmentJourney"), "ShipmentJourney");
 const Examples = late("examples", typeof window === "undefined" ? (require("./components/Examples") as Record<string, React.ComponentType>).Examples : null, () => import("./components/Examples"), "Examples");
+const Benchmarks = late("benchmarks", typeof window === "undefined" ? (require("./components/Benchmarks") as Record<string, React.ComponentType>).Benchmarks : null, () => import("./components/Benchmarks"), "Benchmarks");
 const Voices = late("voices", typeof window === "undefined" ? (require("./components/Voices") as Record<string, React.ComponentType>).Voices : null, () => import("./components/Voices"), "Voices");
-const Rules = late("rules", typeof window === "undefined" ? (require("./components/Rules") as Record<string, React.ComponentType>).Rules : null, () => import("./components/Rules"), "Rules");
-const Pricing = late("pricing", typeof window === "undefined" ? (require("./components/Pricing") as Record<string, React.ComponentType>).Pricing : null, () => import("./components/Pricing"), "Pricing");
-const Blog = late("blog", typeof window === "undefined" ? (require("./components/Blog") as Record<string, React.ComponentType>).Blog : null, () => import("./components/Blog"), "Blog");
-const Faq = late("faq", typeof window === "undefined" ? (require("./components/Closing") as Record<string, React.ComponentType>).Faq : null, () => import("./components/Closing"), "Faq");
-const Finale = late("demo", typeof window === "undefined" ? (require("./components/Closing") as Record<string, React.ComponentType>).Finale : null, () => import("./components/Closing"), "Finale");
+const Integrations = late(INTEGRATIONS_ANCHOR, typeof window === "undefined" ? (require("./components/Integrations") as Record<string, React.ComponentType>).Integrations : null, () => import("./components/Integrations"), "Integrations");
 
-export function HomePage({ posts = [] }: { posts?: BlogRowPost[] }) {
+export function HomePage({ posts }: { posts: BlogRowPost[] }) {
   useRouteWipe();
   // a client-side return to / skips the head script: restore the saved theme before paint
   useLayoutEffect(() => {
@@ -75,42 +77,42 @@ export function HomePage({ posts = [] }: { posts?: BlogRowPost[] }) {
   }, []);
   useEffect(() => {
     const html = document.documentElement;
-    html.style.scrollPaddingTop = "72px";   // native anchor jumps (reduced motion) clear the fixed nav
-    const stopScroll = startSmoothScroll();
-    const stop = startScenes();
-    const stopHeads = startHeadings();
+    html.style.scrollPaddingTop = "72px";   // keep anchor targets below the fixed nav
     const stopAnchors = guardAnchors();
-    // an anchor in the address (/#pricing) scrolls to its section once the page has mounted; otherwise start at the top
+    // an anchor in the address (/#trust) scrolls to its section once the page has mounted; otherwise start at the top
     const id = location.hash.slice(1);
     const target = id ? document.getElementById(id) : null;
     const toTarget = () => window.scrollTo({ top: target!.getBoundingClientRect().top + window.scrollY - 64, behavior: "auto" });
-    if (target) { toTarget(); afterSettle(toTarget); }   // sections above hydrate after this and add their pin spacers: land again once they have
+    if (target) { toTarget(); afterSettle(toTarget); }
     else window.scrollTo(0, 0);
     return () => {
-      stop(); stopHeads(); stopAnchors(); stopScroll(); html.style.scrollPaddingTop = "";
+      stopAnchors(); html.style.scrollPaddingTop = "";
     };
   }, []);
   return (
-    <EstimateProvider>
-      <Intro />
+    <>
       <a className="skip" href="#main">Skip to content</a>
+      <ViewSwitch mode="human" />
       <Nav />
-      <Guide />
-      <Rail />
       <main id="main">
-        {/* round 44: one story. Hero, statement, what Bindu does (four steps), the shipment map (r65-4: Full Circle removed) (the supply-chain question is folded into it), the departures board, what buyers say, the rules, pricing, FAQ, wordmark finale. */}
         <Hero />
         <Statement />
         <Flow />
         <ShipmentJourney />
         <Examples />
+        <Benchmarks />
         <Voices />
         <Rules />
-        <Pricing />
+        <Trust />
+        <EstimateProvider>
+          <Pricing />
+        </EstimateProvider>
         {posts.length > 0 && <Blog posts={posts} />}
+        <WorkflowChannels />
+        <Integrations />
         <Faq />
-        <Finale />
       </main>
-    </EstimateProvider>
+      <Footer />
+    </>
   );
 }

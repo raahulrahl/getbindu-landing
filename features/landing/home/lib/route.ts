@@ -15,7 +15,7 @@ export function useRouteWipe() {
     const onClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = (e.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
-      if (!a || wiping || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
+      if (!a || a.closest("[data-skip-route-wipe]") || wiping || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
       const href = a.getAttribute("href") ?? "";
       if (!href.startsWith("/") || href.startsWith("//")) return;
       e.preventDefault();

@@ -39,25 +39,12 @@
 .bindu-home .fz-grad { position: absolute; inset: 0; z-index: 1; opacity: 0; pointer-events: none; background: linear-gradient(to top, color-mix(in srgb, var(--ink) 72%, transparent), transparent 55%), color-mix(in srgb, var(--ink) 52%, transparent); }
 .bindu-home .fz-flow { position: relative; z-index: 1; }
 .bindu-home .fz-spacer { height: 395vh; height: 395svh; }   /* r32-1: 120vh of ship hand-off and a 20vh hold come first (was 275) */
-/* the footer rides up over the photo on a dark gradient; its text uses the on-photo tokens (AA on the gradient, both themes) */
-.bindu-home .finale .foot { --on-dark: var(--on-photo); --on-dark-body: var(--on-photo-body); --on-dark-mute: var(--on-photo-mute); --hairline-dark: var(--on-photo-line); text-align: left;
-  background: linear-gradient(to bottom, transparent 0, color-mix(in srgb, var(--ink) 80%, transparent) 220px, color-mix(in srgb, var(--ink) 94%, transparent)); border-top: 0; padding-top: 240px; color: var(--on-photo); content-visibility: visible; }
-.bindu-home .finale .foot .t-muted { color: var(--on-photo-mute); }
 /* reduced motion: the masked wordmark (no zoom), then the photo filling the view with the footer */
 .bindu-home .finale.is-static .fz-stage { position: relative; margin-bottom: 0; }
 .bindu-home .finale.is-static .fz-flow { background: var(--canvas) var(--photo) 60% 50% / cover no-repeat; }
 .bindu-home .finale.is-static .fz-after { position: relative; min-height: 100svh; }
 .bindu-home .finale.is-static .fz-dot { opacity: 1; }
 .bindu-home .finale.is-static .fz-dot circle { opacity: 1; }
-
-/* ---------- 11 footer: the role links moved here from the homepage ---------- */
-.bindu-home .foot-roles-wrap { margin-top: var(--s-5); }
-.bindu-home .foot-roles { margin: 0; }
-.bindu-home .foot-roles a { color: var(--on-dark-body); text-decoration: underline; text-decoration-color: var(--hairline-dark); text-underline-offset: 4px; }
-@media (hover: hover) and (pointer: fine) {
-  .bindu-home .foot-roles a:hover { color: var(--on-dark); text-decoration-color: var(--cobalt-signal); }
-}
-.bindu-home .foot-roles a:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
 
 /* phones: the hero (headline, sub-line and CTA) has to clear the fixed caption and pause control at 375 x 667 */
 @media (max-width: 600px) {
@@ -180,18 +167,6 @@
 @media (prefers-reduced-motion: reduce) { .bindu-home .rail i { transition: none; } }
 @media (max-width: 860px) { .bindu-home main h2:not(.wm)::before, .bindu-home .hero-h::before { inset: -0.3em 0; } }
 
-/* r24-1: sections well below the fold are not laid out or painted until they near the viewport (sizes measured at 1440 / 768 / 375).
-   The pinned sections (how it works, journey, examples, finale) are left out: content-visibility would break their sticky range. */
-.bindu-home #pricing, .bindu-home #faq, .bindu-home .foot { content-visibility: auto; }
-.bindu-home #pricing { contain-intrinsic-size: auto 900px; }
-.bindu-home #faq { contain-intrinsic-size: auto 850px; }
-.bindu-home .foot { contain-intrinsic-size: auto 581px; }
-@media (max-width: 1000px) {
-  .bindu-home #pricing { contain-intrinsic-size: auto 1200px; }
-  .bindu-home #faq { contain-intrinsic-size: auto 780px; }
-  .bindu-home .foot { contain-intrinsic-size: auto 1000px; }
-}
-
 /* ---------- round 26, item 1: the normal wordmark again (r25's dot lettering is gone) ---------- */
 .bindu-home #faq.sec { padding-bottom: var(--s-5); }   /* r26-2: the FAQ's bottom padding was an empty band before the finale */
 
@@ -202,10 +177,10 @@
    whenever a caption changed length, which made the patch jump; and the gaps between blocks left the map sharp right behind content.
    Now each section past the hero has one layer the size of its content area (the sticky window for pinned sections), so the map is
    softly blurred everywhere content sits and sharp in the side gutters. Blur only, no colour, feathered edges. */
-.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq) { isolation: isolate; }
-.bindu-home :is(.stmt > .container, .rl, .r6-pricing > .container, .container.faq,
+.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ex-stage, .vc-win, .rl) { isolation: isolate; }
+.bindu-home :is(.stmt > .container, .rl,
   .fl-pin.is-static .fl-win, .th-pin.is-flat .th-win, .ex-pin.is-static .ex-stage, .vc-pin:not(.is-arc) .vc-win) { position: relative; }
-.bindu-home :is(.stmt > .container, .fl-win, .th-win, .vc-win, .rl, .r6-pricing > .container, .container.faq)::before {   /* r59-6: .ex-stage left the list: no backdrop blur over the departures board, so the dot map shows */
+.bindu-home :is(.stmt > .container, .fl-win, .th-win, .vc-win, .rl)::before {   /* r59-6: .ex-stage left the list: no backdrop blur over the departures board, so the dot map shows */
   content: ""; position: absolute; z-index: -1; inset: -24px -64px; pointer-events: none;
   /* avoid-ai-design-ignore: K3 (r41-1: asked for by Austin) */
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
