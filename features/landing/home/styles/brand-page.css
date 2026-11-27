@@ -1,0 +1,324 @@
+/* Layout for the rebuilt homepage. The system lives in brand.css; this sheet only
+   places things on the grid. Everything is scoped under .bindu-home. */
+
+.bindu-home .bp-skip {
+  position: absolute;
+  inset-inline-start: -9999px;
+}
+.bindu-home .bp-skip:focus {
+  position: fixed;
+  z-index: 50;
+  inset: 12px auto auto 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--rule-strong);
+  background: var(--ink-raised);
+  color: var(--fg);
+}
+
+/* ---------- nav ---------- */
+
+.bindu-home .bp-nav {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+.bindu-home .bp-nav-in {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 60px;
+}
+.bindu-home .bp-nav-in::before,
+.bindu-home .bp-nav-in::after { inset-block: 14px; }
+
+.bindu-home .bp-nav-mark { text-decoration: none; }
+
+.bindu-home .bp-nav-links {
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bindu-home .bp-nav-links a {
+  color: var(--fg-2);
+  font-size: var(--t-small);
+  text-decoration: none;
+  transition: color 0.18s var(--ease);
+}
+.bindu-home .bp-nav-links a:hover { color: var(--fg); }
+
+.bindu-home .bp-nav-end {
+  display: flex;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+.bindu-home .bp-toggle { min-height: 34px; padding-inline: 12px; }
+
+/* ---------- hero ---------- */
+
+.bindu-home .bp-hero-in {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: start;
+  gap: clamp(32px, 5vw, 72px);
+  padding-block: clamp(72px, 10vw, 132px) clamp(56px, 7vw, 96px);
+}
+.bindu-home .bp-hero-in::before,
+.bindu-home .bp-hero-in::after {
+  inset-block: clamp(72px, 10vw, 132px) clamp(56px, 7vw, 96px);
+}
+
+.bindu-home .bp-hero-copy .bd-display { margin-block: 20px 16px; }
+
+.bindu-home .bp-hero-copy .bd-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bindu-home .bp-label-sep { color: var(--fg-mute); }
+
+.bindu-home .bp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+/* the filing panel: hairlines, no shadow, squared */
+.bindu-home .bp-panel {
+  margin: 0;
+  border: 1px solid var(--rule);
+  background: var(--ink-raised);
+}
+.bindu-home .bp-panel-head,
+.bindu-home .bp-panel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+}
+.bindu-home .bp-panel-head { border-bottom: 1px solid var(--rule); }
+.bindu-home .bp-panel-foot { border-top: 1px solid var(--rule); }
+.bindu-home .bp-ref {
+  margin: 0;
+  color: var(--signal-text);
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+}
+
+.bindu-home .bp-rows { margin: 0; }
+.bindu-home .bp-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 16px;
+}
+.bindu-home .bp-row + .bp-row { border-top: 1px solid var(--rule); }
+.bindu-home .bp-row dt { margin: 0; color: var(--fg-mute); }
+.bindu-home .bp-row dd { margin: 0; color: var(--fg); text-align: end; }
+
+.bindu-home .bp-caption {
+  padding: 12px 16px;
+  border-top: 1px solid var(--rule);
+  color: var(--fg-mute);
+}
+
+/* ---------- shared two-column section ---------- */
+
+.bindu-home .bp-two {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 72px);
+}
+.bindu-home .bp-two .bd-label { margin-bottom: 14px; }
+.bindu-home .bp-two .bd-h2 { margin-bottom: 16px; }
+/* the heading column travels with the list beside it: without this the left half of
+   every two-column section is dead space once the right half runs long */
+@media (min-width: 1001px) {
+  .bindu-home .bp-two > :first-child {
+    position: sticky;
+    top: 108px;
+    align-self: start;
+  }
+}
+
+.bindu-home .bp-head { max-width: 60ch; margin-bottom: var(--space-block); }
+.bindu-home .bp-head .bd-label { margin-bottom: 14px; }
+.bindu-home .bp-head .bd-h2 { margin-bottom: 16px; }
+
+.bindu-home .bp-source { margin-top: 16px; color: var(--fg-mute); }
+.bindu-home .bp-source a { color: var(--fg-2); text-underline-offset: 3px; }
+.bindu-home .bp-source a:hover { color: var(--fg); }
+
+/* ---------- rules: the two dates ---------- */
+
+.bindu-home .bp-dates { margin: 0; padding: 0; list-style: none; }
+.bindu-home .bp-dates li { padding-block: 16px; border-top: 1px solid var(--rule); }
+.bindu-home .bp-dates li:last-child { border-bottom: 1px solid var(--rule); }
+.bindu-home .bp-date {
+  margin: 0 0 4px;
+  color: var(--fg);
+  font-size: clamp(20px, 1.8vw, 26px);
+  letter-spacing: -0.01em;
+}
+.bindu-home .bp-dates .bd-small { color: var(--fg-mute); }
+
+.bindu-home .bp-commodities-label { margin-top: 28px; }
+.bindu-home .bp-commodities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.bindu-home .bp-commodities li {
+  padding: 5px 9px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-control);
+  color: var(--fg-2);
+  font-size: 12px;
+}
+
+/* ---------- how it works ---------- */
+
+.bindu-home .bp-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+.bindu-home .bp-step { padding: 24px 24px 0 0; }
+.bindu-home .bp-step + .bp-step {
+  padding-inline-start: 24px;
+  border-inline-start: 1px solid var(--rule);
+}
+.bindu-home .bp-step-n {
+  margin: 0 0 16px;
+  color: var(--signal-text);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.bindu-home .bp-step .bd-h3 { margin-bottom: 10px; }
+
+/* ---------- price ---------- */
+
+.bindu-home .bp-price-card { border: 1px solid var(--rule); background: var(--ink-raised); }
+.bindu-home .bp-price-big {
+  margin: 0;
+  padding: 24px 16px 2px;
+  color: var(--fg);
+  font-size: clamp(40px, 4.4vw, 60px);
+  font-weight: 450;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.bindu-home .bp-price-card > .bd-label { padding: 0 16px 20px; }
+.bindu-home .bp-rows-plain { border-top: 1px solid var(--rule); }
+.bindu-home .bp-price-extras {
+  margin: 0;
+  padding: 16px;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+}
+.bindu-home .bp-price-extras li { color: var(--fg-2); }
+.bindu-home .bp-price-extras li + li { margin-top: 8px; }
+.bindu-home .bp-price-card .bp-source { margin: 0; padding: 0 16px 16px; }
+
+/* ---------- live / in build ---------- */
+
+.bindu-home .bp-status {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 72px);
+  border-top: 1px solid var(--rule);
+  padding-top: 28px;
+}
+.bindu-home .bp-status-col > .bd-label { margin-bottom: 20px; }
+
+.bindu-home .bp-status-list { margin: 0; padding: 0; list-style: none; }
+.bindu-home .bp-status-list li + li { margin-top: 24px; }
+.bindu-home .bp-status-list .bd-h3 { margin-block: 10px 6px; }
+.bindu-home .bp-status-list .bd-small { color: var(--fg-mute); }
+
+.bindu-home .bp-build-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- faq ---------- */
+
+.bindu-home .bp-faq { margin: 0; border-top: 1px solid var(--rule); }
+.bindu-home .bp-faq-row { padding-block: 20px; border-bottom: 1px solid var(--rule); }
+.bindu-home .bp-faq-row dt { margin: 0 0 8px; }
+.bindu-home .bp-faq-row dd { margin: 0; max-width: 64ch; color: var(--fg-2); }
+
+/* ---------- footer ---------- */
+
+.bindu-home .bp-foot { border-top: 1px solid var(--rule); }
+.bindu-home .bp-foot-in {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(24px, 4vw, 56px);
+  padding-block: clamp(48px, 6vw, 80px) clamp(32px, 4vw, 48px);
+}
+.bindu-home .bp-foot-col > .bd-label { margin-bottom: 16px; }
+.bindu-home .bp-foot-col .bd-small { max-width: 32ch; margin-top: 14px; color: var(--fg-mute); }
+.bindu-home .bp-foot-col ul { margin: 0; padding: 0; list-style: none; }
+.bindu-home .bp-foot-col li + li { margin-top: 10px; }
+.bindu-home .bp-foot-col a {
+  color: var(--fg-2);
+  font-size: var(--t-small);
+  text-decoration: none;
+  transition: color 0.18s var(--ease);
+}
+.bindu-home .bp-foot-col a:hover { color: var(--fg); }
+
+.bindu-home .bp-foot-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 20px;
+  border-top: 1px solid var(--rule);
+}
+.bindu-home .bp-foot-bar .bd-small { color: var(--fg-mute); }
+.bindu-home .bp-foot-bar .bd-mono { font-size: 12px; }
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 1000px) {
+  .bindu-home .bp-hero-in,
+  .bindu-home .bp-two,
+  .bindu-home .bp-status { grid-template-columns: minmax(0, 1fr); }
+  .bindu-home .bp-steps { grid-template-columns: minmax(0, 1fr); }
+  .bindu-home .bp-step { padding-inline: 0; }
+  .bindu-home .bp-step + .bp-step {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .bindu-home .bp-foot-in { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 860px) {
+  .bindu-home .bp-nav-links { display: none; }
+}
+
+@media (max-width: 560px) {
+  .bindu-home .bp-foot-in { grid-template-columns: minmax(0, 1fr); }
+  .bindu-home .bp-actions .bd-btn { flex: 1 1 100%; }
+}

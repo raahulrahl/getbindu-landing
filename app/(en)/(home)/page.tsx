@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { HomePage } from "@/features/landing/home/home-page";
+/* The rebuilt homepage, on the authored brand (docs/home/BRAND.md). The old composition is
+   still at features/landing/home/home-page.tsx: swap this one import back to revert. */
+import { BrandHomePage } from "@/features/landing/home/brand-page";
 import { RedirectIfAuthenticated } from "@/features/landing/chrome/redirect-if-authenticated";
-import { faq, blogRow } from "@/features/landing/home/content";
-import { getAllPostCards } from "@/features/landing/blog/posts";
+import { faq } from "@/features/landing/home/content";
 
 // Homepage-only schema. Organization and WebSite come from LandingJsonLd in the layout; this adds the
 // FAQ answers shown on the page. No SoftwareApplication node: Google's rich result needs an
@@ -50,12 +51,6 @@ export const metadata: Metadata = {
 };
 
 export default function LandingPage() {
-  // r65-7: the homepage blog row, read from the posts' own frontmatter at build time (title, date, thumbnail), in the order of blogRow.slugs
-  const cards = getAllPostCards();
-  const posts = blogRow.slugs
-    .map((slug) => cards.find((c) => c.slug === slug))
-    .filter((c): c is NonNullable<typeof c> => Boolean(c))
-    .map((c) => ({ slug: c.slug, title: c.title, date: c.dateLabel, iso: c.date, image: c.photo?.url ?? c.image, alt: c.photo?.alt ?? c.imageAlt, category: c.category }));
   return (
     <>
       <script
@@ -65,7 +60,7 @@ export default function LandingPage() {
         }}
       />
       <RedirectIfAuthenticated />
-      <HomePage posts={posts} />
+      <BrandHomePage />
     </>
   );
 }

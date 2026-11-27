@@ -1069,3 +1069,80 @@ Commits: r56-1 hero, r56-2 map behind the page, r56-3 Full Circle, r56-4 shipmen
 - r65-18. Work Sans for headings and body (Austin's pick from the r65-16 trial: "work sans wide works for both"). next/font `Work_Sans` (SIL OFL, variable weight, normal and italic) as `--font-work-sans` in the homepage layout; `--font-sans` and `--font-display` point at it; Newsreader no longer loaded by the homepage. Weights unchanged (titles 500). The font switcher (`dev/FontLab.tsx`, `FontLabGate`, README note) is removed again. Checked in Chrome at 1440 and 390: font applied, no page overflow, hero fits. Not checked: every section by eye, the statement chip's optical padding (tuned for Newsreader in r65-10), dark theme.
 - r65-19. Statement chip (Austin: the word as big as the title, proper alignment, more dots, some light with the yellow and some while scrolling on). (a) The chip word is 1em (was 0.86em), the same size and baseline as the sentence (both 74.88px at 1440). (b) Padding retuned for Work Sans (`0.1em 0.26em 0.09em 0.24em`, gap 0.22em): at 1440 the space above the capitals and below the baseline is about 17 to 18px each, the mark's centre sits on the capitals' middle, and the side insets are near equal. (c) 55 dots (was 34; `sunflowerCircles(55, 100, 4)`, radius x1.2). (d) The chip's range runs on past the fill (`bottom 90%` to `top 15%`): the yellow rises over the first 55% with alternate dots lighting bottom to top; the other dots light centre outward over the rest of the scroll. Measured at 1440: 0, 15, 28 lit during the fill, then 46, 55. The sentence now wraps to four lines at 1440 (was three) because the chip is wider. This replaces "the 34-dot mark" in the chip only; the guide ship and finale i keep 34. Checked at 1440 and 390 light. Not checked: dark theme, 768, 1920.
 - r65-20. What buyers say as a scroll-driven scene (Austin: more wow, dynamic, scrollable, a better transition, not costly). Voices.tsx rewritten around one number p (the current card, fractional while moving): each card's circular distance from p sets its x (eased), scale (the big card's size, scaled down at the sides from the top centre, so boxes stay top-aligned), a 7deg-per-step 3D turn away from the centre, dimming, the product screen's parallax inside its window (28px per step, image at 1.08), and the quote's fade and 28px rise. Transforms and opacity only, no layout reads per frame (r65-12 tweened width and height). Desktop (861px and up, motion allowed): `.vx-pin` is 100svh + 280svh with a sticky `.vx-stage` (top 64px); a scrubbed ScrollTrigger (SCRUB_SOFT) maps scroll to p with a hold of 22% of each step on a card and 0.3 step of rest at both ends, so the row rests on a quote, never between two. Arrows, dots and a click on a side card scroll the page (Lenis) to that card's hold; arrows stop at the ends. Phones and reduced motion: not pinned, endless; arrows, dots, swipe and arrow keys tween p 0.85s power3.inOut (set at once under reduced motion). The visually hidden quote line lost `aria-live` (r61: no live regions on scroll-fed text). Copy, placeholder chip, Illustration labels and screens unchanged. Checked in Chrome: 1440x900 through the whole pin (dots 0 to 4, stage held at 64px, one quote visible at each hold), 390 (wrap from the first to the fifth quote, no page overflow), no console errors; frame times on the dev server while wheel-scrolling the scene: median 7.0ms, p95 14ms, 3 of 595 frames over 25ms, no long tasks. Not checked: dark theme, 768 and 1920, short laptop heights (the card shrinks to fit, min 360px), Safari, a real phone.
+
+## Round 66 (built): one authored brand
+
+Raahul, 27 Nov 2026: "what we built is bad, restart everything, create a new brand."
+
+- r66-0. **Diagnosis.** The page carried three borrowed design systems at once and they
+  contradict each other on canvas, geometry, accent and type: the `bindu-design` skill
+  (x.ai + Together AI + Apple: near-black, pill buttons, yellow fill, cobalt system lines),
+  `docs/home/DESIGN.md` (a scrape of ollama.com: paper-white, pills on everything, SF Pro
+  Rounded, black CTA), and parallel.ai as the live reference (near-black, squared, mono, no
+  fills). 65 rounds of patching toward three incompatible references is what produced 29
+  stylesheets and 3,484 lines with specificity fights (`r59.css` beating `editorial.css`).
+  The badness was not one wrong choice; it was the absence of an authored one. `PRODUCT.md`
+  already listed the hexes, the mark and the voice under "Undecided, placeholder only".
+- r66-1. **`docs/home/BRAND.md` is the new single authority** for `/`. Where it disagrees
+  with `docs/home/DESIGN.md` (the Ollama scrape) or the `bindu-design` skill's design-system
+  section, it wins. Those two are now history, like `rounds/`.
+- r66-2. **The idea: the dot.** বিন্দু means point, dot, origin. A plot is a point, a
+  supplier's geolocation is a point, a filing is the full stop at the end of the evidence;
+  the product resolves many points into one. This was already latent in the code and never
+  built on: `content.ts:282` splits the wordmark as `["b", "ı", "ndu"]` (a dotless ı) and
+  `content.ts:40` reads "every proof is a dot". The sunflower is retired: it had to be
+  labelled "Illustration", it carried no meaning the buyer could read, and a golden-angle
+  spiral is decoration.
+- r66-3. **Register: Dutch signage precision.** Grid, hairline, one accent, mono numerals,
+  no decoration. Chosen, not borrowed: the company is in Amsterdam, the buyer is a European
+  importer, and the product's job is to be exact about a regulation. Lands near parallel.ai's
+  restraint by a different and more honest route. Explicitly not eco-green, leaf, globe or
+  earth tones: deforestation regulation does not make the brand about nature.
+- r66-4. **Colour: yellow and cobalt retired.** Yellow #FFD400 cannot carry text on white
+  (1.4:1), which forced a rule about where it may never go, and yellow-plus-blue is the
+  palette every EU compliance vendor already uses. One accent now, one hue, three stops,
+  each existing for a contrast case: `--signal #D33A12` (fills and large numerals, white on
+  it 4.8:1), `--signal-text #FF6A40` (small accent text on dark, 6.9:1), and `#A82B08` (the
+  light-theme value of the same token, small accent text on paper, 6.2:1). Black and greys
+  still carry ~90%. Dark is the primary theme; paper is first-class.
+- r66-5. **Type: two families, both already bundled** by `app/(en)/(home)/layout.tsx`, so no
+  new network cost and one family fewer than before (Inter is dropped from `/`). Geist for
+  display and body, JetBrains Mono for eyebrows, labels, data and buttons. Mono is not
+  decoration: it marks what a machine produced or will consume (references, codes, prices,
+  dates, status). Headline `clamp(32px, 3.2vw, 52px)` at weight 450; the old hero had
+  drifted to 72px/600, three times its own sub-line.
+- r66-6. **Geometry: radius 0 on structure, 2px on controls. No pills.** The sharpest break
+  from the old page, which took pill-everything from the Ollama scrape and pill-with-
+  translucent-border from the x.ai one. A pill reads consumer; a square reads instrument.
+  Structure is hairlines, never shadows. The vertical frame rules on the inner containers
+  were the best thing the old page had and they stay. Content box 1456px.
+- r66-7. **Motion: two moves only.** A 16px rise with opacity on section entry (0.5s,
+  `power2.out`, ScrollTrigger `once`), and hairlines drawing. Nothing scales, rotates,
+  parallaxes or pins. GSAP sets the start state via `gsap.from` inside a `gsap.context`, so
+  no CSS hidden state exists to leak (CLAUDE.md). Reduced motion returns before registering.
+- r66-8. **Page: 14 sections to 6.** Hero, what the regulation asks (the two dates, cited),
+  how it works (three steps), price, what is live, questions, footer. Dropped from `/`: the
+  WebGL globe, Statement, Flow, ShipmentJourney, Examples, Benchmarks, Voices, Trust, Blog,
+  WorkflowChannels, Integrations. Voices was rendering `TESTIMONIALS_PLACEHOLDER` for
+  customers that do not exist. Section count was itself a cause of the sloppiness: one idea
+  per section times fourteen is not a page, it is a list.
+- r66-9. **Files.** New: `docs/home/BRAND.md`, `features/landing/home/brand-page.tsx`,
+  `styles/brand.css` (the system), `styles/brand-page.css` (this page's layout).
+  `app/(en)/(home)/page.tsx` imports `BrandHomePage` instead of `HomePage`. **Nothing was
+  deleted.** `home-page.tsx`, all 29 old stylesheets and every old component are untouched
+  on disk; swapping that one import back restores the old page exactly. The new page loads
+  `reset.css` + 2 sheets instead of 29.
+- r66-10. **Checked** in the built-in browser on the dev server (:3010): 1456 and 390, both
+  themes, whole page scrolled; the sticky heading column in two-column sections (added after
+  the first pass, which left the left half of every long section empty); `tsc --noEmit`
+  clean; `vitest run` 2 passed. **Not checked:** 768 and 1920, reduced motion by eye, Safari,
+  keyboard tab order, Lighthouse, and the accent's measured contrast in-browser (the ratios
+  above are computed, not sampled).
+
+Open after this round, for Raahul:
+- The accent hue `#D33A12` is a decision, not a placeholder, but it is mine and not yours.
+- The wordmark is set in Geist with a drawn dot. A real drawn mark is still unmade.
+- `docs/home/DESIGN.md` (the Ollama scrape) and the `bindu-design` skill's design-system
+  section now contradict BRAND.md. They should be cut down to history or deleted.
+- The dropped sections hold real work (the shipment map, the departures board). If any of it
+  comes back it has to be rebuilt on this system, not reattached.

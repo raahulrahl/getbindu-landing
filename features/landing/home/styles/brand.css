@@ -1,0 +1,265 @@
+/* The Bindu brand, in one sheet. See docs/home/BRAND.md.
+   This replaces the three borrowed systems the page had accreted (Ollama scrape,
+   x.ai/Together/Apple merge, parallel.ai). Everything is scoped under .bindu-home.
+   Base is the dark theme; [data-theme="light"] is paper. Both are first-class. */
+
+.bindu-home {
+  /* ---- canvas: black and greys carry ~90% of the page ---- */
+  --ink: #0B0B0C;
+  --ink-raised: #141416;
+  --ink-sunk: #08080A;
+  --rule: #2A2B2F;
+  --rule-strong: #3A3C42;
+
+  --fg: #F2F1EE;          /* warm white, not #FFF: the page is paper, not screen */
+  --fg-2: #A4A3A0;
+  --fg-mute: #6E6D6B;
+
+  /* ---- the one accent, three stops, each for a contrast case that needs it ---- */
+  --signal: #D33A12;      /* fills + large numerals; white on it is 4.8:1 */
+  --signal-text: #FF6A40; /* small accent text on dark, 6.9:1 */
+  --on-signal: #FFFFFF;
+
+  /* ---- type: two families, both already bundled by the home layout ---- */
+  --sans: var(--home-font-display, "Geist"), ui-sans-serif, system-ui, sans-serif;
+  --mono: var(--home-font-mono, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* reset.css rolls back the app's global preflight using these names: keep them pointing here */
+  --font-sans: var(--sans);
+  --font-display: var(--sans);
+  --font-mono: var(--mono);
+
+  --t-display: clamp(32px, 3.2vw, 52px);
+  --t-h2: clamp(24px, 2.2vw, 34px);
+  --t-h3: 19px;
+  --t-lead: clamp(18px, 1.4vw, 22px);
+  --t-body: 16px;
+  --t-small: 14px;
+  --t-label: 11px;
+
+  /* ---- geometry: 0 on structure, 2px on controls. no pills. ---- */
+  --r: 0px;
+  --r-control: 2px;
+
+  /* ---- grid: 1456px content box, the measured width of the reference ---- */
+  --frame: 1520px;        /* border-box, so it carries the 32px gutter */
+  --gutter: 32px;
+  --col-gap: 24px;
+
+  --space-section: clamp(72px, 9vw, 136px);
+  --space-block: clamp(32px, 4vw, 56px);
+
+  /* ---- motion: two moves, nothing else ---- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.5s;
+
+  background: var(--ink);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: var(--t-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bindu-home[data-theme="light"] {
+  --ink: #F4F2ED;         /* warm paper */
+  --ink-raised: #FFFFFF;
+  --ink-sunk: #EAE7E0;
+  --rule: #DCD8CF;
+  --rule-strong: #C4BFB4;
+
+  --fg: #16161A;
+  --fg-2: #54535A;
+  --fg-mute: #86847F;
+
+  --signal-text: #A82B08; /* small accent text on paper, 6.2:1 */
+}
+
+/* ---------- the frame: the grid made visible ---------- */
+
+.bindu-home .bd-frame {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--frame);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* the vertical rules are the best thing the old page had: they stay */
+.bindu-home .bd-frame::before,
+.bindu-home .bd-frame::after {
+  position: absolute;
+  inset-block: 0;
+  width: 1px;
+  background: var(--rule);
+  content: "";
+  pointer-events: none;
+}
+.bindu-home .bd-frame::before { inset-inline-start: calc(var(--gutter) / 2); }
+.bindu-home .bd-frame::after { inset-inline-end: calc(var(--gutter) / 2); }
+
+.bindu-home .bd-section { padding-block: var(--space-section); }
+.bindu-home .bd-section + .bd-section { border-top: 1px solid var(--rule); }
+
+/* ---------- type ---------- */
+
+.bindu-home .bd-display {
+  margin: 0;
+  font-size: var(--t-display);
+  font-weight: 450;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.bindu-home .bd-h2 {
+  margin: 0;
+  font-size: var(--t-h2);
+  font-weight: 450;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.bindu-home .bd-h3 {
+  margin: 0;
+  font-size: var(--t-h3);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.bindu-home .bd-lead {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--fg-2);
+  font-size: var(--t-lead);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  text-wrap: pretty;
+}
+
+.bindu-home .bd-body { margin: 0; max-width: 68ch; color: var(--fg-2); text-wrap: pretty; }
+.bindu-home .bd-small { margin: 0; color: var(--fg-mute); font-size: var(--t-small); }
+
+/* mono marks what a machine produced or will consume: references, codes, prices, dates, status */
+.bindu-home .bd-label {
+  margin: 0;
+  color: var(--fg-mute);
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.bindu-home .bd-mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* ---------- controls: squared, not pills ---------- */
+
+.bindu-home .bd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding-inline: 16px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+}
+.bindu-home .bd-btn:hover { border-color: var(--fg-2); background: var(--ink-raised); }
+.bindu-home .bd-btn:active { translate: 0 1px; }
+
+/* one filled element per view: this is the action */
+.bindu-home .bd-btn-signal {
+  border-color: var(--signal);
+  background: var(--signal);
+  color: var(--on-signal);
+}
+.bindu-home .bd-btn-signal:hover { border-color: var(--signal); background: #B9300C; }
+
+.bindu-home .bd-btn:focus-visible,
+.bindu-home a:focus-visible {
+  outline: 2px solid var(--signal-text);
+  outline-offset: 2px;
+}
+
+/* in-build status is a neutral dashed outline, never the accent */
+.bindu-home .bd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--r-control);
+  color: var(--fg-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.bindu-home .bd-chip-build { border-style: dashed; color: var(--fg-mute); }
+.bindu-home .bd-chip-live { border-color: var(--signal); color: var(--signal-text); }
+
+/* ---------- the dot: the mark, and the only ornament ---------- */
+
+.bindu-home .bd-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--signal);
+}
+
+.bindu-home .bd-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  text-decoration: none;
+}
+.bindu-home .bd-wordmark i {
+  position: relative;
+  font-style: normal;
+}
+/* the detached dot of the dotless ı: one point, sitting above the stem */
+.bindu-home .bd-wordmark i::after {
+  position: absolute;
+  inset-block-start: -0.08em;
+  inset-inline-start: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--signal);
+  translate: -50% 0;
+  content: "";
+}
+
+/* ---------- motion: 16px rise + opacity, hairlines draw. nothing else. ---------- */
+
+.bindu-home[data-rm] .bd-rise { opacity: 1; translate: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bindu-home .bd-rise { opacity: 1 !important; translate: none !important; }
+  .bindu-home * { transition-duration: 0.01ms !important; }
+}
+
+@media (max-width: 860px) {
+  .bindu-home { --gutter: 20px; }
+}
+@media (pointer: coarse) {
+  .bindu-home .bd-btn { min-height: 44px; }
+}
