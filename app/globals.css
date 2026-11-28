@@ -1,38 +1,284 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "../styles/ui/tokens.css";
-@import "../styles/ui/base.css";
-@import "./custom.css";
 
-/* Bindu design-system kit — copied verbatim from
- * project/colors-and-type.css and project/kits/product.html. These two
- * files ARE the source of truth for the product surface; do not hand-
- * edit them. To update, re-export from claude.ai/design and replace. */
-@import "../styles/bindu-colors-and-type.css";
-@import "../styles/bindu-product.css";
-@import "../styles/app-layout.css";
-@import "../styles/bindu-onboarding.css";
+/* ──────────────────────────────────────────────────────────────
+   Bindu design tokens. Authored once here, from DESIGN.md.
+   Never retype a hex, a radius or a spacing value in a component.
+   ────────────────────────────────────────────────────────────── */
+@theme {
+  --color-white: #ffffff;
+  --color-off-white: #f9f8f4;
+  --color-black: #181818;
+  --color-grey: #d6d6d5;
 
-@custom-variant dark (&:is(.dark *));
+  --color-grey-100: #f6f6f6;
+  --color-grey-200: #eeeeee;
+  --color-grey-300: #e5e5e5;
+  --color-grey-400: #d6d6d6;
+  --color-grey-500: #adadac;
+  --color-grey-600: #858483;
+  --color-grey-700: #5c5b59;
+  --color-grey-800: #434343;
+  --color-grey-900: #181818;
+  --color-grey-1000: #101010;
 
+  /* accent — cobalt (Bindu) */
+  --color-cobalt-100: #0047ab;
+  --color-cobalt-200: #1f55c4;
+  --color-cobalt-300: #3d7bff;
+  --color-cobalt-400: #9dbbff;
+  --color-cobalt-500: #e3e8f3;
+  --color-cobalt-ink: #08327a;
+  --color-cobalt-deep: #0a1a3d;
+  --color-brand: var(--color-cobalt-100);
+  --color-brand-hover: var(--color-cobalt-200);
 
-/* Corridor briefing: download-to-PDF via window.print(). Scoped with :has() so
- * ONLY a page that renders a briefing print-region is affected; every other
- * page prints normally. The briefing paints its own print header + colours. */
-@media print {
-  @page { margin: 14mm; }
-  body:has([data-print-region]) * { visibility: hidden; }
-  body:has([data-print-region]) [data-print-region],
-  body:has([data-print-region]) [data-print-region] * {
-    visibility: visible;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  /* surfaces — never accents */
+  --color-blue-100: #8fb6cc;
+  --color-blue-200: #a5c5d6;
+  --color-blue-300: #bcd3e0;
+  --color-blue-400: #d2e2eb;
+  --color-blue-500: #e9f0f5;
+  --color-sand-100: #ccc7ba;
+  --color-sand-200: #d6d2c8;
+  --color-sand-300: #e0ddd6;
+  --color-sand-400: #ebe9e3;
+  --color-sand-500: #f5f4f1;
+
+  --color-success-100: #69be78;
+  --color-success-200: #96f1a7;
+  --color-error-100: #e14942;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-control: 4px;
+  --radius-ui: 6px;
+  --radius-hero: 24px;
+
+  --shadow-card: 0 1px 2px #1818180a, 0 8px 24px #18181814;
+  --shadow-ui: 0 1.5px .75px #00000008, 0 3px .5px #00000005, 0 5px .5px #00000003;
+
+  --breakpoint-xl: 80rem;
+  --container-xl: 36rem;
+}
+
+/* Spacing tokens are named for their DESKTOP pixel value and collapse on
+   mobile. This is the whole responsive system (DESIGN.md §5.2). They live
+   outside @theme because @theme values cannot vary by breakpoint. */
+:root {
+  --space-0: 0;
+  --space-2: 0.125rem;
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-24: 1rem;
+  --space-32: 1.5rem;
+  --space-40: 1.5rem;
+  --space-48: 1.5rem;
+  --space-80: 2.5rem;
+  --space-120: 2.5rem;
+  --space-160: 5rem;
+
+  --max-container-width: 1504px;
+  --machine-container-width: 640px;
+  --footer-visual-height: 240px;
+  --page-gutter: 1rem;
+}
+
+@media (min-width: 48rem) {
+  :root { --page-gutter: 1.5rem; }
+}
+
+@media (min-width: 80rem) {
+  :root {
+    --space-24: 1.5rem;
+    --space-32: 2rem;
+    --space-40: 2.5rem;
+    --space-48: 3rem;
+    --space-80: 5rem;
+    --space-120: 7.5rem;
+    --space-160: 10rem;
+    --page-gutter: 3rem;
   }
-  body:has([data-print-region]) [data-print-region] {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--color-off-white);
+    color: var(--color-black);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* DESIGN.md §3.2. The H1 is 36px and never grows. */
+  h1 { font-size: 28px; line-height: 32px; font-weight: 500; }
+  h2 { font-size: 24px; line-height: 28px; font-weight: 500; }
+  h3 { font-size: 20px; line-height: 26px; font-weight: 500; }
+  h4 { font-size: 18px; line-height: 24px; font-weight: 500; }
+  @media (min-width: 48rem) {
+    h1 { font-size: 32px; line-height: 36px; }
+    h2 { font-size: 26px; line-height: 32px; }
+  }
+  @media (min-width: 80rem) {
+    h1 { font-size: 36px; line-height: 40px; }
+    h2 { font-size: 32px; line-height: 36px; }
+    h3 { font-size: 26px; line-height: 32px; }
+    h4 { font-size: 20px; line-height: 28px; }
+  }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+}
+
+/* All interface chrome: mono 13, uppercase, ls .16px (DESIGN.md §1.2).
+   Registered as a @utility, not a component class, so that @apply can reach
+   it: Tailwind v4 only applies real utilities. */
+@utility chrome {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.16px;
+  text-transform: uppercase;
+}
+
+@layer components {
+  .eyebrow { @apply chrome; color: var(--color-grey-600); }
+
+  .page { max-width: 1600px; margin-inline: auto; padding-inline: var(--page-gutter); }
+
+  /* 12 cols desktop · 8 tablet · 4 mobile (DESIGN.md §8) */
+  .section {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-48);
+    padding-block: var(--space-80);
+  }
+  @media (min-width: 48rem) { .section { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+  @media (min-width: 80rem) { .section { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
+
+  .section-major { padding-top: var(--space-160); }
+  .rule-top { border-top: 1px solid var(--color-grey-300); }
+
+  .full { grid-column: 1 / -1; }
+  .rail { grid-column: 1 / -1; }
+  .panel { grid-column: 1 / -1; }
+  @media (min-width: 48rem) {
+    .rail  { grid-column: 1 / 4; }
+    .panel { grid-column: 4 / 9; }
+  }
+  @media (min-width: 80rem) {
+    .rail  { grid-column: 1 / 4; }
+    .panel { grid-column: 4 / 13; }
+  }
+
+  /* The signature hairline between rail and panel. Horizontal on mobile. */
+  .hairline { border-top: 1px solid var(--color-grey-300); padding-top: var(--space-24); }
+  @media (min-width: 48rem) {
+    .hairline {
+      border-top: 0;
+      border-left: 1px solid var(--color-grey-300);
+      padding-top: 0;
+      padding-left: var(--space-24);
+    }
+  }
+  @media (min-width: 80rem) { .hairline { padding-left: var(--space-48); } }
+
+  .prose-measure { max-width: var(--container-xl); }
+
+  /* Buttons — 34px, r4, asymmetric 9/16/7 optical padding (DESIGN.md §4.1) */
+  .btn {
+    @apply chrome;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 14px 16px 12px;
+    border-radius: var(--radius-control);
+    border: 1px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 120ms ease-out, color 120ms ease-out,
+                border-color 120ms ease-out;
+  }
+  @media (min-width: 48rem) { .btn { height: 34px; padding: 9px 16px 7px; } }
+
+  .btn-primary   { background: var(--color-brand); color: var(--color-white); }
+  .btn-primary:hover   { background: var(--color-brand-hover); }
+  .btn-secondary { background: var(--color-grey-800); color: var(--color-white); }
+  .btn-secondary:hover { background: var(--color-grey-700); }
+  .btn-tertiary  { background: var(--color-white); color: var(--color-black);
+                   border-color: var(--color-grey-400); }
+  .btn-tertiary:hover  { border-color: var(--color-black); }
+  .btn-ghost     { background: transparent; color: var(--color-grey-600); }
+  .btn-ghost:hover     { color: var(--color-black); }
+
+  /* Chips (DESIGN.md §4.2) */
+  .chip {
+    display: inline-flex; align-items: center; height: 24px;
+    padding: 0 8px 2px; border-radius: var(--radius-control);
+    background: var(--color-grey-200); color: var(--color-black);
+    font-family: var(--font-mono); font-size: 14px; line-height: 1;
+  }
+  .chip-active { background: var(--color-white); border: 1px solid var(--color-grey-300); }
+  .micro {
+    display: inline-flex; align-items: center; height: 24px; padding: 2px 4px;
+    border-radius: var(--radius-control);
+    background: var(--color-grey-600); color: var(--color-grey-500);
+    font-family: var(--font-mono); font-size: 12px; text-transform: uppercase;
+  }
+  .status {
+    @apply chrome;
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--color-grey-600);
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--color-success-100); }
+  .status-dot-idle { background: var(--color-grey-400); }
+
+  /* Surfaces (DESIGN.md §6) */
+  .card  { background: var(--color-white); border: 1px solid var(--color-grey-300);
+           border-radius: var(--radius-ui); }
+  .inset { background: var(--color-grey-100); border-radius: var(--radius-ui); }
+  .lifted{ background: var(--color-white); border-radius: var(--radius-ui);
+           box-shadow: var(--shadow-card); }
+  .demo-panel {
+    background: var(--color-sand-500);
+    border-radius: var(--radius-hero);
+    padding: var(--space-32);
+  }
+  @media (min-width: 80rem) { .demo-panel { padding: var(--space-40); } }
+
+  .field {
+    height: 44px; width: 100%; padding-inline: 12px;
+    background: var(--color-white); color: var(--color-grey-700);
+    border: 1px solid var(--color-grey-300); border-radius: var(--radius-control);
+    font-family: var(--font-sans); font-size: 16px;
+  }
+  .field::placeholder { color: var(--color-grey-500); }
+  .field:focus { outline: none; border-color: var(--color-black); }
+
+  /* Hairline table (DESIGN.md §4.8) */
+  .table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .table th, .table td {
+    text-align: left; padding: 10px 12px; vertical-align: baseline;
+    border-bottom: 1px solid var(--color-grey-300);
+  }
+  .table th {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 400;
+    letter-spacing: 0.16px; text-transform: uppercase; color: var(--color-grey-600);
+  }
+  .table td.num { font-family: var(--font-mono); font-size: 13px; color: var(--color-grey-700); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

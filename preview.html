@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bindu Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-white:#fff; --color-off-white:#f9f8f4;
+  --color-black:#181818; --color-grey:#d6d6d5;
+  --color-grey-100:#f6f6f6; --color-grey-200:#eee;  --color-grey-300:#e5e5e5;
+  --color-grey-400:#d6d6d6; --color-grey-500:#adadac; --color-grey-600:#858483;
+  --color-grey-700:#5c5b59; --color-grey-800:#434343; --color-grey-900:#181818;
+  --color-grey-1000:#101010;
+
+  --color-cobalt-100:#0047AB; --color-cobalt-200:#1F55C4; --color-cobalt-300:#3D7BFF;
+  --color-cobalt-400:#9DBBFF; --color-cobalt-500:#E3E8F3;
+  --color-cobalt-ink:#08327A; --color-cobalt-deep:#0A1A3D;
+  --color-brand:var(--color-cobalt-100);
+  --color-brand-hover:var(--color-cobalt-200);
+
+  --color-blue-100:#8fb6cc; --color-blue-200:#a5c5d6; --color-blue-300:#bcd3e0;
+  --color-blue-400:#d2e2eb; --color-blue-500:#e9f0f5;
+  --color-sand-100:#ccc7ba; --color-sand-200:#d6d2c8; --color-sand-300:#e0ddd6;
+  --color-sand-400:#ebe9e3; --color-sand-500:#f5f4f1;
+
+  --color-success-100:#69be78; --color-success-200:#96f1a7; --color-error-100:#e14942;
+  --color-stroke-primary:var(--color-grey-400);
+  --color-link:var(--color-cobalt-ink);
+
+  --font-sans:"Geist",ui-sans-serif,system-ui,sans-serif;
+  --font-mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --radius-xs:2px; --radius-sm:4px; --radius-md:8px; --radius-lg:16px;
+  --radius-control:4px; --radius-ui:6px; --radius-hero:24px;
+
+  --shadow-card:0 1px 2px #1818180a,0 8px 24px #18181814;
+  --shadow-ui:0 1.5px .75px #00000008,0 3px .5px #00000005,0 5px .5px #00000003;
+
+  --max-container-width:1504px; --machine-container-width:640px;
+  --footer-visual-height:240px; --container-xl:36rem;
+
+  --space-0:0; --space-2:.125rem; --space-4:.25rem; --space-8:.5rem;
+  --space-12:.75rem; --space-16:1rem; --space-24:1rem; --space-32:1.5rem;
+  --space-40:1.5rem; --space-48:1.5rem; --space-80:2.5rem; --space-120:2.5rem;
+  --space-160:5rem;
+}
+@media (min-width:80rem){
+  :root{
+    --space-24:1.5rem; --space-32:2rem;  --space-40:2.5rem; --space-48:3rem;
+    --space-80:5rem;   --space-120:7.5rem; --space-160:10rem;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--color-off-white);color:var(--color-black);
+     font-family:var(--font-sans);font-size:16px;line-height:1.5;
+     -webkit-font-smoothing:antialiased}
+
+/* ── chrome: mono 13 uppercase ls .16px ── */
+.mono{font-family:var(--font-mono);font-size:13px;line-height:16px;
+      letter-spacing:.16px;text-transform:uppercase}
+.eyebrow{font-family:var(--font-mono);font-size:13px;line-height:16px;
+      letter-spacing:.16px;text-transform:uppercase;color:var(--color-grey-600)}
+
+h1{font-size:36px;line-height:40px;font-weight:500}
+h2{font-size:32px;line-height:36px;font-weight:500}
+h3{font-size:26px;line-height:32px;font-weight:500}
+h4{font-size:20px;line-height:28px;font-weight:500}
+p{max-width:var(--container-xl)}
+a{color:var(--color-link)}
+
+main{max-width:1600px;margin:0 auto;padding:0 48px}
+section{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--space-48);
+        padding:var(--space-80) 0;border-top:1px solid var(--color-grey-300)}
+.full{grid-column:1/-1}
+.rail{grid-column:1/4}
+.panel{grid-column:4/13}
+
+/* ── announcement ── */
+.announce{background:var(--color-grey-100);border-bottom:1px solid var(--color-grey-300);
+  display:flex;align-items:center;justify-content:center;gap:8px;height:34px;
+  font-family:var(--font-mono);font-size:13px;letter-spacing:.16px;color:var(--color-grey-700);position:relative}
+.announce a{color:var(--color-cobalt-ink)}
+.announce .x{position:absolute;right:48px;color:var(--color-grey-600);cursor:pointer}
+
+/* ── header ── */
+header{position:sticky;top:0;z-index:20;height:74px;background:var(--color-white);
+  padding:0 48px;display:flex;align-items:center;gap:32px}
+.wordmark{font-size:16px;font-weight:500;color:var(--color-black);letter-spacing:-.01em}
+.wordmark .dot{color:var(--color-brand)}
+nav{margin-left:auto;display:flex;align-items:center;gap:24px}
+nav .navlink{font-family:var(--font-mono);font-size:13px;letter-spacing:.16px;
+  text-transform:uppercase;color:var(--color-grey-600);text-decoration:none;cursor:pointer}
+nav .navlink:hover{color:var(--color-black)}
+.hdr-actions{display:flex;gap:8px;margin-left:8px}
+
+/* ── buttons ── */
+.btn{height:34px;border-radius:var(--radius-control);font-family:var(--font-mono);
+  font-size:13px;line-height:1;letter-spacing:.16px;text-transform:uppercase;
+  padding:9px 16px 7px;border:1px solid transparent;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  transition:background-color 120ms ease-out,color 120ms ease-out,border-color 120ms ease-out}
+.btn-primary{background:var(--color-brand);color:#fff}
+.btn-primary:hover{background:var(--color-brand-hover)}
+.btn-secondary{background:var(--color-grey-800);color:#fff}
+.btn-secondary:hover{background:var(--color-grey-700)}
+.btn-tertiary{background:#fff;color:var(--color-black);border-color:var(--color-grey-400)}
+.btn-tertiary:hover{border-color:var(--color-black)}
+.btn-ghost{background:transparent;color:var(--color-grey-600);border-color:transparent}
+.btn-ghost:hover{color:var(--color-black)}
+.btn:focus-visible{outline:2px solid var(--color-brand);outline-offset:2px}
+
+/* ── chips / labels ── */
+.chip{display:inline-flex;align-items:center;height:24px;padding:0 8px 2px;
+  background:var(--color-grey-200);color:var(--color-black);border-radius:var(--radius-control);
+  font-family:var(--font-mono);font-size:14px}
+.chip.active{background:#fff;border:1px solid var(--color-grey-300)}
+.micro{display:inline-flex;align-items:center;height:24px;padding:2px 4px;
+  background:var(--color-grey-600);color:var(--color-grey-500);border-radius:var(--radius-control);
+  font-family:var(--font-mono);font-size:12px;text-transform:uppercase}
+.status{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);
+  font-size:13px;letter-spacing:.16px;text-transform:uppercase;color:var(--color-grey-600)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--color-success-100)}
+
+/* ── surfaces ── */
+.card{background:#fff;border:1px solid var(--color-grey-300);border-radius:var(--radius-ui);padding:20px}
+.inset{background:var(--color-grey-100);border-radius:var(--radius-ui);padding:20px}
+.lifted{background:#fff;border-radius:var(--radius-ui);padding:20px;box-shadow:var(--shadow-card)}
+.demo-panel{background:var(--color-sand-500);border-radius:var(--radius-hero);padding:40px;
+  display:flex;align-items:center;justify-content:center;min-height:300px}
+input[type=email],input[type=text]{height:44px;width:100%;border-radius:var(--radius-control);
+  border:1px solid var(--color-grey-300);background:#fff;padding:0 12px;
+  font-family:var(--font-sans);font-size:16px;color:var(--color-grey-700)}
+input::placeholder{color:var(--color-grey-500)}
+input:focus{outline:none;border-color:var(--color-black)}
+
+/* swatches */
+.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sw{border-radius:var(--radius-control);overflow:hidden;border:1px solid var(--color-grey-300)}
+.sw .chipc{height:64px}
+.sw .meta{padding:8px;background:#fff;font-family:var(--font-mono);font-size:11px;
+  line-height:1.4;color:var(--color-grey-600)}
+.sw .meta b{display:block;color:var(--color-black);font-weight:400;text-transform:uppercase}
+.rowlab{font-family:var(--font-mono);font-size:13px;letter-spacing:.16px;
+  text-transform:uppercase;color:var(--color-grey-600);margin:24px 0 8px}
+
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--color-grey-300);vertical-align:baseline}
+th{font-family:var(--font-mono);font-size:12px;letter-spacing:.16px;text-transform:uppercase;
+   color:var(--color-grey-600);font-weight:400}
+td.n{font-family:var(--font-mono);font-size:13px;color:var(--color-grey-700)}
+
+.hairline{border-left:1px solid var(--color-grey-300)}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.muted{color:var(--color-grey-700)}
+.spacebar{background:var(--color-cobalt-400);height:16px;border-radius:2px}
+
+/* footer */
+footer{max-width:1600px;margin:0 auto;padding:var(--space-80) 48px var(--space-32);
+  display:grid;grid-template-columns:repeat(12,1fr);gap:var(--space-48);
+  border-top:1px solid var(--color-grey-300)}
+.fcol h5{font-family:var(--font-mono);font-size:13px;letter-spacing:.16px;
+  text-transform:uppercase;color:var(--color-grey-600);font-weight:400;margin-bottom:16px}
+.fcol a{display:block;font-size:13px;color:var(--color-black);text-decoration:none;margin-bottom:12px}
+.fcol a:hover{color:var(--color-grey-600)}
+.fbottom{max-width:1600px;margin:0 auto;padding:16px 48px;height:48px;
+  border-top:1px solid var(--color-grey-300);display:flex;align-items:center;
+  justify-content:space-between;font-family:var(--font-mono);font-size:13px;
+  letter-spacing:.16px;color:var(--color-grey-600)}
+.fvisual{height:var(--footer-visual-height);background:var(--color-grey-1000);
+  display:flex;align-items:center;justify-content:center}
+.toggle{display:flex;gap:16px;align-items:center;font-family:var(--font-mono);
+  font-size:13px;letter-spacing:.16px;text-transform:uppercase;color:#fff}
+.toggle span{display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.toggle .off{color:var(--color-grey-600)}
+
+@media (min-width:768px) and (max-width:1279px){
+  main,header,footer,.fbottom{padding-left:24px;padding-right:24px}
+  .announce .x{right:24px}
+  section{grid-template-columns:repeat(8,1fr)}
+  .rail{grid-column:1/4}
+  .panel{grid-column:4/9}
+  .panel.hairline{padding-left:24px}
+  footer{grid-template-columns:repeat(8,1fr)}
+  .fcol{grid-column:span 4!important}
+  .fcol:first-child{grid-column:span 8!important}
+  .swatches{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:767px){
+  main,header,footer,.fbottom{padding-left:16px;padding-right:16px}
+  .announce{height:auto;min-height:34px;padding:8px 36px;text-align:center;
+            flex-wrap:wrap;line-height:1.4}
+  .announce .x{right:12px;top:8px}
+  h1{font-size:28px;line-height:32px} h2{font-size:24px;line-height:28px}
+  section{grid-template-columns:repeat(4,1fr)}
+  .rail,.panel,.full{grid-column:1/-1}
+  .hairline{border-left:none;border-top:1px solid var(--color-grey-300);padding-top:24px}
+  .swatches{grid-template-columns:repeat(2,1fr)}
+  nav{display:none}
+  .btn{height:44px;padding:14px 16px 12px}
+  footer{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="announce">
+  <span>Bindu files EUDR due diligence statements to TRACES.</span>
+  <a href="#">Read how it works.</a>
+  <span class="x">&times;</span>
+</div>
+
+<header>
+  <span class="wordmark">bindu<span class="dot">.</span></span>
+  <nav>
+    <span class="navlink">Regulations &#8964;</span>
+    <span class="navlink">How it works</span>
+    <span class="navlink">Pricing</span>
+    <span class="navlink">Docs</span>
+    <div class="hdr-actions">
+      <a class="btn btn-tertiary" href="#">Log in</a>
+      <a class="btn btn-primary" href="#">Book a demo &#8599;</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section style="border-top:none">
+    <div class="rail">
+      <p class="eyebrow" style="margin-bottom:16px">Bindu &middot; Trade compliance OS</p>
+      <h1>Describe a shipment.<br>Bindu handles the rules.</h1>
+      <p class="muted" style="margin:16px 0 24px">Bindu works out which EU rules apply to your
+        goods, gathers the proof from your suppliers and files it.</p>
+      <div class="row">
+        <a class="btn btn-primary" href="#">Book a 15-minute demo</a>
+        <a class="btn btn-tertiary" href="#">Estimate your cost</a>
+      </div>
+    </div>
+    <div class="panel hairline" style="padding-left:48px">
+      <div class="demo-panel">
+        <div class="card" style="width:100%;max-width:560px">
+          <div class="row" style="margin-bottom:16px">
+            <span class="chip active">EUDR</span><span class="chip">CBAM</span>
+            <span class="chip">DPP</span><span class="chip">REACH</span>
+          </div>
+          <p style="font-size:16px;margin-bottom:16px">Two containers of cocoa beans from
+            Ecuador to Antwerp, arriving in June.</p>
+          <div class="row" style="justify-content:space-between;border-top:1px solid var(--color-grey-300);padding-top:12px">
+            <span class="status"><span class="dot"></span>4 of 4 checks pass</span>
+            <span class="micro">Run</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLOUR -->
+  <section>
+    <div class="rail"><h2>Colour</h2>
+      <p class="muted" style="margin-top:16px">One accent. Warm canvas, near-black ink,
+        hairline borders. Cobalt is the signal; paper-blue and sand are surfaces.</p></div>
+    <div class="panel hairline" style="padding-left:48px">
+      <p class="rowlab" style="margin-top:0">Core</p>
+      <div class="swatches">
+        <div class="sw"><div class="chipc" style="background:#f9f8f4"></div><div class="meta"><b>off-white</b>#f9f8f4 &middot; canvas</div></div>
+        <div class="sw"><div class="chipc" style="background:#fff"></div><div class="meta"><b>white</b>#ffffff &middot; surface</div></div>
+        <div class="sw"><div class="chipc" style="background:#181818"></div><div class="meta"><b>black</b>#181818 &middot; ink</div></div>
+        <div class="sw"><div class="chipc" style="background:#d6d6d5"></div><div class="meta"><b>grey</b>#d6d6d5 &middot; border</div></div>
+        <div class="sw"><div class="chipc" style="background:#101010"></div><div class="meta"><b>grey-1000</b>#101010 &middot; dark band</div></div>
+      </div>
+
+      <p class="rowlab">Accent &mdash; cobalt <span style="text-transform:none">(Bindu)</span></p>
+      <div class="swatches">
+        <div class="sw"><div class="chipc" style="background:#0047AB"></div><div class="meta"><b>cobalt-100</b>#0047AB &middot; brand</div></div>
+        <div class="sw"><div class="chipc" style="background:#1F55C4"></div><div class="meta"><b>cobalt-200</b>#1F55C4 &middot; hover</div></div>
+        <div class="sw"><div class="chipc" style="background:#3D7BFF"></div><div class="meta"><b>cobalt-300</b>#3D7BFF &middot; signal</div></div>
+        <div class="sw"><div class="chipc" style="background:#9DBBFF"></div><div class="meta"><b>cobalt-400</b>#9DBBFF &middot; illus.</div></div>
+        <div class="sw"><div class="chipc" style="background:#E3E8F3"></div><div class="meta"><b>cobalt-500</b>#E3E8F3 &middot; tint</div></div>
+      </div>
+      <div class="swatches" style="margin-top:8px">
+        <div class="sw"><div class="chipc" style="background:#08327A"></div><div class="meta"><b>cobalt-ink</b>#08327A &middot; links</div></div>
+        <div class="sw"><div class="chipc" style="background:#0A1A3D"></div><div class="meta"><b>cobalt-deep</b>#0A1A3D &middot; dark wash</div></div>
+      </div>
+
+      <p class="rowlab">Grey ramp</p>
+      <div class="swatches">
+        <div class="sw"><div class="chipc" style="background:#f6f6f6"></div><div class="meta"><b>100</b>#f6f6f6</div></div>
+        <div class="sw"><div class="chipc" style="background:#eee"></div><div class="meta"><b>200</b>#eeeeee</div></div>
+        <div class="sw"><div class="chipc" style="background:#e5e5e5"></div><div class="meta"><b>300</b>#e5e5e5</div></div>
+        <div class="sw"><div class="chipc" style="background:#d6d6d6"></div><div class="meta"><b>400</b>#d6d6d6</div></div>
+        <div class="sw"><div class="chipc" style="background:#adadac"></div><div class="meta"><b>500</b>#adadac</div></div>
+      </div>
+      <div class="swatches" style="margin-top:8px">
+        <div class="sw"><div class="chipc" style="background:#858483"></div><div class="meta"><b>600</b>#858483 &middot; 2nd text</div></div>
+        <div class="sw"><div class="chipc" style="background:#5c5b59"></div><div class="meta"><b>700</b>#5c5b59 &middot; body</div></div>
+        <div class="sw"><div class="chipc" style="background:#434343"></div><div class="meta"><b>800</b>#434343 &middot; btn 2nd</div></div>
+        <div class="sw"><div class="chipc" style="background:#69be78"></div><div class="meta"><b>success</b>#69be78</div></div>
+        <div class="sw"><div class="chipc" style="background:#e14942"></div><div class="meta"><b>error</b>#e14942</div></div>
+      </div>
+
+      <p class="rowlab">Surfaces &mdash; paper blue (never an accent)</p>
+      <div class="swatches">
+        <div class="sw"><div class="chipc" style="background:#8fb6cc"></div><div class="meta"><b>blue-100</b>#8fb6cc</div></div>
+        <div class="sw"><div class="chipc" style="background:#a5c5d6"></div><div class="meta"><b>blue-200</b>#a5c5d6</div></div>
+        <div class="sw"><div class="chipc" style="background:#bcd3e0"></div><div class="meta"><b>blue-300</b>#bcd3e0</div></div>
+        <div class="sw"><div class="chipc" style="background:#d2e2eb"></div><div class="meta"><b>blue-400</b>#d2e2eb</div></div>
+        <div class="sw"><div class="chipc" style="background:#e9f0f5"></div><div class="meta"><b>blue-500</b>#e9f0f5</div></div>
+      </div>
+      <p class="rowlab">Surfaces &mdash; sand</p>
+      <div class="swatches">
+        <div class="sw"><div class="chipc" style="background:#ccc7ba"></div><div class="meta"><b>sand-100</b>#ccc7ba</div></div>
+        <div class="sw"><div class="chipc" style="background:#d6d2c8"></div><div class="meta"><b>sand-200</b>#d6d2c8</div></div>
+        <div class="sw"><div class="chipc" style="background:#e0ddd6"></div><div class="meta"><b>sand-300</b>#e0ddd6</div></div>
+        <div class="sw"><div class="chipc" style="background:#ebe9e3"></div><div class="meta"><b>sand-400</b>#ebe9e3</div></div>
+        <div class="sw"><div class="chipc" style="background:#f5f4f1"></div><div class="meta"><b>sand-500</b>#f5f4f1 &middot; panel</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPE -->
+  <section>
+    <div class="rail"><h2>Typography</h2>
+      <p class="muted" style="margin-top:16px">Geist Sans for prose, Geist Mono for all
+        interface chrome. Weights 400 and 500 only. The H1 is 36px and never grows.</p></div>
+    <div class="panel hairline" style="padding-left:48px">
+      <div class="stack">
+        <div><p class="eyebrow">H1 &middot; 36/40 &middot; w500</p><h1>Describe a shipment</h1></div>
+        <div><p class="eyebrow">H2 &middot; 32/36 &middot; w500</p><h2>Follow one shipment to customs</h2></div>
+        <div><p class="eyebrow">H3 &middot; 26/32 &middot; w500</p><h3>Every proof is a dot</h3></div>
+        <div><p class="eyebrow">H4 &middot; 20/28 &middot; w500</p><h4>Production-grade filings</h4></div>
+        <div><p class="eyebrow">Body &middot; 16/24 &middot; w400</p>
+          <p>Bindu asks your suppliers over WhatsApp and email for exactly what is missing,
+             checks each document against its rule, and files one compliance record. Prose is
+             capped at a 36rem measure so a reading column never runs the full grid.</p></div>
+        <div><p class="eyebrow">Chrome &middot; mono 13 &middot; uppercase &middot; ls .16px</p>
+          <p class="mono" style="color:var(--color-grey-600)">Regulations &middot; How it works &middot; Pricing</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section>
+    <div class="rail"><h2>Components</h2>
+      <p class="muted" style="margin-top:16px">Buttons are 34px tall, radius 4, with
+        asymmetric 9/16/7 padding &mdash; an optical correction for uppercase mono.</p></div>
+    <div class="panel hairline" style="padding-left:48px">
+      <p class="rowlab" style="margin-top:0">Buttons</p>
+      <div class="row">
+        <button class="btn btn-primary">Book a demo</button>
+        <button class="btn btn-secondary">Contact</button>
+        <button class="btn btn-tertiary">API playground &#8599;</button>
+        <button class="btn btn-ghost">Learn more</button>
+      </div>
+      <p class="rowlab">Chips, labels, status</p>
+      <div class="row">
+        <span class="chip active">EUDR</span><span class="chip">CBAM</span>
+        <span class="chip">DPP</span><span class="micro">Run</span>
+        <span class="status"><span class="dot"></span>All systems operational</span>
+      </div>
+      <p class="rowlab">Input</p>
+      <div style="max-width:360px"><input type="email" placeholder="you@company.com"></div>
+      <p class="rowlab">Surfaces &mdash; level 1 / 2 / 3</p>
+      <div class="row" style="align-items:stretch">
+        <div class="card" style="flex:1">
+          <p class="eyebrow">Level 1</p><p style="margin-top:8px">Hairline border, no shadow.</p></div>
+        <div class="inset" style="flex:1">
+          <p class="eyebrow">Level 2</p><p style="margin-top:8px">Tinted fill, no border.</p></div>
+        <div class="lifted" style="flex:1">
+          <p class="eyebrow">Level 3</p><p style="margin-top:8px">Shadow. Popovers only.</p></div>
+      </div>
+      <p class="rowlab">Hairline table</p>
+      <table>
+        <tr><th>Regulation</th><th>Status</th><th>Price</th></tr>
+        <tr><td>EUDR</td><td><span class="status"><span class="dot"></span>Live</span></td><td class="n">&euro;199 / filing</td></tr>
+        <tr><td>Textile passports</td><td><span class="status"><span class="dot"></span>Live</span></td><td class="n">&euro;0.59 / unit</td></tr>
+        <tr><td>CBAM</td><td><span class="status" style="color:var(--color-grey-500)"><span class="dot" style="background:var(--color-grey-400)"></span>In build</span></td><td class="n">&euro;999 / quarter</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- SPACING -->
+  <section>
+    <div class="rail"><h2>Spacing &amp; grid</h2>
+      <p class="muted" style="margin-top:16px">12 columns, 48px gutters, 1600px max.
+        Tokens are named for their desktop pixel value and collapse on mobile.
+        Resize the window to watch these bars shrink.</p></div>
+    <div class="panel hairline" style="padding-left:48px">
+      <table>
+        <tr><th>Token</th><th>Current</th><th style="width:60%">Scale</th></tr>
+        <tr><td class="n">--space-16</td><td class="n">16px</td><td><div class="spacebar" style="width:var(--space-16)"></div></td></tr>
+        <tr><td class="n">--space-24</td><td class="n">16 &rarr; 24</td><td><div class="spacebar" style="width:var(--space-24)"></div></td></tr>
+        <tr><td class="n">--space-32</td><td class="n">24 &rarr; 32</td><td><div class="spacebar" style="width:var(--space-32)"></div></td></tr>
+        <tr><td class="n">--space-48</td><td class="n">24 &rarr; 48</td><td><div class="spacebar" style="width:var(--space-48)"></div></td></tr>
+        <tr><td class="n">--space-80</td><td class="n">40 &rarr; 80</td><td><div class="spacebar" style="width:var(--space-80)"></div></td></tr>
+        <tr><td class="n">--space-120</td><td class="n">40 &rarr; 120</td><td><div class="spacebar" style="width:var(--space-120)"></div></td></tr>
+        <tr><td class="n">--space-160</td><td class="n">80 &rarr; 160</td><td><div class="spacebar" style="width:var(--space-160)"></div></td></tr>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="fcol" style="grid-column:1/4">
+    <h5>Get updates</h5>
+    <div style="display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--color-grey-400);padding-bottom:4px">
+      <input type="email" placeholder="you@company.com" style="border:none;height:32px;padding:0">
+      <span style="color:var(--color-grey-600)">&rarr;</span>
+    </div>
+  </div>
+  <div class="fcol" style="grid-column:4/6"><h5>Regulations</h5>
+    <a href="#">EUDR</a><a href="#">CBAM</a><a href="#">Digital product passports</a>
+    <a href="#">PPWR</a><a href="#">REACH</a></div>
+  <div class="fcol" style="grid-column:6/8"><h5>Product</h5>
+    <a href="#">How it works</a><a href="#">Pricing</a><a href="#">Supplier requests</a>
+    <a href="#">Filing and TRACES</a></div>
+  <div class="fcol" style="grid-column:8/10"><h5>Resources</h5>
+    <a href="#">Docs</a><a href="#">Blog</a><a href="#">llms.txt</a><a href="#">Status</a></div>
+  <div class="fcol" style="grid-column:10/13"><h5>Company</h5>
+    <a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a>
+    <h5 style="margin-top:24px">Legal</h5>
+    <a href="#">Privacy</a><a href="#">Terms</a></div>
+</footer>
+
+<div class="fbottom">
+  <span class="status"><span class="dot"></span>All systems operational</span>
+  <span>Bindu &middot; 2026 &middot; Cookie preferences</span>
+</div>
+
+<div class="fvisual">
+  <div class="toggle">
+    <span>&#9673; Human</span>
+    <span class="off">&#9675; Machine</span>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,2 +1,0 @@
-/* Round 13, item 9: the demo is the one highlighted CTA. In the drawer (phones) it is a yellow pill, not a list row. */
-.bindu-home .nav-drawer a.nav-drawer-book { display: flex; align-items: center; justify-content: center; margin-top: var(--s-5); padding: 0 var(--btn-px); border-bottom: 0; font-size: var(--mono-button); }

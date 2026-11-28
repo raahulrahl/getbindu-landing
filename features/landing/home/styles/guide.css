@@ -1,9 +1,0 @@
-/* Round 18: the ink guide (components/Guide.tsx). Round 25: one fixed, full-viewport canvas, no pointer events, hidden from assistive tech.
-   A small container ship, drawn by us in 1.25px ink, sails a dashed sea lane down one side gutter (a dot on phones). It sits above the
-   section backgrounds (they are solid) but the lane only runs in the gutter, so it never crosses text. Colours come from the tokens
-   (--line-ink, --route-line, --proof-dot) read by the canvas code, which re-reads them when the theme changes. */
-.bindu-home .guide { position: fixed; left: 0; top: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 400ms var(--ease-out); }
-.bindu-home .guide.is-on { opacity: 1; }
-.bindu-home[data-intro="on"] .guide { opacity: 0; }
-@media (prefers-reduced-motion: reduce) { .bindu-home .guide { transition: none; } }
-.bindu-home.g-over { cursor: pointer; }   /* r25: the ship is on a canvas; the pointer shows it can be clicked (horn) */

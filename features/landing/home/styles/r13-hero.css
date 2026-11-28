@@ -1,5 +1,0 @@
-/* Round 13, item 2: the hero copy is centred. Alignment only: the sizes, the map and the spacing are as in 22e11b0.
-   The mono line is centred too (QA, alignment only). */
-.bindu-home .hero-in { text-align: center; }
-.bindu-home .hero .hero-h, .bindu-home .hero .hero-sub, .bindu-home .hero .cta { margin-left: auto; margin-right: auto; }
-.bindu-home .hero .cta { justify-content: center; }
